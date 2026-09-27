@@ -1,0 +1,15 @@
+legacy_id,new_id,disposition,note
+FEAT-037,FEAT-095,migrated,"cross-domain: parts owned by DOM-CRM, DOM-LOA, DOM-AGT and DOM-IAM"
+FR-229,FR-095-001,split,non-text messages and attachments (DOM-CRM)
+FR-229,FR-095-002,split,conversation events and unsend (DOM-CRM)
+FR-229,FR-095-003,split,admission routing without jobs (DOM-LOA)
+FR-230,FR-095-004,split,retention classes and downward-only overrides (DOM-CRM)
+FR-230,FR-095-005,split,nightly CRM sweep (DOM-CRM)
+FR-230,FR-095-006,split,CRM is the business record not MSP (DOM-CRM)
+FR-231,FR-095-009,split,declared: per-account memory policy (DOM-LOA)
+FR-231,FR-095-010,split,declared: projection receipts and MSP gate (DOM-AGT)
+FR-232,FR-095-011,migrated,declared: erasure beyond Tier 1 (DOM-IAM)
+FR-233,FR-095-007,split,preview last-message unread (DOM-CRM)
+FR-233,FR-095-008,split,search and event counts (DOM-CRM)
+FR-234,FR-095-012,split,Context Composer rules (DOM-AGT)
+FR-234,FR-095-013,split,ContextReceipt (DOM-AGT)

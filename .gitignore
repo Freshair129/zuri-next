@@ -1,0 +1,10 @@
+node_modules/
+*.db
+*.db-journal
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Security-sensitive backlog; never committed (ADR-106 D8)
+private/

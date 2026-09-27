@@ -1,0 +1,39 @@
+# Service registry (STD-003 R5). A service is a deployable (STD-001 R2: Domain ≠ Service).
+# legacy = where the runtime lives in the zuri-ai repository today.
+services:
+  - id: SRV-001
+    name: Web application server (console UI + HTTP API + LINE webhook ingress)
+    kind: web
+    legacy: apps/server (Next.js), compose service `web`
+  - id: SRV-002
+    name: LINE job worker (outbound messaging, answer jobs)
+    kind: worker
+    legacy: apps/server scripts, compose service `line-worker`
+  - id: SRV-003
+    name: Conversation runtime service (extracted LINE conversation execution)
+    kind: service
+    legacy: compose overlay `conversation-runtime` (ADR-106)
+  - id: SRV-004
+    name: Knowledge ingestion worker (17-stage pipeline execution)
+    kind: worker
+    legacy: compose service `genesis-worker`
+  - id: SRV-005
+    name: Knowledge service (GKS — corpus publication and retrieval over HTTP)
+    kind: service
+    legacy: compose overlay `gks-http` / `gks-private` (ADR-042)
+  - id: SRV-006
+    name: Knowledge object storage
+    kind: storage
+    legacy: compose overlay `knowledge-storage`
+  - id: SRV-007
+    name: Market Intelligence service
+    kind: service
+    legacy: extracted service (ADR-108)
+  - id: SRV-008
+    name: Edge desktop runtime (customer-premise device)
+    kind: desktop
+    legacy: apps/edge (Tauri); retired surfaces per ADR-110
+  - id: SRV-009
+    name: Primary relational database (PostgreSQL)
+    kind: database
+    legacy: compose service `db`, Supabase in production

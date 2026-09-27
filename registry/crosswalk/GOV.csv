@@ -1,0 +1,12 @@
+legacy_id,new_id,disposition,note
+ADR-001,ADR-101,dropped,standalone-lab-before-integration decision is history; only the standalone-product idea survives in ADR-101
+ADR-002,,retired,superseded by ADR-003 the same day (PM as a module of the legacy product cancelled)
+ADR-003,,retired,replace-by-reuse programme retired by ADR-024; durable ideas carried in ADR-097 (contract tests) and ADR-083/016 (AI never writes directly)
+ADR-004,ADR-102,merged,D5 generated index never hand-edited; D3/D4 -> ADR-103; D9 -> ADR-104; layout superseded by STD-003
+ADR-005,,retired,legacy documentation corpus and its id namespace retired by ADR-024
+ADR-009,ADR-102,merged,governance graph derived from files; typed lineage now STD-002 relations; dogfooding and external-tool lanes dropped
+ADR-024,ADR-101,migrated,standalone product; legacy vocabulary and ids are provenance only
+ADR-025,ADR-103,migrated,one owner per model/lane enforced by CI; FEAT vs FR; folder layout superseded by STD-003
+ADR-039,ADR-104,migrated,ids pinned by subject anchor; measurement history dropped
+ADR-051,ADR-105,migrated,worktree per writing lane; shared runtime resources; machine paths dropped
+ADR-081,ADR-102,migrated,"generated views are build outputs, not committed"

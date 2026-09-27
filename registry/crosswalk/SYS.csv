@@ -1,0 +1,235 @@
+legacy_id,new_id,disposition,note
+BR-001,BR-046,migrated,
+BR-002,BR-047,migrated,
+BR-003,BR-048,migrated,
+BR-004,BR-049,migrated,
+BR-005,BR-050,migrated,
+BR-006,BR-051,migrated,
+BR-007,BR-052,migrated,
+BR-008,BR-053,migrated,
+BR-009,BR-054,migrated,
+BR-010,BR-055,migrated,
+BR-011,BR-056,migrated,rewritten: legacy transport split (external command agent owns signature/reply) retired with the forwarding seam; one-reply-owner invariant kept
+BR-012,BR-057,migrated,
+BR-013,BR-058,migrated,
+BR-014,BR-059,migrated,
+BR-015,BR-060,migrated,
+BR-016,BR-061,migrated,
+BR-017,BR-062,migrated,
+BR-018,BR-063,migrated,
+BR-019,BR-064,migrated,
+BR-020,BR-065,migrated,
+BR-021,BR-066,migrated,
+BR-022,BR-067,migrated,
+BR-023,BR-068,migrated,
+BR-024,BR-069,migrated,
+BR-025,BR-070,migrated,
+BR-026,BR-071,migrated,
+BR-027,BR-072,migrated,
+BR-028,BR-073,migrated,
+BR-029,BR-074,migrated,
+BR-030,BR-075,migrated,
+BR-031,BR-076,migrated,
+BR-032,BR-077,migrated,
+BR-033,BR-078,migrated,
+BR-034,BR-079,migrated,
+BR-035,BR-080,migrated,
+BR-036,BR-081,migrated,
+BR-037,BR-082,migrated,
+BR-038,BR-083,migrated,
+BR-039,BR-084,migrated,
+BR-040,BR-085,migrated,
+BR-041,BR-086,migrated,
+BR-042,BR-087,migrated,
+BR-043,BR-088,migrated,
+BR-044,BR-089,migrated,
+NFR-001,NFR-001,migrated,
+NFR-002,NFR-002,migrated,
+NFR-003,NFR-003,migrated,
+NFR-004,NFR-004,migrated,
+NFR-005,NFR-005,migrated,
+NFR-006,NFR-006,migrated,also absorbs the portability part of FR-030
+NFR-007,NFR-007,migrated,
+NFR-008,NFR-008,migrated,legacy-module parity clause dropped (replace-by-reuse programme retired)
+NFR-009,NFR-009,migrated,
+NFR-010,NFR-010,migrated,
+NFR-011,NFR-011,migrated,
+NFR-012,NFR-012,migrated,
+NFR-013,NFR-013,migrated,
+NFR-014,NFR-018,merged,per-turn agent authorization folded into the per-request/turn IAM rule
+NFR-015,NFR-014,migrated,
+NFR-016,NFR-015,migrated,
+NFR-017,NFR-016,migrated,
+NFR-018,NFR-017,migrated,
+NFR-019,NFR-018,migrated,
+NFR-020,NFR-019,migrated,
+NFR-021,NFR-020,migrated,
+NFR-022,NFR-021,migrated,
+NFR-023,NFR-022,migrated,
+NFR-024,NFR-023,migrated,"declared (approved design, not implemented)"
+NFR-025,NFR-024,migrated,"declared (approved design, not implemented)"
+FR-030,NFR-006,split,"portability, generated Postgres schema and UUID-preserving snapshot cutover"
+FR-030,ADR-083,split,Zuri DB != MSP DB boundary (assertDbBoundary)
+FR-030,ARCH-001,split,"data stores section (DuckDB cache tier, store boundary)"
+FR-145,NFR-025,migrated,pooling mode follows deployment topology; decision in ADR-091
+SEC-001,SEC-001,migrated,
+SEC-002,SEC-002,migrated,
+SEC-003,SEC-003,migrated,
+SEC-004,,retired,"burnt in legacy registry: ""MVP has no customer PII"" became false; covered by SEC-004/009/031"
+SEC-005,SEC-004,migrated,
+SEC-006,SEC-005,migrated,
+SEC-007,SEC-006,migrated,
+SEC-008,SEC-007,migrated,
+SEC-009,SEC-008,migrated,
+SEC-010,SEC-009,migrated,
+SEC-011,SEC-010,migrated,
+SEC-012,SEC-011,migrated,
+SEC-013,SEC-012,migrated,
+SEC-014,SEC-013,migrated,
+SEC-015,SEC-014,migrated,
+SEC-016,SEC-015,migrated,
+SEC-017,SEC-016,migrated,
+SEC-018,SEC-017,migrated,
+SEC-019,SEC-018,migrated,
+SEC-020,SEC-019,migrated,
+SEC-021,SEC-020,migrated,
+SEC-022,SEC-021,migrated,
+SEC-023,SEC-022,migrated,
+SEC-024,SEC-023,migrated,
+SEC-025,,retired,Edge Device credential and evidence-download boundary retired by ADR-110 (ADR-095)
+SEC-026,SEC-024,migrated,declared in legacy registry; not fully implemented
+SEC-027,SEC-025,migrated,
+SEC-028,SEC-026,migrated,
+SEC-029,SEC-027,migrated,
+SEC-030,SEC-028,migrated,declared in legacy registry; not fully implemented
+SEC-031,SEC-029,migrated,declared in legacy registry; not fully implemented
+SEC-032,SEC-030,migrated,declared in legacy registry; not fully implemented
+SEC-033,SEC-031,migrated,
+SEC-034,SEC-032,migrated,
+SEC-035,SEC-033,migrated,declared in legacy registry; not fully implemented
+SEC-036,SEC-034,migrated,declared in legacy registry; not fully implemented
+SEC-037,SEC-035,migrated,
+SDD-001,,retired,superseded by ADR-003; programme retired by ADR-024
+SDD-002,ADR-096,merged,"string enums, single Zod source"
+SDD-003,ADR-096,merged,UUID PK + human code
+SDD-004,ADR-096,merged,soft delete + version
+SDD-005,SDD-005,merged,progress calculators pure; see NFR-005
+SDD-006,SDD-007,merged,"plan import single transaction, upsert by code"
+SDD-007,ARCH-001,merged,layering: UI fetch -> thin handlers -> services
+SDD-008,ADR-097,merged,
+SDD-009,ADR-098,merged,
+SDD-010,ADR-084,merged,
+SDD-011,SDD-002,merged,Home cards from viewer gate
+SDD-012,SDD-002,merged,topbar is navigation chrome
+SDD-013,SDD-002,merged,breadcrumb scope links
+SDD-014,SDD-018,merged,Business-first overview
+SDD-015,SDD-004,merged,Project Team reuses Membership
+SDD-016,SDD-017,merged,ProjectFile metadata
+SDD-017,SDD-024,merged,Membership domain allow-list
+SDD-018,ADR-093,merged,ScopeContext exposes Portfolio/Tenant/Business; scope-views vocabulary
+SDD-019,SDD-006,merged,ProjectTabs work sub-views
+SDD-020,SDD-019,merged,Business Strategy read model
+SDD-021,SDD-003,merged,Project business ownership
+SDD-022,ADR-085,merged,route groups / shell layers
+SDD-023,SDD-017,merged,FileAsset/FileLink/LocalWorkspaceMount
+SDD-024,SDD-023,merged,SessionPort and viewer-scoped entry read model
+SDD-025,SDD-063,merged,Phase 1 LINE ports and adapters
+SDD-026,ADR-086,merged,"private schema, composite FKs, forced RLS, scope roles"
+SDD-027,ADR-087,merged,three independent evidence ports
+SDD-028,SDD-065,merged,activation operator port
+SDD-029,SDD-002,merged,landing page presentation
+SDD-030,ADR-088,merged,AuthContext and authorized vault set
+SDD-031,SDD-017,merged,File Manager projections
+SDD-032,SDD-019,merged,Business Strategy writes in PM application
+SDD-033,SDD-018,merged,Business Home non-owning projection (principle also in ARCH-001 section 4)
+SDD-034,SDD-024,merged,per-Business domain map in resolveViewer
+SDD-035,SDD-024,merged,admin read scope equals write authorization
+SDD-036,SDD-006,merged,Board and Schedule derived views
+SDD-037,SDD-007,merged,import authorization on resolved Workspace
+SDD-038,SDD-025,merged,profile-first onboarding contract
+SDD-039,SDD-010,merged,Execution Roadmap read contract
+SDD-040,SDD-010,merged,identity binding axes for execution plans
+SDD-041,SDD-010,merged,execution trace identity
+SDD-042,SDD-060,merged,data pipeline stage/record ledger (FR-071)
+SDD-043,SDD-091,merged,Phase 1 runtime connection selection (legacy FEAT-004 / X-001)
+SDD-044,SDD-091,merged,Integration management surface (legacy FEAT-004 / X-001)
+SDD-045,SDD-012,merged,Project Inventory read DTO
+SDD-046,SDD-016,merged,canvas gesture as intake surface (rule generalised in ADR-098)
+SDD-047,SDD-015,merged,Projects Overview composed read model
+SDD-048,ADR-099,merged,"one emitter, one correlation id"
+SDD-049,SDD-088,merged,market translation ports and adapters
+SDD-050,SDD-092,merged,conversation read model (legacy FEAT-009 / X-002)
+SDD-051,SDD-092,merged,reply record writer (legacy FEAT-009 / X-002)
+SDD-052,SDD-029,merged,IAM policy seam
+SDD-053,SDD-043,merged,consent fields on Customer
+SDD-054,SDD-026,merged,password reset mint/consume
+SDD-055,SDD-036,merged,Platform Control route group and guard
+SDD-056,SDD-009,merged,bundle import orchestrator
+SDD-057,SDD-072,merged,17-stage pipeline reuses FR-071 ledger
+SDD-058,SDD-072,merged,stage location policy-driven
+SDD-059,SDD-070,merged,chunking pure calculator
+SDD-060,SDD-070,merged,entity recognition seam
+SDD-061,SDD-070,merged,normalizer withholds ambiguous values
+SDD-062,SDD-072,merged,stored vs served sensitivity
+SDD-063,SDD-070,merged,parser block shape
+SDD-064,SDD-070,merged,derived knowledge names sources
+SDD-065,SDD-070,merged,cross-tenant dedup inexpressible (see SEC-020)
+SDD-066,SDD-072,merged,pipeline definition registry (touches FR-071 ledger contract)
+SDD-067,SDD-072,merged,run input derived from ingestion identity
+SDD-068,SDD-071,merged,field-name mapping between stages
+SDD-069,SDD-071,merged,ledger-writing wiring
+SDD-070,SDD-060,merged,per-stage counts on PipelineStep (NFR-019)
+SDD-071,SDD-060,merged,execution monitor aggregates run counts (FR-071 ledger)
+SDD-072,SDD-071,merged,TIER1_STEPS shared definition
+SDD-073,SDD-060,merged,errorRef is a reference (FR-071 ledger contract)
+SDD-074,SDD-028,merged,plugin auth route family
+SDD-075,SDD-056,merged,gate evidence in PipelineGateDecision.evidenceJson (FR-071 ledger)
+SDD-076,SDD-057,merged,bound repository metadata converges on raw evidence; contents never persisted
+SDD-077,SDD-074,merged,registered query per knowledge_type
+SDD-078,SDD-086,merged,asset identity separation
+SDD-079,SDD-086,merged,asset intake envelope on shared ledger
+SDD-080,SDD-086,merged,temporal responsibility/location/allocation
+SDD-081,SDD-087,merged,private object storage port
+SDD-082,SDD-087,merged,OCR/vision candidate port
+SDD-083,SDD-087,merged,Excel/Sheets asset row adapter
+SDD-084,SDD-069,merged,LINE attachment handoff; check against ADR-110 retirement of device handoff adapters
+SDD-085,,retired,edge extraction pull job retired by ADR-110 D5 (ADR-095)
+SDD-086,SDD-089,merged,planning evidence and owner-delegated execution
+SDD-087,SDD-089,merged,initiatives with PM receipts
+SDD-088,SDD-089,merged,creative content approval
+SDD-089,SDD-089,merged,Marketing Operations composition
+SDD-090,SDD-079,merged,located ledger and WIP work orders
+SDD-091,ADR-100,merged,agent tools are thin adapters
+SDD-092,SDD-030,merged,authorization invariants in the database
+SDD-093,SDD-031,merged,Employment unconnected to Membership
+SDD-094,SDD-032,merged,generalised AccessInvite
+SDD-095,ARCH-001,merged,audit scope columns (section 12); writers stay in PRJ/IAM
+SDD-096,SDD-029,merged,MFA secret sealing format
+SDD-097,SDD-094,merged,secret store selection by reference prefix (legacy FEAT-036 / X-004)
+SDD-098,SDD-094,merged,LINE channel tokens minted not stored (legacy FEAT-036 / X-004)
+SDD-099,SDD-096,merged,LINE grounding reader over published corpus (legacy FEAT-038 / X-006)
+SDD-100,SDD-095,merged,Context Composer placement and receipt (legacy FEAT-037 / X-005)
+SDD-101,SDD-054,merged,secretKind dispatch map
+SDD-102,SDD-042,merged,session assignment inside admission
+SDD-103,SDD-047,merged,cold archive file format
+SDD-104,ARCH-001,merged,declared inference pool (section 15)
+SDD-105,ARCH-001,merged,declared atomic inference reservation (section 15)
+SDD-106,SDD-091,merged,model credential resolution order
+SDD-107,SDD-019,merged,goal progress write-through cache
+SDD-108,SDD-058,merged,Notion OAuth state/token handling (see SEC-035)
+SDD-109,SDD-058,merged,Notion webhook verification (see SEC-035)
+SDD-110,ARCH-001,merged,Conversation Runtime placement; service spec in SRV-003
+ADR-007,ADR-083,migrated,"authority layering, Zuri DB != MSP DB, read-only agent until authz+audit+step-up; phase sequencing/demo/program tracks dropped as history"
+ADR-010,ADR-084,migrated,legacy-module compatibility clauses dropped
+ADR-015,ADR-085,migrated,demo-login decision (D3) superseded by ADR-017; profile-first extension kept
+ADR-018,ADR-086,migrated,"project reference, reserved UUIDs and import counts omitted"
+ADR-019,ADR-087,migrated,
+ADR-022,ADR-088,migrated,
+ADR-041,,retired,"Edge Device topology: ingress/credential placement amended by ADR-061, device surfaces retired by ADR-110; see ADR-095 and SRV-008"
+ADR-042,ADR-089,migrated,port numbers and consumer names dropped
+ADR-043,ADR-090,migrated,
+ADR-058,ADR-091,migrated,D9 pooling becomes NFR-025
+ADR-062,ADR-092,migrated,snapshot and publication-containment history dropped
+ADR-076,ADR-093,migrated,
+ADR-104,ADR-094,migrated,ledger inventory and dated receipts dropped; procedure in RB-002
+ADR-110,ADR-095,migrated,

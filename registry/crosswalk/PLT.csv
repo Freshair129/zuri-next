@@ -1,0 +1,39 @@
+legacy_id,new_id,disposition,note
+FR-002,FR-034-001,migrated,Scope selectors and last-selection memory
+FR-015,FR-034-002,migrated,Command palette
+FR-016,FR-034-003,migrated,Idempotent seed/demo dataset
+FR-167,FR-035-001,migrated,SCM parent domain group
+FR-170,FR-035-002,migrated,In-canvas module tabs
+FR-172,FR-035-003,migrated,CRM parent domain group
+FR-105,FR-036-001,migrated,Platform Programme Roadmap plan snapshot
+FR-211,FR-036-002,migrated,Domain map and inventory tab
+FR-241,FR-036-003,migrated,Time-boxed redacted member roadmap view
+FEAT-034,FEAT-037,migrated,Programme Delivery Telemetry
+FR-216,FR-037-001,migrated,Phase card delivery metrics
+FR-217,FR-037-002,migrated,Programme usage meter
+FR-218,FR-037-003,migrated,"Usage report endpoint; deployment-bearer path unaffected by ADR-110, harness-credential acceptance branch retired separately (see FR-221 row)"
+FR-219,FR-037-004,migrated,Task card evidence badges and subtasks
+FR-221,,retired,"Usage-report attribution to a harness-paired person/device/lane retired from active product scope by ADR-110 D1/D5 (2026-09-24); the deployment-bearer path (FR-218) is unaffected; not re-specified"
+FEAT-035,,retired,"Zuri harness usage plugin superseded by ADR-110 D5 (2026-09-24); struck through in docs/FEATURES.md; platform-control half (usage attribution) had no live acceptance path remaining in the worktree"
+FEAT-039,FEAT-038,migrated,"Agent usage detail; scope amended by ADR-110 — historical person/device attribution remains readable, new attribution via the retired harness plugin does not"
+FR-239,FR-038-001,migrated,Usage detail counting (meter and reports)
+FR-240,FR-038-002,migrated,Usage detail on the programme board
+FEAT-042,FEAT-039,migrated,"Observability: error tracking and feature usage"
+FR-247,FR-039-001,migrated,Deduplicated fingerprinted error tracking
+FR-248,FR-039-002,migrated,Page-view usage per person
+FR-249,FR-039-003,migrated,Action-level usage primitive and 90-day rollup
+FEAT-044,FEAT-040,migrated,Mission Control DAG orchestration observability
+FR-260,FR-040-001,migrated,Mission Control operator projection
+FR-261,FR-040-002,migrated,PORL observation contract
+FR-262,FR-040-003,migrated,DAG scheduling and merge-safety projection
+FR-263,FR-040-004,migrated,Member roadmap redaction of Mission Control data
+FR-264,FR-040-005,migrated,Responsive Mission Control evidence view
+ADR-021,ADR-029,migrated,Zuri-branded entry landing
+ADR-048,ADR-030,migrated,Platform Control is outside the Business Shell
+ADR-052,ADR-031,migrated,Canonical plugin authorization-code and token boundary
+ADR-069,ADR-032,migrated,SCM is a parent domain
+ADR-071,ADR-033,migrated,CRM is a parent domain
+ADR-086,ADR-034,migrated,Programme delivery telemetry
+ADR-087,ADR-035,migrated,"Harness usage plugin and device pairing; retired 2026-09-24 by ADR-110, recorded historically"
+ADR-092,ADR-036,migrated,Time-boxed member view of the programme roadmap
+ADR-095,ADR-037,migrated,Observability error tracking and per-person feature usage

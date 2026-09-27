@@ -1,0 +1,7 @@
+legacy_id,new_id,disposition,note
+FEAT-038,FEAT-096,migrated,"LINE grounding and knowledge candidates; split into four parts owned by DOM-LOA (P01 mode, P04 studio descriptions) and DOM-KNW (P02 candidates, P03 gap report)"
+FR-235,FR-096-001,migrated,"LINE answer grounding mode; part FEAT-096-P01, owned_by DOM-LOA"
+FR-236,FR-096-002,migrated,"LINE FAQ knowledge candidates; part FEAT-096-P02, owned_by DOM-KNW; per-Business enablement toggle stays with DOM-PRJ's business module (not a separate part)"
+FR-237,FR-096-003,migrated,"Knowledge gap report for LINE; part FEAT-096-P03, owned_by DOM-KNW"
+FR-238,FR-096-004,migrated,"LINE Studio descriptions as knowledge sources; part FEAT-096-P04, owned_by DOM-LOA"
+ADR-090,ADR-071,migrated,"Moved out of FEAT-096's file (X is the cross-domain feature namespace, not a valid ADR scope, STD-002 R1) into the feature owner's decisions.md as ADR-071; FEAT-096 now references it by id"

@@ -1,0 +1,15 @@
+legacy_id,new_id,disposition,note
+FEAT-019,FEAT-093,migrated,"cross-domain: parts owned by DOM-CRM, DOM-INT, DOM-LOA and DOM-AGT; optional Edge half retired"
+FR-148,FR-093-001,split,account-scoped conversation identity (DOM-CRM)
+FR-148,FR-093-002,split,transaction composition and scope of CRM writes (DOM-CRM)
+FR-149,FR-093-003,split,evidence capture without reply token (DOM-INT)
+FR-149,FR-093-004,split,Integration LINE messaging port (DOM-INT)
+FR-149,FR-093-005,split,webhook ingress acknowledged after durable capture (DOM-LOA)
+FR-149,FR-093-006,split,atomic admission of message and job (DOM-LOA)
+FR-149,FR-093-007,split,abandoned-admission reconciler (DOM-LOA)
+FR-149,FR-093-008,split,leases and ownership fencing (DOM-LOA)
+FR-149,FR-093-009,split,parallel answers and cadence per tick (DOM-LOA)
+FR-149,FR-093-010,split,truthful send: acceptance retry UNKNOWN (DOM-LOA)
+FR-149,FR-093-011,split,failure visibility (DOM-LOA)
+FR-149,FR-093-012,split,server answer execution (DOM-AGT)
+FR-150,,retired,optional Edge conversation execution withdrawn by ADR-100 (FR-265) and ADR-110; edge job claim/context/tools/complete/fail routes removed

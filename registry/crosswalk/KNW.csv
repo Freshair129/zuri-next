@@ -1,0 +1,37 @@
+legacy_id,new_id,disposition,note
+FR-024,FR-074-001,migrated,knowledge graph projection of Zuri relations and the queryKnowledge/graph-reader contract
+FR-047,FR-074-002,migrated,curated business-knowledge read contract (BusinessKnowledgeReadPort)
+FR-131,FR-074-003,migrated,shipping rate card as governed business knowledge (declared, unbuilt)
+FR-109,FR-072-001,migrated,seventeen-stage catalog and job trace (catalog/trace half)
+FR-109,FR-072-002,split,external-tier reporter + evidence-pull + job-lifecycle half of FR-109
+FR-110,FR-072-004,migrated,published knowledge snapshot contract and atomic publication
+FR-111,FR-072-003,migrated,knowledge sensitivity lattice and processing policy
+FR-112,FR-070-005,migrated,structural knowledge chunking with parent-child lineage
+FR-113,FR-070-006,migrated,entity candidate extraction from chunks and structured records
+FR-114,FR-070-003,migrated,canonical normalization that never destroys the raw value
+FR-115,FR-070-001,migrated,document parsing into a structured artifact
+FR-116,FR-070-002,migrated,derived-object provenance and the lineage chain back to a source
+FR-117,FR-070-004,migrated,deduplication and version relationships within one tenant
+FR-118,FR-071-001,migrated,tier 1 stage composition (seven stages, one call)
+FR-119,FR-071-002,migrated,per-stage failure attribution and BR-022 quarantine
+FR-173,FR-073-001,migrated,knowledge source admission and corpus publication
+FR-187,FR-075-001,migrated,smartgift structured-record source adapter (Phase 1)
+FR-188,FR-075-002,migrated,structured parser profile typed mentions and ontology_v2 (Phase 2)
+FR-189,FR-075-003,migrated,edge reads the published GenesisRAG17 generation (Phase 4 default off)
+FR-212,FR-076-001,migrated,data pipeline registry and generated projection
+FR-213,FR-076-002,migrated,data pipeline map view
+FR-214,FR-076-003,migrated,knowledge (GKS) navigation slot
+FR-215,FR-076-004,migrated,live pipeline health overlay
+FR-254,FR-073-002,migrated,knowledge base console
+FEAT-013,FEAT-072,split,"stage catalog / snapshot contract / sensitivity lattice half of FEAT-013 (FR-109 FR-110 FR-111)"
+FEAT-013,FEAT-073,split,"admission / corpus / console half of FEAT-013 (FR-173 FR-254); split from FEAT-072 because the combined feature exceeded STD-003 R3's ~800-line guidance"
+FEAT-026,FEAT-075,migrated,smartgift catalog convergence (FR-187 FR-188 FR-189)
+FEAT-033,FEAT-076,migrated,data pipeline map (FR-212 FR-213 FR-214 FR-215)
+ADR-050,ADR-063,migrated,knowledge ingestion tier boundary and stage ownership
+ADR-063,ADR-064,migrated,retire tier 1 genesisblockdb direct clients
+ADR-067,ADR-065,migrated,knowledge ingestion reporter and run close
+ADR-068,ADR-066,migrated,knowledge evidence pull through MSP
+ADR-072,ADR-067,migrated,knowledge admission and corpus publication
+ADR-073,ADR-068,migrated,genesisrag17 isolated execution and publication
+ADR-075,ADR-069,migrated,smartgift catalog enters via 17-stage source adapter
+ADR-085,ADR-070,migrated,knowledge GKS slot and the data pipeline map

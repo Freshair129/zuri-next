@@ -1,0 +1,31 @@
+legacy_id,new_id,disposition,note
+FR-025,FR-061-001,migrated,Gate E read-only context contract
+FR-026,FR-061-002,migrated,Gate F write/action gate
+FR-027,FR-061-003,migrated,end-to-end handleAgentTurn
+FR-098,FR-061-004,migrated,agent/tool/MSP authorization boundary
+FR-028,FR-062-001,migrated,LINE webhook route - implementation removed 2026-09-25 (ADR-110); see FEAT-062 open issues
+FR-029,FR-062-002,migrated,createAgentPorts MSP/GKS runtime ports - no production caller found
+FR-049,FR-063-001,migrated,evidence-grounded answer - live via server-line-answer.js
+FR-132,FR-063-002,migrated,ladder quotation tool - declared only, no code
+FR-181,FR-063-003,migrated,six SmartGift Gate E/F tools - implemented, unreachable pending Gate E/F wiring
+FR-050,FR-064-001,migrated,single-reply LINE delivery - implementation removed 2026-09-25 (ADR-110)
+FR-051,FR-064-002,migrated,production Supabase tenant isolation - live
+FR-052,FR-064-003,migrated,server-owned LINE scope binding - code intact but bypassed by both live callers (bindingRequired:false)
+FR-147,FR-064-004,migrated,LINE binding status read - live, consumed by DOM-LOA
+FR-053,FR-065-001,migrated,Phase 1 golden question evaluation
+FR-054,FR-065-002,migrated,controlled LINE canary readiness
+FR-055,FR-065-003,migrated,controlled LINE activation and receipt
+FR-097,FR-066-001,migrated,verified channel onboarding (agent-side consumption of DOM-IAM ChannelIdentity)
+FR-057,FR-067-001,migrated,authorized agent context and API-010 vault resolution
+FR-171,FR-068-001,split,execution trace journal write contract (1 of 3)
+FR-171,FR-068-002,split,owner-only read-only playback route (2 of 3)
+FR-171,FR-068-003,split,native SERVER default memory exclusion (3 of 3)
+FR-140,FR-069-001,migrated,trusted LINE asset handoff - implementation removed 2026-09-25 (ADR-110); planned/gap per legacy PRD
+FR-141,FR-069-002,retired,Edge Device heartbeat registry - formally retired by ADR-110 D5; identifier kept burned
+FEAT-010,,split,legacy cross-domain bundle; FR-097->FR-066-001 and FR-098->FR-061-004 land here, FR-094/095/096 belong to DOM-IAM
+FEAT-016,,split,legacy bundle; FR-140->FR-069-001 lands here, FR-137/138/139 belong to DOM-AST (asset-management)
+FEAT-018,,split,legacy bundle; FR-147->FR-064-004 lands here, FR-146/151/152/153 belong to DOM-LOA (line-oa-studio)
+FEAT-025,,split,legacy bundle; FR-181->FR-063-003 lands here, FR-174/175/176/177/178/179/180/182/184 belong to DOM-INV/DOM-COM
+ADR-023,ADR-059,migrated,agent vault and epistemic memory - status remains proposed
+ADR-026,ADR-060,migrated,agent topology for the visual office - accepted
+ADR-070,ADR-061,migrated,execution trace and replay v0.3 - accepted

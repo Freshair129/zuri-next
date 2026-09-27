@@ -1,0 +1,10 @@
+legacy_id,new_id,disposition,note
+FEAT-009,FEAT-092,migrated,"cross-domain: parts owned by DOM-CRM, DOM-LOA and DOM-PRJ"
+FR-091,FR-092-001,split,inbox list scope
+FR-091,FR-092-002,split,thread read
+FR-091,FR-092-003,split,read-only readers and inbox page
+FR-091,FR-092-007,split,customer navigation slot (DOM-PRJ)
+FR-093,FR-092-004,split,scoped idempotent reply record
+FR-093,FR-092-005,split,acceptance is not delivery
+FR-093,FR-092-006,split,server job ledger records accepted answers (DOM-LOA)
+FR-093,,retired,edge receipt route POST /api/agent/line-delivery removed with Edge-to-Server adapters (ADR-100/ADR-110)

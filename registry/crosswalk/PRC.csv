@@ -1,0 +1,5 @@
+legacy_id,new_id,disposition,note
+FR-164,FR-082-001,migrated,"suppliers and purchase orders"
+FR-165,FR-082-002,migrated,"goods receipts posting into the Inventory ledger"
+FEAT-024,FEAT-082,migrated,"procurement core bundle"
+ADR-066,ADR-075,migrated,"procurement lane boundary, still in force"

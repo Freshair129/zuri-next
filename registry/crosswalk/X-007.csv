@@ -1,0 +1,8 @@
+legacy_id,new_id,disposition,note
+FEAT-043,FEAT-097,migrated,"Server-owned self-hosted inference pool; cross-domain feature, owner reasoned as DOM-AGT; delivery: declared (approved design only, no code/tests in legacy repo)"
+FR-255,FR-097-001,migrated,"Inference node registration and trust; part FEAT-097-P01, owned_by DOM-INT"
+FR-256,FR-097-002,migrated,"Server-owned self-hosted model execution; part FEAT-097-P02, owned_by DOM-AGT"
+FR-257,FR-097-003,migrated,"Inference capacity routing and health; part FEAT-097-P03, owned_by DOM-AGT"
+FR-258,FR-097-004,migrated,"Inference pool operations projection; part FEAT-097-P04, owned_by DOM-PLT"
+FR-259,FR-097-005,migrated,"Self-hosted inference policy and cutover; part FEAT-097-P05, owned_by DOM-LOA"
+ADR-099,ADR-062,migrated,"Moved out of FEAT-097's file (X is the cross-domain feature namespace, not a valid ADR scope, STD-002 R1) into the feature owner's decisions.md as ADR-062; FEAT-097 now references it by id"

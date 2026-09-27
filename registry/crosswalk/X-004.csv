@@ -1,0 +1,12 @@
+legacy_id,new_id,disposition,note
+FEAT-036,FEAT-094,migrated,"cross-domain: parts owned by DOM-INT, DOM-IAM and DOM-LOA"
+FR-223,FR-094-001,split,SecretStorePort and stores (DOM-INT)
+FR-223,FR-094-002,split,versioned lifecycle and compensation (DOM-INT)
+FR-223,FR-094-003,split,revocation fence and restore re-entry (DOM-INT)
+FR-224,FR-094-004,split,AAL2 step-up and suspension switch (DOM-IAM)
+FR-224,FR-094-005,split,credential write rate limits (DOM-IAM)
+FR-225,FR-094-006,split,server-side channel validation with LINE (DOM-INT)
+FR-225,FR-094-008,split,Thai wizard and DRAFT account (DOM-LOA)
+FR-226,FR-094-007,migrated,installation-wide channel claim (DOM-INT)
+FR-227,FR-094-009,migrated,webhook registration action (DOM-LOA)
+FR-228,FR-094-010,migrated,derived legacy-transport quiescence (DOM-LOA)

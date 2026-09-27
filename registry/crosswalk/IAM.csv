@@ -1,0 +1,52 @@
+legacy_id,new_id,disposition,note
+FR-031,FR-023-001,migrated,Viewer gate
+FR-044,FR-023-002,migrated,Entry routing sequence
+FR-038,FR-024-001,split,"My Profile half of the compound legacy statement"
+FR-038,FR-024-002,split,"Users and Permissions administration half, incl. addBusinessMembership"
+FR-061,FR-024-003,migrated,Per-Business domain visibility
+FR-062,FR-024-004,migrated,Users and Permissions read scope
+FR-076,FR-024-005,migrated,Product Owner Business role binding
+FR-066,FR-025-001,migrated,Profile-first onboarding and Waiting Room
+FR-067,FR-025-002,migrated,Workspace invitation and scoped membership
+FR-120,FR-025-003,migrated,Self-serve account creation
+FR-121,FR-025-004,migrated,"Google second way in; declared and blocked, no implementing code"
+FR-122,FR-025-005,migrated,Profile identity fields
+FR-104,FR-026-001,migrated,Owner-assisted password reset
+FR-107,FR-026-002,migrated,Operator grant store and bootstrap
+FR-102,FR-027-001,migrated,SoT data-plane service-account authentication
+FR-123,FR-028-001,migrated,Plugin authentication and capability discovery
+FR-021,FR-029-004,migrated,LINE identity resolution primitive (resolveLineIdentity); unplaced by DOM-PRJ group, placed here
+FR-022,FR-029-005,migrated,LINE as identity provider end-to-end: linking staff/customer split PDPA erasure; unplaced by DOM-PRJ group, placed here
+FR-042,FR-031-003,migrated,People Directory is a peer ERP domain over Person/Membership; unplaced by DOM-PRJ group, placed here
+FR-144,,retired,"Edge Device credential retired from active product scope by ADR-110 D1/D5 (2026-09-24); route/module deleted from the worktree, schema and historical rows preserved per D3; not re-specified"
+FEAT-010,FEAT-029,split,"FR-094/095/096 represented as FEAT-029; FR-097/FR-098 are not in this group's input slice and are left unplaced"
+FR-094,FR-029-001,migrated,Canonical IAM principal
+FR-095,FR-029-002,migrated,Persisted session lifecycle
+FR-096,FR-029-003,migrated,Shared policy enforcement
+FEAT-027,FEAT-030,migrated,Access Grant Lifecycle
+FR-191,FR-030-001,migrated,Membership suspend/reinstate/revoke/offboard lifecycle
+FR-192,FR-030-002,migrated,Explicit scope grammar and referential invariants
+FEAT-028,FEAT-031,migrated,Org Employment and Legal Entity
+FR-193,FR-031-001,migrated,Employment HR record
+FR-194,FR-031-002,migrated,LegalEntity under Tenant; TaxRegistrationBranch
+FEAT-029,FEAT-032,migrated,"Access Invite, Segregation of Duties and Operator Lifecycle"
+FR-195,FR-032-001,migrated,AccessInvite generalises WorkspaceInvite
+FR-196,FR-032-002,migrated,Segregation of duties writer
+FR-197,FR-032-003,migrated,Operator access lifecycle
+FR-200,FR-032-004,migrated,Explicit Superadmin authority
+FEAT-030,FEAT-033,migrated,Audit Access Evidence
+FR-198,FR-033-001,migrated,Audit scope and evidence columns
+FR-199,FR-033-002,migrated,Access history and business-access read models
+FEAT-035,,retired,"Zuri harness usage plugin superseded by ADR-110 D5 (2026-09-24); struck through in docs/FEATURES.md; identity half (pairing/credential) had no live code remaining in the worktree"
+FR-220,,retired,"Harness device pairing retired from active product scope by ADR-110 D1/D5; route/module deleted from the worktree, schema and historical rows preserved per D3; not re-specified"
+FR-222,,retired,"Zuri harness plugin (plugins/zuri-harness) retired from active product scope by ADR-110 D1/D5; not re-specified"
+ADR-017,ADR-019,migrated,Production viewer session and entry read model
+ADR-027,ADR-020,migrated,Profile-first workspace onboarding
+ADR-033,ADR-021,migrated,Customer scope and Product Owner authority
+ADR-045,ADR-022,migrated,Canonical Identity and Access Management boundary
+ADR-077,ADR-023,migrated,Membership is a grant with a lifecycle
+ADR-078,ADR-024,migrated,Employment is not Membership; legal entity under Tenant
+ADR-079,ADR-025,migrated,"Access invite, segregation of duties, operator lifecycle"
+ADR-080,ADR-026,migrated,Audit events carry scope; access history read models
+ADR-082,ADR-027,migrated,Explicit Superadmin authority
+ADR-088,ADR-028,migrated,MFA factor secrets sealed at rest

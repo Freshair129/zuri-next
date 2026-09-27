@@ -1,0 +1,44 @@
+legacy_id,new_id,disposition,note
+FR-023,FR-041-001,split,first-contact creation of Customer/Conversation/Message
+FR-023,FR-041-002,split,idempotency per external message id
+FR-023,FR-041-003,split,Business/tenant scope guards
+FR-023,FR-041-004,split,transaction composition and audit
+FR-243,FR-042-001,split,idle rule for inbound messages (CRM half; LOA half in LOA.csv)
+FR-243,FR-042-002,split,serialized assignment inside admission transaction
+FR-243,FR-042-003,split,replies and events never open a session
+FR-243,FR-042-004,split,session record and code
+FR-243,FR-042-005,split,backfill
+FR-243,FR-042-006,split,inbox divider and thread session fields
+FR-103,FR-043-001,split,consent status lifecycle and grandfathering
+FR-103,FR-043-002,split,owner-only attestation writer
+FR-103,FR-043-003,split,consent readers
+FR-078,FR-044-001,split,fixed scope and record envelope
+FR-078,FR-044-002,split,entity resolution rules
+FR-078,FR-044-003,split,field exclusions and no raw PII
+FR-078,FR-044-004,split,transactional batch write and rollback
+FR-078,FR-044-005,split,redacted duplicate review queue (v0.3.0B)
+FR-161,FR-045-001,split,sales task record and code
+FR-161,FR-045-002,split,customer/conversation/assignee links
+FR-161,FR-045-003,split,status machine and CAS
+FR-161,FR-045-004,split,computed due state and access gates
+FR-127,FR-046-001,split,analysis write with consent gate
+FR-127,FR-046-002,split,analysis read and erasure
+FR-126,FR-046-003,migrated,declared only
+FR-128,FR-046-004,migrated,declared only
+FR-246,FR-047-001,split,staff reply authority and refusals
+FR-246,FR-047-002,split,push then record after acceptance
+FR-245,FR-047-003,split,archive before tombstone
+FR-245,FR-047-004,split,per-Customer encryption
+FR-245,FR-047-005,split,owner retrieval at AAL2
+FR-245,FR-047-006,split,legal hold and 10-year destruction
+FEAT-006,FEAT-044,migrated,
+FEAT-014,FEAT-046,migrated,
+FEAT-022,FEAT-045,migrated,
+FEAT-040,FEAT-042,split,conversation sessions half; business hours half is FEAT-051
+FEAT-041,FEAT-047,migrated,
+ADR-044,ADR-038,migrated,narrowed: Edge live console (Tier 1) dropped per ADR-110; thread scoping kept
+ADR-054,ADR-039,migrated,
+ADR-064,ADR-040,migrated,
+ADR-091,ADR-041,migrated,decision for FEAT-095
+ADR-093,ADR-042,migrated,
+ADR-094,ADR-043,migrated,device residency option retired with Edge execution (ADR-100/ADR-110)

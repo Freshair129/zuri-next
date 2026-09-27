@@ -1,0 +1,6 @@
+legacy_id,new_id,disposition,note
+FR-092,FR-088-001,split,"core translation + atomic persistence (PR #88 / issue #76); 1 of 3"
+FR-092,FR-088-002,split,"GET /api/market/observations business-scoped feed, added 2026-09-02; 2 of 3"
+FR-092,FR-088-003,split,"POST /api/market/translations owner-triggered run, added 2026-09-03; 3 of 3"
+ADR-038,ADR-081,migrated,"domain boundary ADR, still in force"
+ADR-108,ADR-082,migrated,"service extraction ADR, approved for local implementation (M2), still in force"

@@ -1,0 +1,9 @@
+legacy_id,new_id,disposition,note
+FEAT-004,FEAT-091,migrated,cross-domain: parts owned by DOM-AGT and DOM-INT
+FR-048,FR-091-001,split,provider port and allow-lists (DOM-AGT)
+FR-048,FR-091-002,split,bounded traced calls without fallback (DOM-AGT)
+FR-079,FR-091-003,split,binding-scoped connection selection (DOM-INT)
+FR-079,FR-091-004,split,secret-manager resolution by runtime source (DOM-INT)
+FR-079,FR-091-005,split,runtime selection order incl. Business key first (DOM-AGT)
+FR-080,FR-091-006,split,Platform Integrations metadata list/create (DOM-INT)
+FR-080,FR-091-007,split,computed connection health (DOM-INT)

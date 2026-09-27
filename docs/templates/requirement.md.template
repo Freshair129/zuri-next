@@ -1,0 +1,27 @@
+---
+id: FR-<feat>-<nnn>             # or NFR-<feat>-<nnn>; file name: <id>-<slug>.md
+title: "<behavior in one line>"
+# part: FEAT-<feat>-P01         # cross-domain features only
+# owner: DOM-<CODE>             # cross-domain features only (= the part's owner)
+delivery: declared
+legacy: []
+relations:
+  specified_by: [SDD-<feat>]
+  decided_by: []
+---
+
+# FR-<feat>-<nnn> — <behavior in one line>
+
+The system SHALL …
+
+## Acceptance criteria
+
+- AC-<feat>-<nnn>-01 — Given …, when …, then …
+
+## Implementation
+
+- <current code location>
+
+## Verification
+
+- TC-<feat>-<nnn> — <what it proves> (see [verification.md](../verification.md))

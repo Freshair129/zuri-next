@@ -1,0 +1,10 @@
+legacy_id,new_id,disposition,note
+FR-159,FR-089-001,migrated,"strategy revision and decision"
+FR-158,FR-089-002,migrated,"execution handoff to Project Manager"
+FR-160,FR-089-003,migrated,"campaign initiatives bound to a Strategy revision"
+FR-157,FR-089-004,migrated,"content and creative"
+FR-162,FR-089-005,migrated,"operations coordination"
+FR-185,FR-089-006,migrated,"LINE broadcast planning intent"
+FR-275,FR-090-001,migrated,"read-only Marketing Insights surface; newer than slice, declared per this pass's brief"
+FR-276,FR-090-002,migrated,"insights refresh request and state; declared only, no implementing code found"
+FEAT-021,FEAT-089,migrated,"marketing planning and execution bundle"

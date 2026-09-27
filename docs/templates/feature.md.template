@@ -1,0 +1,47 @@
+---
+id: FEAT-<nnn>                  # next free number: max + 1 on main
+title: <capability name>
+type: domain-feature            # domain-feature | cross-domain-feature
+owner: DOM-<CODE>
+runtime: SRV-<nnn>
+# participants:                 # cross-domain only — one entry per part
+#   - domain: DOM-<CODE>
+#     part: FEAT-<nnn>-P01
+#     role: "<what this domain contributes>"
+status: draft                   # draft | proposed | approved | superseded | retired
+delivery: declared              # declared | building | implemented | live | retired
+legacy: []
+relations:
+  depends_on: []
+  decided_by: []
+---
+
+# FEAT-<nnn> — <title>
+
+## Summary
+
+<Value in 2–4 sentences: who uses it, on which surface.>
+
+## Scope
+
+**In:** …
+**Out:** …
+
+## Ownership
+
+<Cross-domain only:>
+| Part | Title | Owner | Runtime | FRs |
+|---|---|---|---|---|
+| FEAT-<nnn>-P01 | … | DOM-<CODE> | SRV-<nnn> | FR-<nnn>-001 |
+
+## Requirements
+
+| ID | Requirement | Part |
+|---|---|---|
+| [FR-<nnn>-001](requirements/FR-<nnn>-001-<slug>.md) | … | — |
+
+Design: [design.md](design.md) · Verification: [verification.md](verification.md)
+
+## Open issues
+
+Tracked outside this repository ([ADR-106](../../governance/decisions.md) D8).

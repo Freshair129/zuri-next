@@ -1,0 +1,34 @@
+legacy_id,new_id,disposition,note
+FR-142,FR-052-001,split,deployment liveness probe (GET /api/health)
+FR-142,FR-052-002,split,public origin resolution (PUBLIC_BASE_URL fallback chain)
+FR-146,FR-048-001,split,account identity and scope derivation
+FR-146,FR-048-002,split,stored status machine and derived LIVE
+FR-146,FR-048-003,split,transport mode admits CLOUD only (retired EDGE)
+FR-146,FR-048-004,split,default-account exclusivity and version compare-and-swap
+FR-151,FR-049-001,split,rich menu identity and numbered draft versions
+FR-151,FR-049-002,split,freeze validation and version immutability
+FR-152,FR-049-003,split,publish job queueing lease and epoch fencing
+FR-152,FR-049-004,split,truthful acceptance and UNKNOWN handling
+FR-153,FR-049-005,split,LIFF app registry lifecycle
+FR-153,FR-049-006,split,rich menu LIFF action resolution by code
+FR-190,FR-052-003,split,inbound silence classification (OK/QUIET/SILENT)
+FR-190,FR-052-004,split,webhook endpoint match classification
+FR-190,FR-052-005,split,read-only route and worker-tick integration
+FR-243,FR-051-001,split,"LOA half: account session idle-timeout setting; CRM half (session assignment, backfill, inbox divider) is FEAT-042"
+FR-243,FR-051-002,split,LOA half: LineConversationJob carries the session id
+FR-244,FR-051-003,split,business hours declaration and out-of-hours canned reply retained in code
+FR-244,,retired,"edge model-residency half (shouldBeWarm aggregation, POST /api/edge/model-residency, edge warmModel/releaseModel poll) withdrawn by ADR-100/ADR-110 -- confirmed absent from apps/server/src/app/api and apps/edge in this worktree"
+FR-265,FR-050-001,split,transport/execution vocabulary retirement (CLOUD/SERVER only)
+FR-265,FR-050-002,split,modelAccess LOCAL_ONLY retirement; every server answer calls a real model
+FR-265,FR-050-004,split,runtime-cohort split (SERVER vs CONVERSATION_RUNTIME) introduced by ADR-106 on the same account/job vocabulary
+FR-266,FR-050-003,split,"LOA half: Studio reads Business model-key readiness; INT half (POST /api/integration/model-providers, rotate/revoke/validate) is DOM-INT's API-151"
+FEAT-018,FEAT-048,split,LINE OA account aggregate half
+FEAT-018,FEAT-049,split,rich menu and LIFF registry half
+FEAT-040,FEAT-051,split,"LOA half: account conversation-timing settings; CRM half is FEAT-042"
+FEAT-045,FEAT-050,split,"LOA half: server-executed answers and readiness journey; INT half is DOM-INT's model-provider credential provisioning"
+ADR-060,ADR-044,migrated,LINE OA Studio domain and multi-account boundary
+ADR-061,ADR-045,migrated,"server-owned LINE and optional Edge execution; the optional-Edge half is superseded by ADR-047"
+ADR-089,ADR-046,migrated,browser write-only credential vault and self-serve LINE OA onboarding
+ADR-100,ADR-047,migrated,LINE OA runs server-executed on browser-provisioned API keys
+ADR-105,ADR-048,migrated,LINE OA Studio stateless application tier
+ADR-106,ADR-049,migrated,Conversation Runtime service extraction

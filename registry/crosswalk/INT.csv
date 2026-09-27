@@ -1,0 +1,46 @@
+legacy_id,new_id,disposition,note
+FR-081,FR-053-001,split,normalized envelope
+FR-081,FR-053-002,split,ingestion identity and idempotency
+FR-081,FR-053-003,split,scope-bound repository
+FR-081,FR-053-004,split,evidence never domain truth; runs and dead letters
+FR-242,FR-054-001,split,typed credential kinds
+FR-242,FR-054-002,split,kind mismatch refused
+FR-266,FR-054-003,split,INT half: provision model key (LOA half in LOA.csv)
+FR-266,FR-054-004,split,INT half: status/revoke/validate
+FR-266,FR-054-006,split,INT half: worker-side model credential resolver
+FR-267,FR-054-005,migrated,Private Runtime Platform provider
+FR-099,FR-055-001,split,validated plan file
+FR-099,FR-055-002,split,derived phase status
+FR-100,FR-055-003,split,data plane submit
+FR-100,FR-055-004,split,human decide
+FR-100,FR-055-005,split,cursor export
+FR-101,FR-055-006,migrated,graph view
+FR-129,FR-056-001,split,gate evidence
+FR-129,FR-056-002,split,publish-without-approval detection
+FR-130,FR-057-001,split,derived connector catalog
+FR-130,FR-057-002,split,GitHub projection (declared; blocked)
+FR-273,FR-058-001,split,OAuth start
+FR-273,FR-058-002,split,OAuth callback and token custody
+FR-274,FR-058-003,split,verification token capture
+FR-274,FR-058-004,split,signed receipts only
+FR-274,FR-058-005,split,operator one-time reveal/reset
+FR-125,FR-059-001,split,declared: onboarding and company verification
+FR-125,FR-059-002,split,declared: read-only pull through raw ingestion
+FR-125,FR-059-003,split,declared: rate limits and health
+FEAT-011,FEAT-055,migrated,
+FEAT-045,FEAT-054,split,model credential half; Studio half is FEAT-050
+FEAT-046,FEAT-058,migrated,
+ADR-020,ADR-050,migrated,narrowed: zuri-cli transport ownership superseded by ADR-045 (ADR-061)
+ADR-030,ADR-051,migrated,
+ADR-031,ADR-052,migrated,decision for FEAT-091; zuri-cli clause superseded by ADR-061
+ADR-032,ADR-053,migrated,
+ADR-046,ADR-054,migrated,clause 1 transitional
+ADR-047,ADR-055,migrated,
+ADR-053,ADR-056,migrated,status proposed (candidate in source)
+ADR-109,ADR-057,migrated,
+FR-071,FR-060-001,split,run creation and stable identity envelope; unplaced by DOM-PRJ group, placed here
+FR-071,FR-060-002,split,append-only stage/record/heartbeat/gate event recording; unplaced by DOM-PRJ group, placed here
+FR-071,FR-060-003,split,scope-filtered monitor read; unplaced by DOM-PRJ group, placed here
+FR-071,FR-060-004,split,replay as new linked lineage; unplaced by DOM-PRJ group, placed here
+FR-071,FR-060-005,split,Codex-mediated MCP worker bridge (with legacy ADR-040); unplaced by DOM-PRJ group, placed here
+ADR-040,ADR-058,migrated,Codex-mediated worker bridge for the pipeline execution ledger; unplaced by DOM-PRJ group, placed here

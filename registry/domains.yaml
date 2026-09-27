@@ -1,0 +1,78 @@
+# Domain registry (STD-003 R5). Code is the <D> in every ID (STD-002 R1).
+# legacy_modules = zuri-ai apps/server/src/modules/* folders whose behavior the domain inherits.
+# legacy_charter = zuri-ai docs/domains/<slug>/CHARTER.md the domain was derived from.
+domains:
+  - code: PRJ
+    slug: project-manager
+    name: Projects & Work
+    legacy_modules: [project-manager, business]
+    legacy_charter: project-manager
+  - code: IAM
+    slug: identity
+    name: Identity & Access
+    legacy_modules: [identity, people]
+    legacy_charter: identity
+  - code: PLT
+    slug: platform-control
+    name: Platform Control
+    legacy_modules: [platform-control]
+    legacy_charter: platform-control
+  - code: CRM
+    slug: crm
+    name: Customer & Conversation
+    legacy_modules: [crm, line-crm]
+    legacy_charter: crm
+  - code: LOA
+    slug: line-oa-studio
+    name: LINE OA Studio
+    legacy_modules: [line-oa-studio]
+    legacy_charter: line-oa-studio
+  - code: INT
+    slug: integration
+    name: Integrations
+    legacy_modules: [integration]
+    legacy_charter: integration
+  - code: AGT
+    slug: agent
+    name: Agent Runtime
+    legacy_modules: [agent]
+    legacy_charter: agent
+  - code: KNW
+    slug: knowledge
+    name: Knowledge
+    legacy_modules: [knowledge]
+    legacy_charter: knowledge
+  - code: INV
+    slug: inventory
+    name: Inventory & Catalogue
+    legacy_modules: [inventory]
+    legacy_charter: inventory
+  - code: PRC
+    slug: procurement
+    name: Procurement
+    legacy_modules: [procurement]
+    legacy_charter: procurement
+  - code: COM
+    slug: commerce
+    name: Commerce (Orders, Payments, Pricing)
+    legacy_modules: [commerce]
+    legacy_charter: commerce
+  - code: AST
+    slug: asset-management
+    name: Asset Management
+    legacy_modules: [asset-management]
+    legacy_charter: asset-management
+  - code: MKI
+    slug: market-intelligence
+    name: Market Intelligence
+    legacy_modules: [market-intelligence]
+    legacy_charter: market-intelligence
+  - code: MKT
+    slug: marketing
+    name: Marketing
+    legacy_modules: [marketing]
+    legacy_charter: marketing
+reserved:
+  X: cross-domain feature namespace
+  SYS: system-wide artifacts
+  GOV: governance artifacts

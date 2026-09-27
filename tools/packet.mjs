@@ -14,6 +14,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseInterfaces, eligibility } from './lib/interfaces.mjs';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = path.join(REPO, 'docs');
@@ -99,7 +100,49 @@ function buildPacket(frId, layer, o = {}) {
   return packet;
 }
 
+// ---- micro-tasks (STD-005 R1/R3/R8): one pure function each, from the SDD's ## Interfaces ----
+const SENSITIVE = /\b(auth|credential|secret|token|password|payment|price|pricing|money|refund|invoice|tax|webhook|oauth)\b/i;
+function buildMicro(frId, o = {}) {
+  const featId = 'FEAT-' + frId.split('-')[1]; const fdir = featureDir(featId); if (!fdir) throw new Error(`no feature folder for ${featId}`);
+  const design = fs.existsSync(path.join(fdir, 'design.md')) ? read(path.join(fdir, 'design.md')) : '';
+  const parsed = parseInterfaces(design);
+  if (!parsed.present) throw new Error(`${featId}: design.md has no "## Interfaces" section (STD-005 R2)`);
+  const frFile = fs.readdirSync(path.join(fdir, 'requirements')).find((f) => f.startsWith(frId + '-'));
+  const frTxt = frFile ? read(path.join(fdir, 'requirements', frFile)) : ''; const frFm = fmOf(frTxt);
+  const featFm = fmOf(read(path.join(fdir, 'feature.md'))); const owner = get(frFm, 'owner') || get(featFm, 'owner'); const slug = slugOf(owner);
+  const sensitive = SENSITIVE.test(get(frFm, 'title')) || rel(frFm, 'derived_from').some((x) => x.startsWith('SEC-')) || owner === 'DOM-COM';
+  const items = (parsed.byFr[frId] || []).filter((i) => i.pure);
+  return items.map((it) => {
+    const file = it.path || `apps/server/src/modules/${slug}/domain/${it.name.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase())}.js`;
+    const packet = {
+      id: `MICRO-${frId}-${it.name}`, kind: 'micro', standard: 'STD-005', fr: frId, cmp: it.cmp, task_type: it.task_type,
+      name: it.name, signature: it.signature, path: file, language: 'javascript',
+      rules: it.rules.slice(0, 6), acceptance: it.acceptance.map(({ call, expected }) => ({ call, expected })),
+      allowed_paths: [file], budget_tokens: o.budget || 600,
+      output_contract: 'Output ONLY one ```js block containing the complete file. No prose. No imports.',
+      trace: `// @trace implements ${frId}`,
+    };
+    const promptText = [packet.signature, ...packet.rules, ...packet.acceptance.map((c) => `${c.call} -> ${c.expected}`)].join('\n');
+    packet.prompt_tokens_estimate = estimateTokens(promptText) + 90;
+    packet.eligibility = eligibility(it, { promptTokens: packet.prompt_tokens_estimate, budget: packet.budget_tokens, sensitive });
+    return { packet, holdout: { id: packet.id, cases: it.holdout.map(({ call, expected }) => ({ call, expected })) } };
+  });
+}
+
 // ---- CLI ----
+if (opt('--micro')) {
+  const fr = opt('--micro'); const outDir = opt('--out-dir', path.join(REPO, '.packets', 'FEAT-' + fr.split('-')[1]));
+  const units = buildMicro(fr, { budget: opt('--budget') ? +opt('--budget') : undefined });
+  if (!units.length) { console.log(`${fr}: no pure interface lines in the SDD — nothing for a local model; use --layer packets`); process.exit(0); }
+  fs.mkdirSync(outDir, { recursive: true });
+  for (const { packet, holdout } of units) {
+    fs.writeFileSync(path.join(outDir, `${packet.id}.json`), JSON.stringify(packet, null, 1) + '\n');
+    fs.writeFileSync(path.join(outDir, `${packet.id}.holdout.json`), JSON.stringify(holdout, null, 1) + '\n');
+    console.log(`${packet.id}  ${packet.eligibility.eligible ? 'eligible' : 'NOT eligible ' + packet.eligibility.failed.join(',')}  ~${packet.prompt_tokens_estimate} tokens  ${packet.acceptance.length} visible / ${holdout.cases.length} holdout → ${path.relative(process.cwd(), outDir)}`);
+    if (!packet.eligibility.eligible) for (const r of packet.eligibility.reasons) console.log(`    ${r}`);
+  }
+  process.exit(0);
+}
 const layer = opt('--layer', 'service');
 const paths = opt('--paths') ? opt('--paths').split(',').map((s) => s.trim()) : null;
 const verify = opt('--verify') ? opt('--verify').split(';').map((s) => s.trim()) : null;

@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { parseInterfaces } from './lib/interfaces.mjs';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = path.join(REPO, 'docs');
@@ -41,8 +42,10 @@ function check(featId) {
   const has = (re) => re.test(sddBody);
   const sddSections = { components: has(/\*\*Components|^## Components|^## Interfaces/im), data: has(/\*\*Data owned|^## Data/im), sequence: has(/\*\*Main sequence|^## Sequences?/im), failure: has(/\*\*Failure modes|^## Failure/im), contracts: has(/\*\*Contracts (exposed|consumed)|^## Contracts/im) };
   const cmps = [...new Set([...sddBody.matchAll(/\bCMP-\d{3,}\b/g)].map((m) => m[0]))];
-  const signatures = [...sddBody.matchAll(/`([A-Za-z_][\w.]*\([^`]*\)(?:\s*(?:→|->|:)\s*[^`]+)?)`/g)].map((m) => m[1]); // `name(args) → result`
-  const interfaceSection = has(/^## Interfaces?|^## Signatures?/m);
+  const ifc = parseInterfaces(sdd);
+  const interfaceSection = ifc.present;
+  const frsWithoutInterface = frs.filter((fr) => !(ifc.byFr[fr.id] || []).length).map((fr) => fr.id);
+  const microCount = (ifc.micro || []).length;
   const frInSdd = frs.map((fr) => ({ id: fr.id, mentioned: sddBody.includes(fr.id) || new RegExp(fr.id.replace(/-(\d{3})$/, '-$1') + '|' + fr.id.replace(/-\d{3}$/, '-\\d{3}\\.\\.\\d{3}')).test(sddBody) }));
   const ver = fs.existsSync(path.join(dir, 'verification.md')) ? read(path.join(dir, 'verification.md')) : '';
   const tcs = [...ver.matchAll(/^#+\s*(TC-\d{3}-\d{3})[^\n]*\n([\s\S]*?)(?=^#+\s|(?![\s\S]))/gm)].map((m) => ({ id: m[1], body: m[2], tests: [...m[2].matchAll(/(?:^|[\s:,])((?:apps|packages|services|tests)\/[^\s,;)]+\.(?:m?js|jsx|ts|tsx))/g)].map((x) => x[1]) }));
@@ -61,7 +64,7 @@ function check(featId) {
   const missingSecs = Object.entries(sddSections).filter(([, v]) => !v).map(([k]) => k);
   gate('G2 SDD minimum sections', 'block', missingSecs.length === 0, missingSecs.length ? `missing: ${missingSecs.join(', ')} (${sddBody.split('\n').length} lines)` : `components, data, sequence, failure modes, contracts present (${sddBody.split('\n').length} lines)`, 'PLAN-001 P3-T1/P3-T2');
   gate('G2b SDD names components', 'block', cmps.length > 0, cmps.length ? `CMP: ${cmps.join(', ')}` : 'no CMP id in the SDD', 'add Components with CMP ids to the SDD');
-  gate('G3 interface lock (STD-005 R2)', 'block', interfaceSection && signatures.length >= frs.length, `${signatures.length} signature(s) with parameters found${interfaceSection ? '' : '; no "## Interfaces" section'} — need one per FR (${frs.length})`, 'Architect adds "## Interfaces": one `name(args) → result` per FR, plus data types and ports');
+  gate('G3 interface lock (STD-005 R2)', 'block', interfaceSection && frsWithoutInterface.length === 0, !interfaceSection ? 'no "## Interfaces" section in the SDD' : frsWithoutInterface.length ? `FRs without an interface line: ${frsWithoutInterface.join(', ')}` : `${ifc.all.length} signature(s) over ${frs.length} FR · ${microCount} pure micro-task(s) declared for local models`, 'Architect adds "## Interfaces": per FR one `name(args) → result` line (CMP · `signature` — description), pure ones with rule/acceptance/holdout items');
   const notMentioned = frInSdd.filter((f) => !f.mentioned).map((f) => f.id);
   gate('G3b every FR mapped in the SDD', 'block', notMentioned.length === 0, notMentioned.length ? `not in SDD: ${notMentioned.join(', ')}` : `all ${frs.length} FRs appear in the SDD`, 'extend the implementation map');
   const noAc = frs.filter((f) => !f.acs.length).map((f) => f.id);

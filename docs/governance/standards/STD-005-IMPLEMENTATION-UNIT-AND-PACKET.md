@@ -134,7 +134,7 @@ to the Architect's tier with the failed check named.
 | E3 | one file, no other file touched | the packet |
 | E4 | acceptance is computable input → expected, at least two visible cases (one invalid/edge) and at least one holdout case | the SDD interface line |
 | E5 | the whole prompt fits the budget (default 600 tokens) | `packet.mjs` counts |
-| E6 | not security-sensitive, not money or pricing, not an external API contract | the FR's domain and BR/SEC links |
+| E6 | not security-sensitive, not money or pricing, not an external API contract — every FR owned by DOM-IAM (identity and access) or DOM-COM (orders, payments, pricing), every FR derived from a SEC-, and any FR whose title names credentials, tokens, payments or webhooks | the FR's domain and BR/SEC links (`packet.mjs`) |
 
 Approved micro-task types: pure calculators, parsers and formatters, validators
 and predicates, code/identifier generators, DSP or date helpers. Anything

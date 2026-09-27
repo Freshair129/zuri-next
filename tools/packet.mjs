@@ -102,6 +102,7 @@ function buildPacket(frId, layer, o = {}) {
 
 // ---- micro-tasks (STD-005 R1/R3/R8): one pure function each, from the SDD's ## Interfaces ----
 const SENSITIVE = /\b(auth|credential|secret|token|password|payment|price|pricing|money|refund|invoice|tax|webhook|oauth)\b/i;
+const SENSITIVE_DOMAINS = new Set(['DOM-IAM', 'DOM-COM']);
 function buildMicro(frId, o = {}) {
   const featId = 'FEAT-' + frId.split('-')[1]; const fdir = featureDir(featId); if (!fdir) throw new Error(`no feature folder for ${featId}`);
   const design = fs.existsSync(path.join(fdir, 'design.md')) ? read(path.join(fdir, 'design.md')) : '';
@@ -110,7 +111,8 @@ function buildMicro(frId, o = {}) {
   const frFile = fs.readdirSync(path.join(fdir, 'requirements')).find((f) => f.startsWith(frId + '-'));
   const frTxt = frFile ? read(path.join(fdir, 'requirements', frFile)) : ''; const frFm = fmOf(frTxt);
   const featFm = fmOf(read(path.join(fdir, 'feature.md'))); const owner = get(frFm, 'owner') || get(featFm, 'owner'); const slug = slugOf(owner);
-  const sensitive = SENSITIVE.test(get(frFm, 'title')) || rel(frFm, 'derived_from').some((x) => x.startsWith('SEC-')) || owner === 'DOM-COM';
+  // STD-005 E6: security-sensitive by domain (identity & access), money/pricing by domain (commerce), or by title/SEC link.
+  const sensitive = SENSITIVE.test(get(frFm, 'title')) || rel(frFm, 'derived_from').some((x) => x.startsWith('SEC-')) || SENSITIVE_DOMAINS.has(owner);
   const items = (parsed.byFr[frId] || []).filter((i) => i.pure);
   return items.map((it) => {
     const file = it.path || `apps/server/src/modules/${slug}/domain/${it.name.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase())}.js`;

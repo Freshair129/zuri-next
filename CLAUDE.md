@@ -57,7 +57,19 @@ node tools/validate-docs.mjs --scope FEAT-042    # only the part you touched (FE
 node tools/tests-for.mjs FR-042-003              # which tests prove it, and the command that runs only those
 node tools/generate-views.mjs                    # rewrite the domain feature indexes
 node tools/generate-views.mjs --check            # fails when an index is stale
+node tools/impact.mjs FEAT-042                   # every document that references it + transitive dependents
+node tools/impact.mjs --changed                  # ids whose declaration you changed, and the documents to review
+node tools/spec-tree.mjs                         # rewrite docs/governance/plans/spec-tree.json (graph views)
+node tools/sitemap.mjs                           # rewrite docs/governance/plans/sitemap.json (navigation map; run after spec-tree)
+node tools/pipeline-map.mjs                      # validate registry/pipeline.yaml and rewrite docs/governance/plans/pipeline.json
+node tools/packet.mjs FR-042-003 --layer service # one implementation packet (STD-005); --queue FEAT-042 for a whole feature
 ```
+
+Packets are run by RWANG Forge (`pnpm forge …` in rwang-local-assistant) against a local
+model; the workflow is [PROC-001](docs/governance/procedures/PROC-001-local-multi-agent-implementation.md).
+
+Before opening a pull request run `impact --changed`: every file it lists is one to
+re-read for a statement the change invalidates.
 
 Use `--scope` and `tests-for` while working; run the full checks once before
 merging. Details: [AGENTS.md §7](AGENTS.md#7-testing-one-part-at-a-time).

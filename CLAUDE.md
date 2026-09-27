@@ -62,6 +62,7 @@ node tools/impact.mjs --changed                  # ids whose declaration you cha
 node tools/spec-tree.mjs                         # rewrite docs/governance/plans/spec-tree.json (graph views)
 node tools/sitemap.mjs                           # rewrite docs/governance/plans/sitemap.json (navigation map; run after spec-tree)
 node tools/pipeline-map.mjs                      # validate registry/pipeline.yaml and rewrite docs/governance/plans/pipeline.json
+node tools/readiness.mjs FEAT-042                # can this feature issue packets? gates G1–G8 (PROC-001 step 1); --all for a summary
 node tools/packet.mjs FR-042-003 --layer service # one implementation packet (STD-005); --queue FEAT-042 for a whole feature
 ```
 

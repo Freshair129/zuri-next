@@ -160,12 +160,8 @@ requirement has no proof yet: add a TC before you mark it `implemented`.
 
 ## 9. Known open items at founding
 
-`validate-docs` reports 14 warnings:
-
-- **11 references to undeclared contracts.** The owning domain must declare each
-  contract, or the reference must be removed.
-- **3 implemented or live FRs with no bound test case.** `tests-for <FR>` exits 1 for
-  each of them.
+`validate-docs` reports 0 errors and 0 warnings. Keep it there: a new warning is a
+review blocker (§8).
 
 The gaps between the specification and the zuri-ai code it was derived from are in
 `private/open-issues/` on the owner's machine, one file per feature. Treat that list as

@@ -83,9 +83,7 @@ against the pre-move layout and are kept only as a record.
 
 ## Known open items
 
-- A few cross-domain references name contracts the owning domain never declared
-  (validator warnings "pre-opaque id … left in text"); each needs the owning
-  domain to declare the contract or the reference to be removed.
-- Three implemented requirements have no bound test case (validator warnings).
+- `API-265` and `API-266` (FEAT-097, self-hosted inference) are declared but not
+  implemented, as are FR-025-004 (Google sign-in) and FR-063-002 (ladder quotation).
 - Gaps between this specification and the zuri-ai code are tracked outside
   this repository (ADR-106 D8).

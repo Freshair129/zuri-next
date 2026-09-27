@@ -66,7 +66,7 @@ Node.js 22+; the tools use only the standard library. There is no install step.
 
 ## Definition of done (documentation change)
 
-1. `validate-docs` reports **0 errors** and no new warnings.
+1. `validate-docs` reports **0 errors and 0 warnings**.
 2. `generate-views --check` passes (run `generate-views` and commit if not).
 3. Every new FR has at least one AC; every implemented FR has a TC bound to a test.
 4. Relative links resolve; nothing links into zuri-ai as if it were part of this repository.

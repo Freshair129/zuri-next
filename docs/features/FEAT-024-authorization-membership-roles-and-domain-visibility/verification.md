@@ -8,3 +8,7 @@ Verifies: FR-024-003, AC-024-003-01, AC-024-003-02, AC-024-003-03 · Test: tests
 
 ### TC-024-003 — Product Owner Business-scoped binding
 Verifies: FR-024-005, AC-024-005-01, AC-024-005-02 · Test: tests/unit/fr076-product-owner-business-assignment.test.js
+
+### TC-024-004 — My Profile reads the caller's own account
+Verifies: FR-024-001 · Test: tests/unit/fr046-api-ui-contract.test.js, tests/unit/business-shell-guard.test.js
+Source-level checks: the profile route passes the request's own identity to the profile service, and `/profile` is routed as a Platform identity page. AC-024-001-01 (another Person's fields are never shown) needs a request-level test before it is claimed here.

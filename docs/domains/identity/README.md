@@ -101,13 +101,13 @@ reverse (ADR-024 D1).
 
 ## Public contracts
 
-- `API-IAM-viewer-entry` — `GET /api/entry`, `GET /api/viewer` (viewer-scoped read model)
+- `API-088` — `GET /api/entry`, `GET /api/viewer` (viewer-scoped read model)
 - `API-087` — `/api/auth/login`, `/api/auth/logout`, `/api/auth/signup`, `/api/auth/reset-password`, `/api/auth/step-up`
-- `API-089-webauthn` — `/api/auth/mfa/**`, `/api/auth/webauthn/**`
+- `API-089`, `API-095` — `/api/auth/mfa/**`, `/api/auth/webauthn/**`
 - `API-091` — `/api/platform/users/**` (roster, memberships, password-resets, offboard)
 - `API-086` — `/api/platform/access-history`, `/api/platform/businesses/[businessId]/grants`
 - `API-090` — `/api/onboarding/**`
-- `API-IAM-workspace-invites` — `/api/workspace-invites/**`, `/api/workspace-memberships`
+- `API-096` — `/api/workspace-invites/**`, `/api/workspace-memberships`
 - `API-092` — `/api/plugin/auth/**`
 - `API-093` — `/api/profile`
 

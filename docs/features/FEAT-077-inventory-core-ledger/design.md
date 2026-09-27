@@ -17,11 +17,7 @@ title: "Inventory core ledger — design"
 - **Data owned:** `InventoryCategory`, `ProductFamily`, `Factory`, `ProductMaster`,
   `Product`, `ProductBundle`, `ProductBundleItem`, `ProductLot`, `SerialUnit`,
   `StockMovement`, `ProductRecipe`, `ProductRecipeLine`.
-- **Contracts exposed:** `API-200`, `API-200`,
-  `API-200`, `API-200`, `API-207`,
-  `API-195`, `API-194`, `API-206`,
-  `API-206`, `API-INV-stock-movements`, `API-206`,
-  `API-208`, `API-208`.
+- **Contracts exposed:** `API-200`, `API-207`, `API-195`, `API-194`, `API-206`, `API-208`.
 - **Contracts consumed:** none (foundational feature).
 - **Main sequence** (create SKU → receive → issue → build):
   1. Manager creates catalogue rows; SKU fixes stockPolicy/trackingMode.

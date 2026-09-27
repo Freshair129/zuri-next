@@ -50,6 +50,7 @@ const decl = new Map();          // id -> [{file,line}]
 const refs = [];                 // {id,file,line}
 const feats = new Map();         // FEAT id -> {owner, delivery, file}
 const frAC = new Map(), frTC = new Map();
+const frDelivery = new Map();    // FR id -> its own `delivery` (AGENTS §4: delivery is per requirement)
 
 function declare(id, file, line) {
   const t = typeOf(id);
@@ -76,7 +77,14 @@ for (const f of files) {
   if (fm) {
     const id = (fm.find((l) => /^id:/.test(l)) || '').replace(/^id:\s*/, '').replace(/\s*#.*$/, '').trim();
     fmId = id;
-    if (id) { declare(id, file, 2); if (typeOf(id) === 'FR') frAC.set(id, 0); }
+    if (id) {
+      declare(id, file, 2);
+      if (typeOf(id) === 'FR') {
+        frAC.set(id, 0);
+        const d = (fm.find((l) => /^delivery:/.test(l)) || '').replace(/^delivery:\s*/, '').replace(/\s*#.*$/, '').trim();
+        if (d) frDelivery.set(id, d);
+      }
+    }
     else if (fileId && typeOf(fileId)) declare(fileId, file, 1);
     if (id && (typeOf(id) === 'FEAT' || typeOf(id) === 'PART')) {
       const get = (k) => (fm.find((l) => l.startsWith(k + ':')) || '').split(':').slice(1).join(':').replace(/#.*$/, '').trim();
@@ -147,7 +155,13 @@ for (const [id, fd] of feats) {
 for (const [fr, n] of frAC) if (!n) err(decl.get(fr)[0].file, decl.get(fr)[0].line, `${fr} has no acceptance criterion`);
 for (const [fid, fd] of feats) {
   if (!['implemented', 'live'].includes(fd.delivery)) continue;
-  for (const [fr] of frAC) if (fr.startsWith('FR-' + fid.slice(5) + '-') && !frTC.get(fr)) warn(decl.get(fr)[0].file, decl.get(fr)[0].line, `${fr} (feature ${fd.delivery}) has no TC "Verifies:" line`);
+  for (const [fr] of frAC) {
+    if (!fr.startsWith('FR-' + fid.slice(5) + '-') || frTC.get(fr)) continue;
+    // A requirement that is itself only declared or building needs no proof yet.
+    const own = frDelivery.get(fr) || fd.delivery;
+    if (!['implemented', 'live'].includes(own)) continue;
+    warn(decl.get(fr)[0].file, decl.get(fr)[0].line, `${fr} (${own}) has no TC "Verifies:" line`);
+  }
 }
 
 // crosswalk

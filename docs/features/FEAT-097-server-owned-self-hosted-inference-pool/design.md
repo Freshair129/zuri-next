@@ -35,15 +35,15 @@ title: "Server-owned self-hosted inference pool — design"
   - DOM-PLT: no new persisted data; read-only projection over the above.
 
 - **Contracts exposed:**
-  - `API-INT-inference-pools` — management CRUD/qualify/lifecycle, under the
+  - `API-265` — management CRUD/qualify/lifecycle, under the
     existing `src/app/api/platform/integrations/**` ownership (candidate
     subpaths `inference-pools`, `inference-nodes`,
     `inference-nodes/[id]/qualify`).
-  - `API-PLT-inference-ops` — a bounded, operator-only read endpoint behind
+  - `API-266` — a bounded, operator-only read endpoint behind
     `/control/inference`.
 
 - **Contracts consumed:**
-  - Agent consumes `API-INT-inference-pools` (qualified node/profile data)
+  - Agent consumes `API-265` (qualified node/profile data)
     and existing MSP/GKS read ports (unchanged).
   - LINE OA Studio consumes Agent's execution result through the existing
     Server answer seam and dispatches through Integration's existing LINE

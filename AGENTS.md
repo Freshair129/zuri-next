@@ -150,6 +150,8 @@ requirement has no proof yet: add a TC before you mark it `implemented`.
 
 - [ ] `validate-docs` reports 0 errors and the warning count did not grow.
 - [ ] `generate-views --check` passes.
+- [ ] `node tools/impact.mjs --changed` was run and every listed document was re-read for a
+      statement the change invalidates (ARCH, PRD, STD and domain READMEs first).
 - [ ] Every new ID is declared exactly once, and no ID was renumbered or reused.
 - [ ] Each FR has ACs. Every FR marked implemented or live has a TC with a real test path.
 - [ ] Owners and participants are set, and no feature sits under a domain folder.

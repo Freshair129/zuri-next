@@ -1,0 +1,385 @@
+<title>zuri-next Plan Board</title>
+<meta charset="utf-8">
+<script>
+(function(){var k='zuri-plans-theme',r=document.documentElement,v='auto';try{v=localStorage.getItem(k)||'auto'}catch(e){}
+function apply(){if(v==='light'||v==='dark')r.setAttribute('data-theme',v);else r.removeAttribute('data-theme');var b=document.getElementById('theme');if(b)b.textContent=v==='dark'?'☾ dark':v==='light'?'☀ light':'◐ auto';}
+document.addEventListener('DOMContentLoaded',apply);apply();
+document.addEventListener('click',function(e){if(!e.target.closest('#theme'))return;v=v==='auto'?'dark':v==='dark'?'light':'auto';try{localStorage.setItem(k,v)}catch(err){}apply();});})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F6F7F4; --surface: #FFFFFF; --ink: #1B2430; --muted: #66707A; --line: #D9DDD6; --line-strong: #B9BFB8;
+    --accent: #2A5BA8; --accent-ink: #FFFFFF; --accent-soft: #E4ECF8;
+    --good: #2C7A5A; --good-soft: #DFF0E7; --warn: #B4791D; --warn-soft: #F7EBD3; --crit: #B23A32; --crit-soft: #F6DEDC;
+    --todo: #66707A; --todo-soft: #ECEEEA;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+    --radius: 6px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #2C343B; --line-strong: #3E4851;
+      --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+      --good: #6FC49B; --good-soft: #1E3A2E; --warn: #E0B25C; --warn-soft: #3E3118; --crit: #EE8A82; --crit-soft: #452321;
+      --todo: #9AA3AA; --todo-soft: #262D34;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #2C343B; --line-strong: #3E4851;
+    --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+    --good: #6FC49B; --good-soft: #1E3A2E; --warn: #E0B25C; --warn-soft: #3E3118; --crit: #EE8A82; --crit-soft: #452321;
+    --todo: #9AA3AA; --todo-soft: #262D34;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.5; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 0 48px; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 600; text-wrap: balance; margin: 0; }
+  code, .mono { font-family: var(--mono); font-size: 12.5px; }
+  a { color: var(--accent); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+
+  /* header */
+  header.top { border-bottom: 1px solid var(--line); padding-block: 22px 18px; display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: flex-end; justify-content: space-between; }
+  header.top h1 { font-size: 26px; line-height: 1.2; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+  .overall { min-width: 240px; flex: 0 1 320px; }
+  .overall .num { font-family: var(--serif); font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; background: var(--todo-soft); border-radius: 4px; overflow: hidden; display: flex; }
+  .bar > i { display: block; height: 100%; }
+  .bar .done { background: var(--good); } .bar .doing { background: var(--accent); } .bar .blocked { background: var(--crit); }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 6px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+
+  .summary { font-size: 15px; max-width: 72ch; margin-block: 18px 6px; }
+  details.howto { margin-bottom: 8px; color: var(--muted); }
+  details.howto summary { cursor: pointer; color: var(--ink); font-weight: 500; }
+  details.howto ol { margin: 8px 0 0; padding-left: 22px; max-width: 80ch; }
+
+  /* metrics */
+  section.metrics { margin-top: 22px; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px 22px; margin-top: 10px; }
+  .metric { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding-block: 8px; border-top: 1px solid var(--line); align-items: baseline; }
+  .metric .label { font-size: 13px; }
+  .metric .vals { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .metric .vals b { font-size: 16px; font-weight: 600; }
+  .metric .vals span { color: var(--muted); font-size: 12px; }
+  .metric .track { grid-column: 1 / -1; height: 5px; background: var(--todo-soft); border-radius: 3px; overflow: hidden; }
+  .metric .track i { display: block; height: 100%; background: var(--accent); }
+  .metric.ok .track i { background: var(--good); }
+  .metric.info .track { display: none; }
+  .metric .how { grid-column: 1 / -1; color: var(--muted); font-size: 11.5px; display: none; }
+  .metric:hover .how, .metric:focus-within .how { display: block; }
+
+  /* layout */
+  .board { display: grid; grid-template-columns: 220px 1fr; gap: 28px; margin-top: 30px; align-items: start; }
+  nav.phases { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); display: flex; flex-direction: column; gap: 2px; }
+  nav.phases a { display: grid; grid-template-columns: 30px 1fr; gap: 8px; padding: 7px 8px; border-radius: var(--radius); color: var(--ink); text-decoration: none; font-size: 13px; align-items: center; }
+  nav.phases a:hover { background: var(--accent-soft); }
+  nav.phases a .pid { font-family: var(--mono); color: var(--muted); font-size: 12px; }
+  nav.phases a .pbar { grid-column: 2; height: 3px; background: var(--todo-soft); border-radius: 2px; overflow: hidden; }
+  nav.phases a .pbar i { display: block; height: 100%; background: var(--good); }
+  @media (max-width: 820px) {
+    .board { grid-template-columns: 1fr; gap: 16px; }
+    nav.phases { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    nav.phases a { grid-template-columns: auto; border: 1px solid var(--line); padding: 5px 9px; }
+    nav.phases a .ptitle, nav.phases a .pbar { display: none; }
+  }
+
+  /* filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px; }
+  .filters select, .filters input { font: inherit; font-size: 13px; padding: 6px 9px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); }
+  .filters input { flex: 1 1 180px; min-width: 0; }
+  .filters .spacer { flex: 1; }
+  .btn { padding: 6px 11px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); font-size: 13px; }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn:focus-visible, input:focus-visible, select:focus-visible, .task > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .localnote { font-size: 12px; color: var(--muted); width: 100%; }
+  .localnote b { color: var(--warn); }
+
+  /* phase */
+  section.phase { margin-bottom: 36px; scroll-margin-top: 16px; }
+  .phase-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+  .phase-head h2 { font-size: 20px; }
+  .phase-head .pid { font-family: var(--mono); color: var(--muted); }
+  .phase-head .window { color: var(--muted); font-size: 12.5px; margin-left: auto; }
+  .phase-head .pct { font-variant-numeric: tabular-nums; font-size: 13px; }
+  .goal { margin: 10px 0 8px; max-width: 78ch; }
+  .exit { margin: 0 0 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: var(--radius); }
+  .exit .eyebrow { margin-bottom: 4px; }
+  .exit ul { margin: 0; padding-left: 18px; }
+
+  /* task */
+  details.task { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin-bottom: 8px; }
+  details.task[open] { border-color: var(--line-strong); }
+  details.task > summary { list-style: none; display: grid; grid-template-columns: auto 1fr auto; gap: 6px 12px; align-items: center; padding: 10px 14px; cursor: pointer; }
+  details.task > summary::-webkit-details-marker { display: none; }
+  .tid { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .ttitle { font-weight: 500; }
+  .tright { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+  .chip { font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; }
+  .pill { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+  .pill.todo { background: var(--todo-soft); color: var(--todo); }
+  .pill.doing { background: var(--accent-soft); color: var(--accent); }
+  .pill.blocked { background: var(--crit-soft); color: var(--crit); }
+  .pill.done { background: var(--good-soft); color: var(--good); }
+  .tprog { grid-column: 1 / -1; height: 3px; background: var(--todo-soft); border-radius: 2px; overflow: hidden; }
+  .tprog i { display: block; height: 100%; background: var(--good); }
+  .tbody { padding: 4px 14px 16px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 14px 28px; }
+  @media (max-width: 700px) { .tbody { grid-template-columns: 1fr; } }
+  .tbody h4 { margin: 12px 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .why { max-width: 70ch; margin: 12px 0 0; }
+  .check { list-style: none; margin: 0; padding: 0; }
+  .check li { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 5px 0; align-items: start; border-top: 1px dashed var(--line); }
+  .check li:first-child { border-top: 0; }
+  .check input { margin-top: 3px; accent-color: var(--good); }
+  .check .cid { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
+  .check li.local label::after { content: "local"; font-size: 10px; color: var(--warn); margin-left: 6px; letter-spacing: .06em; text-transform: uppercase; }
+  .check li.done-file label { color: var(--muted); text-decoration: line-through; }
+  .ac { margin: 0; padding: 0; list-style: none; }
+  .ac li { padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 6px; }
+  .ac .aid { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .ac dl { margin: 4px 0 0; display: grid; grid-template-columns: 52px 1fr; gap: 2px 8px; }
+  .ac dt { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: .04em; text-transform: uppercase; padding-top: 2px; }
+  .ac dd { margin: 0; }
+  .verify { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
+  .verify code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; padding: 4px 8px; background: var(--paper); border-radius: 4px; }
+  .verify button { font-size: 11px; padding: 3px 8px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); }
+  .status-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
+  .status-row select { font: inherit; font-size: 12.5px; padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); color: var(--ink); }
+  .deps a { font-family: var(--mono); font-size: 12px; margin-right: 8px; }
+  .touches { margin: 0; padding: 0; list-style: none; }
+  .touches li { font-family: var(--mono); font-size: 11.5px; color: var(--muted); overflow-wrap: anywhere; }
+  .empty { color: var(--muted); font-style: italic; }
+  .error { padding: 16px; border: 1px solid var(--crit); border-radius: var(--radius); background: var(--crit-soft); margin-top: 24px; max-width: 70ch; }
+  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); transform: translateX(-50%); background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: var(--radius); font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow" id="plan-id">Plan</div>
+      <h1 id="plan-title">Loading plan</h1>
+      <div class="meta" id="plan-meta"></div>
+      <button class="btn" id="theme" aria-label="Theme" style="margin-top:8px">◐ auto</button>
+    </div>
+    <div class="overall" id="overall" hidden>
+      <div class="eyebrow">Checklist progress</div>
+      <div class="num"><span id="ov-pct">0%</span> <span style="font-size:13px;color:var(--muted);font-family:var(--sans)" id="ov-count"></span></div>
+      <div class="bar" id="ov-bar"></div>
+      <div class="legend"><span><i style="background:var(--good)"></i>done</span><span><i style="background:var(--accent)"></i>doing</span><span><i style="background:var(--crit)"></i>blocked</span><span><i style="background:var(--todo-soft);border:1px solid var(--line-strong)"></i>todo</span></div>
+    </div>
+  </header>
+
+  <p class="summary" id="plan-summary"></p>
+  <details class="howto" id="howto" hidden><summary>How this board is used</summary><ol id="howto-list"></ol></details>
+
+  <section class="metrics" id="metrics" hidden>
+    <div class="eyebrow">Metrics · baseline <span id="baseline-date"></span> → target</div>
+    <div class="metrics-grid" id="metrics-grid"></div>
+  </section>
+
+  <div id="error" class="error" hidden></div>
+
+  <div class="board" id="board" hidden>
+    <nav class="phases" id="nav" aria-label="Phases"></nav>
+    <main>
+      <div class="filters">
+        <input id="q" type="search" placeholder="Search tasks, checklist, criteria" aria-label="Search">
+        <select id="f-lane" aria-label="Lane"><option value="">All lanes</option></select>
+        <select id="f-status" aria-label="Status"><option value="">All statuses</option><option value="todo">todo</option><option value="doing">doing</option><option value="blocked">blocked</option><option value="done">done</option></select>
+        <button class="btn" id="expand">Expand all</button>
+        <button class="btn primary" id="export">Copy JSON with local ticks</button>
+        <button class="btn" id="reset" hidden>Discard local ticks</button>
+        <div class="localnote" id="localnote" hidden><b>Local changes:</b> ticks and status changes made here are stored only in this browser. Copy the JSON and commit it to make them official.</div>
+      </div>
+      <div id="phases"></div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+  const $ = (s, el) => (el || document).querySelector(s);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const PLAN_FILE = 'PLAN-001.json';
+  let plan = null;
+  let local = {};          // { [checklistId]: bool, [taskId]: status }
+  const LS_KEY = 'zuri-next-plan-001-local';
+
+  function loadLocal() { try { local = JSON.parse(localStorage.getItem(LS_KEY) || '{}') || {}; } catch { local = {}; } }
+  function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(local)); } catch {} }
+  function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove('show'), 1800); }
+
+  const itemDone = (c) => (c.id in local ? !!local[c.id] : !!c.done);
+  const taskStatus = (t) => (t.id in local ? local[t.id] : t.status);
+  const hasLocal = () => Object.keys(local).length > 0;
+
+  function progress(tasks) {
+    let done = 0, total = 0;
+    for (const t of tasks) for (const c of t.checklist) { total++; if (itemDone(c)) done++; }
+    return { done, total, pct: total ? Math.round(100 * done / total) : 0 };
+  }
+
+  function renderHeader() {
+    $('#plan-id').textContent = plan.id + ' · v' + plan.version;
+    $('#plan-title').textContent = plan.title;
+    document.title = 'zuri-next Plan Board';
+    $('#plan-meta').innerHTML = `<span>Updated ${esc(plan.updated)}</span><span>Owner: ${esc(plan.owner || '')}</span><span>${plan.phases.length} phases · ${plan.phases.reduce((n, p) => n + p.tasks.length, 0)} tasks</span>`;
+    $('#plan-summary').textContent = plan.summary || '';
+    if (plan.how_to_use?.length) { $('#howto').hidden = false; $('#howto-list').innerHTML = plan.how_to_use.map((s) => `<li>${esc(s)}</li>`).join(''); }
+  }
+
+  function renderOverall() {
+    const tasks = plan.phases.flatMap((p) => p.tasks);
+    const p = progress(tasks);
+    $('#overall').hidden = false;
+    $('#ov-pct').textContent = p.pct + '%';
+    $('#ov-count').textContent = `${p.done} of ${p.total} checklist items`;
+    const byStatus = { done: 0, doing: 0, blocked: 0, todo: 0 };
+    for (const t of tasks) byStatus[taskStatus(t)] = (byStatus[taskStatus(t)] || 0) + 1;
+    const n = tasks.length || 1;
+    $('#ov-bar').innerHTML = ['done', 'doing', 'blocked'].map((k) => `<i class="${k}" style="width:${100 * byStatus[k] / n}%" title="${byStatus[k]} ${k}"></i>`).join('');
+    for (const ph of plan.phases) { const pp = progress(ph.tasks); const el = $(`#nav [data-phase="${ph.id}"] .pbar i`); if (el) el.style.width = pp.pct + '%'; const pc = $(`#ph-${ph.id} .pct`); if (pc) pc.textContent = `${pp.done}/${pp.total} · ${pp.pct}%`; }
+    $('#localnote').hidden = !hasLocal(); $('#reset').hidden = !hasLocal();
+  }
+
+  function renderMetrics() {
+    if (!plan.metrics?.length) return;
+    $('#metrics').hidden = false;
+    $('#baseline-date').textContent = plan.baseline?.date || '';
+    $('#metrics-grid').innerHTML = plan.metrics.map((m) => {
+      const cur = m.current ?? m.baseline;
+      let pct = 0, ok = false;
+      if (m.direction === 'min') { const span = Math.max(m.baseline - m.target, 0); pct = span ? Math.min(100, Math.max(0, 100 * (m.baseline - cur) / span)) : 100; ok = cur <= m.target; }
+      else if (m.direction === 'max') { const span = Math.max(m.target - m.baseline, 0); pct = span ? Math.min(100, Math.max(0, 100 * (cur - m.baseline) / span)) : 100; ok = cur >= m.target; }
+      const curLabel = m.current == null ? `<span>baseline</span> <b>${m.baseline}</b>` : `<b>${m.current}</b> <span>from ${m.baseline}</span>`;
+      return `<div class="metric ${m.direction} ${ok ? 'ok' : ''}" tabindex="0">
+        <div class="label">${esc(m.label)}</div>
+        <div class="vals">${curLabel} <span>→ ${m.target}</span></div>
+        <div class="track"><i style="width:${pct}%"></i></div>
+        <div class="how"><code>${esc(m.how || m.id)}</code></div>
+      </div>`;
+    }).join('');
+  }
+
+  function taskHTML(t, lanes) {
+    const st = taskStatus(t);
+    const p = progress([t]);
+    const lane = lanes[t.lane]?.name || t.lane;
+    return `<details class="task" id="task-${t.id}" data-lane="${esc(t.lane)}" data-status="${st}">
+      <summary>
+        <span class="tid">${esc(t.id)}</span>
+        <span class="ttitle">${esc(t.title)}</span>
+        <span class="tright"><span class="chip">${esc(lane)}</span>${t.effort ? `<span class="chip" title="effort">${esc(t.effort)}</span>` : ''}<span class="pill ${st}">${st}</span></span>
+        <span class="tprog" title="${p.done}/${p.total}"><i style="width:${p.pct}%"></i></span>
+      </summary>
+      <div class="tbody">
+        <div>
+          ${t.why ? `<p class="why">${esc(t.why)}</p>` : ''}
+          <h4>Checklist · ${p.done}/${p.total}</h4>
+          <ul class="check">${t.checklist.map((c) => `<li class="${c.id in local ? 'local' : ''} ${c.done ? 'done-file' : ''}"><input type="checkbox" id="cb-${esc(c.id)}" data-cid="${esc(c.id)}" ${itemDone(c) ? 'checked' : ''}><label for="cb-${esc(c.id)}"><span class="cid">${esc(c.id)}</span>${esc(c.text)}</label></li>`).join('') || '<li class="empty">No checklist items</li>'}</ul>
+          <div class="status-row"><label for="st-${esc(t.id)}" class="eyebrow">Status</label><select id="st-${esc(t.id)}" data-tid="${esc(t.id)}">${(plan.status_values || ['todo', 'doing', 'blocked', 'done']).map((s) => `<option ${s === st ? 'selected' : ''}>${s}</option>`).join('')}</select>${t.id in local ? '<span class="chip" style="color:var(--warn);border-color:var(--warn)">local</span>' : ''}</div>
+          ${t.depends_on?.length ? `<h4>Depends on</h4><div class="deps">${t.depends_on.map((d) => `<a href="#task-${esc(d)}" data-open="${esc(d)}">${esc(d)}</a>`).join('')}</div>` : ''}
+          ${t.touches?.length ? `<h4>Touches</h4><ul class="touches">${t.touches.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+        </div>
+        <div>
+          <h4>Acceptance criteria</h4>
+          <ul class="ac">${t.acceptance.map((a) => `<li><span class="aid">${esc(a.id)}</span><dl><dt>Given</dt><dd>${esc(a.given)}</dd><dt>When</dt><dd>${esc(a.when)}</dd><dt>Then</dt><dd>${esc(a.then)}</dd></dl>${a.verify ? `<div class="verify"><code>${esc(a.verify)}</code><button type="button" data-copy="${esc(a.verify)}">Copy</button></div>` : ''}</li>`).join('') || '<li class="empty">No acceptance criteria</li>'}</ul>
+        </div>
+      </div>
+    </details>`;
+  }
+
+  function renderPhases() {
+    const lanes = Object.fromEntries((plan.lanes || []).map((l) => [l.id, l]));
+    $('#nav').innerHTML = plan.phases.map((p) => `<a href="#ph-${p.id}" data-phase="${p.id}"><span class="pid">${esc(p.id)}</span><span class="ptitle">${esc(p.title)}</span><span class="pbar"><i style="width:0%"></i></span></a>`).join('');
+    $('#phases').innerHTML = plan.phases.map((p) => `<section class="phase" id="ph-${p.id}">
+      <div class="phase-head"><span class="pid">${esc(p.id)}</span><h2>${esc(p.title)}</h2><span class="pct"></span>${p.target_window ? `<span class="window">target ${esc(p.target_window)}</span>` : ''}</div>
+      <p class="goal">${esc(p.goal)}</p>
+      <div class="exit"><div class="eyebrow">Exit criteria</div><ul>${p.exit_criteria.map((e) => `<li>${esc(e)}</li>`).join('')}</ul></div>
+      <div class="tasks">${p.tasks.map((t) => taskHTML(t, lanes)).join('')}</div>
+    </section>`).join('');
+    const fl = $('#f-lane'); fl.innerHTML = '<option value="">All lanes</option>' + (plan.lanes || []).map((l) => `<option value="${esc(l.id)}">${esc(l.name)}</option>`).join('');
+  }
+
+  function applyFilters() {
+    const q = $('#q').value.trim().toLowerCase(), lane = $('#f-lane').value, st = $('#f-status').value;
+    for (const el of document.querySelectorAll('details.task')) {
+      const ok = (!lane || el.dataset.lane === lane) && (!st || el.dataset.status === st) && (!q || el.textContent.toLowerCase().includes(q));
+      el.hidden = !ok;
+    }
+    for (const ph of document.querySelectorAll('section.phase')) {
+      const any = [...ph.querySelectorAll('details.task')].some((t) => !t.hidden);
+      let empty = ph.querySelector('.empty-phase');
+      if (!any && !empty) { empty = document.createElement('p'); empty.className = 'empty empty-phase'; empty.textContent = 'No tasks match the filter.'; ph.querySelector('.tasks').append(empty); }
+      if (any && empty) empty.remove();
+    }
+  }
+
+  function rerenderTask(tid) {
+    const old = $(`#task-${tid}`); if (!old) return;
+    const t = plan.phases.flatMap((p) => p.tasks).find((x) => x.id === tid);
+    const lanes = Object.fromEntries((plan.lanes || []).map((l) => [l.id, l]));
+    const tmp = document.createElement('div'); tmp.innerHTML = taskHTML(t, lanes);
+    const fresh = tmp.firstElementChild; fresh.open = old.open; old.replaceWith(fresh);
+    applyFilters();
+  }
+
+  function mergedPlan() {
+    const copy = JSON.parse(JSON.stringify(plan));
+    for (const p of copy.phases) for (const t of p.tasks) { if (t.id in local) t.status = local[t.id]; for (const c of t.checklist) if (c.id in local) c.done = !!local[c.id]; }
+    copy.updated = new Date().toISOString().slice(0, 10);
+    return JSON.stringify(copy, null, 2) + '\n';
+  }
+
+  function copyText(text, okMsg) {
+    const done = () => toast(okMsg);
+    const fallback = () => { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.append(ta); ta.select(); try { document.execCommand('copy'); done(); } catch { toast('Copy failed: select the text and copy it yourself'); } ta.remove(); };
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  }
+
+  function wire() {
+    document.addEventListener('change', (e) => {
+      const cb = e.target.closest('input[data-cid]');
+      if (cb) { const c = plan.phases.flatMap((p) => p.tasks).flatMap((t) => t.checklist).find((x) => x.id === cb.dataset.cid); if (cb.checked === !!c.done) delete local[c.id]; else local[c.id] = cb.checked; saveLocal(); const tid = c.id.replace(/-C\d+$/, ''); rerenderTask(tid); renderOverall(); return; }
+      const sel = e.target.closest('select[data-tid]');
+      if (sel) { const t = plan.phases.flatMap((p) => p.tasks).find((x) => x.id === sel.dataset.tid); if (sel.value === t.status) delete local[t.id]; else local[t.id] = sel.value; saveLocal(); rerenderTask(t.id); renderOverall(); }
+    });
+    document.addEventListener('click', (e) => {
+      const cp = e.target.closest('button[data-copy]'); if (cp) { copyText(cp.dataset.copy, 'Command copied'); return; }
+      const dep = e.target.closest('a[data-open]'); if (dep) { const el = $(`#task-${dep.dataset.open}`); if (el) { el.hidden = false; el.open = true; } }
+    });
+    for (const id of ['q', 'f-lane', 'f-status']) $('#' + id).addEventListener('input', applyFilters);
+    $('#expand').addEventListener('click', () => { const all = [...document.querySelectorAll('details.task')]; const open = all.some((d) => !d.open); all.forEach((d) => (d.open = open)); $('#expand').textContent = open ? 'Collapse all' : 'Expand all'; });
+    $('#export').addEventListener('click', () => copyText(mergedPlan(), 'Plan JSON copied. Paste it over PLAN-001.json and open a pull request.'));
+    $('#reset').addEventListener('click', () => { local = {}; saveLocal(); renderPhases(); renderOverall(); applyFilters(); toast('Local ticks discarded'); });
+    if (location.hash && /^#[\w.~-]+$/.test(location.hash)) { const el = $(location.hash); if (el?.tagName === 'DETAILS') el.open = true; }
+  }
+
+  async function boot() {
+    loadLocal();
+    try {
+      const r = await fetch(PLAN_FILE, { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status + ' ' + r.statusText);
+      plan = await r.json();
+    } catch (err) {
+      $('#plan-title').textContent = 'Plan not loaded';
+      const e = $('#error'); e.hidden = false;
+      e.innerHTML = `<b>Could not read <code>${PLAN_FILE}</code></b> (${esc(err.message)}).<br>This page fetches the plan file next to it, so it must be served over HTTP: run <code>npx serve docs/governance/plans</code> from the repository root and open the printed address, or use the published artifact.`;
+      return;
+    }
+    renderHeader(); renderMetrics(); renderPhases(); renderOverall(); wire();
+    $('#board').hidden = false;
+  }
+  boot();
+})();
+</script>

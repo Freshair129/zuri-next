@@ -1,0 +1,280 @@
+<title>zuri-next Spec Tree</title>
+<meta charset="utf-8">
+<script>
+(function(){var k='zuri-plans-theme',r=document.documentElement,v='auto';try{v=localStorage.getItem(k)||'auto'}catch(e){}
+function apply(){if(v==='light'||v==='dark')r.setAttribute('data-theme',v);else r.removeAttribute('data-theme');var b=document.getElementById('theme');if(b)b.textContent=v==='dark'?'☾ dark':v==='light'?'☀ light':'◐ auto';}
+document.addEventListener('DOMContentLoaded',apply);apply();
+document.addEventListener('click',function(e){if(!e.target.closest('#theme'))return;v=v==='auto'?'dark':v==='dark'?'light':'auto';try{localStorage.setItem(k,v)}catch(err){}apply();});})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F6F7F4; --surface: #FFFFFF; --ink: #1B2430; --muted: #66707A; --line: #D9DDD6; --line-strong: #B9BFB8;
+    --accent: #2A5BA8; --accent-ink: #FFFFFF; --accent-soft: #E4ECF8;
+    --green: #2C7A5A; --green-soft: #DFF0E7; --yellow: #C08A1C; --yellow-soft: #F8ECCF; --red: #B23A32; --red-soft: #F6DEDC; --grey: #7C858E; --grey-soft: #E8EAE6;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+    --radius: 6px; --panel: 380px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #2C343B; --line-strong: #3E4851;
+      --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+      --green: #6FC49B; --green-soft: #1E3A2E; --yellow: #E4B85A; --yellow-soft: #3E3118; --red: #EE8A82; --red-soft: #452321; --grey: #9AA3AA; --grey-soft: #262D34;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #2C343B; --line-strong: #3E4851;
+    --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+    --green: #6FC49B; --green-soft: #1E3A2E; --yellow: #E4B85A; --yellow-soft: #3E3118; --red: #EE8A82; --red-soft: #452321; --grey: #9AA3AA; --grey-soft: #262D34;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.45; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: 20px; padding-block: 0 48px; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 600; margin: 0; text-wrap: balance; }
+  code, .mono { font-family: var(--mono); font-size: 12.5px; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  header.top { border-bottom: 1px solid var(--line); padding-block: 20px 16px; display: flex; flex-wrap: wrap; gap: 14px 32px; align-items: flex-end; justify-content: space-between; }
+  header.top h1 { font-size: 24px; line-height: 1.2; }
+  .meta { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+  .totals { display: flex; gap: 22px; flex-wrap: wrap; }
+  .tot .num { font-family: var(--serif); font-size: 24px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stack { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--grey-soft); width: 200px; max-width: 100%; margin-top: 6px; }
+  .stack i { display: block; height: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; font-size: 12.5px; color: var(--muted); }
+  .legend .dot { margin-right: 5px; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; flex: none; }
+  .dot.green { background: var(--green); } .dot.yellow { background: var(--yellow); } .dot.red { background: var(--red); } .dot.grey { background: var(--grey); }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0 12px; }
+  .toolbar input { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 13px; padding: 6px 9px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); }
+  .btn { padding: 5px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); font-size: 12.5px; }
+  .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--surface); font-size: 12px; }
+  .chip[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+  .sep { width: 1px; height: 22px; background: var(--line); }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) var(--panel); gap: 20px; align-items: start; }
+  @media (max-width: 960px) { .layout { grid-template-columns: 1fr; } }
+
+  /* tree */
+  .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
+  .tree ul { margin-left: 14px; padding-left: 12px; border-left: 1px solid var(--line); }
+  .tree li { margin: 0; }
+  .node { display: grid; grid-template-columns: 18px 12px auto minmax(0, 1fr) auto; gap: 6px; align-items: center; padding: 4px 6px; border-radius: 4px; cursor: pointer; min-height: 28px; }
+  .node:hover { background: var(--accent-soft); }
+  .node.selected { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  .node .caret { width: 18px; height: 18px; display: grid; place-items: center; color: var(--muted); font-size: 10px; transition: transform .12s; }
+  li.open > .node .caret { transform: rotate(90deg); }
+  .node.leaf .caret { visibility: hidden; }
+  .node .id { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+  .node.dom .id { font-weight: 600; font-size: 13px; }
+  .node .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .node.dom .title { font-family: var(--serif); font-weight: 600; font-size: 15px; }
+  .node .status { font-size: 11px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+  .node .status.red { color: var(--red); font-weight: 600; }
+  .node .right { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+  .cnt { font-family: var(--mono); font-size: 11px; padding: 1px 6px; border-radius: 9px; font-variant-numeric: tabular-nums; }
+  .cnt.green { background: var(--green-soft); color: var(--green); } .cnt.yellow { background: var(--yellow-soft); color: var(--yellow); } .cnt.red { background: var(--red-soft); color: var(--red); } .cnt.grey { background: var(--grey-soft); color: var(--grey); }
+  .cnt.zero { display: none; }
+  .kind { font-size: 10px; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--line-strong); color: var(--muted); }
+  .node.part .id { color: var(--muted); }
+  .node.ref .title { color: var(--muted); font-style: italic; }
+  li:not(.open) > ul { display: none; }
+  li.hidden { display: none; }
+  @media (max-width: 640px) { .node .status { display: none; } .node { grid-template-columns: 18px 12px auto minmax(0, 1fr); } .node .right { grid-column: 3 / -1; } }
+
+  /* panel */
+  aside.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; max-height: calc(100vh - 40px); overflow: auto; }
+  @media (max-width: 960px) { aside.panel { position: fixed; inset: auto 0 0 0; max-height: 60vh; border-radius: 10px 10px 0 0; box-shadow: 0 -8px 24px rgba(0,0,0,.15); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 14px); } aside.panel[hidden] { display: none; } }
+  .panel h2 { font-size: 17px; margin-top: 2px; }
+  .panel .id { font-family: var(--mono); color: var(--muted); font-size: 12px; }
+  .panel .statebar { display: flex; gap: 8px; align-items: center; margin: 8px 0 12px; font-size: 12.5px; }
+  .panel .statebar .word { font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; }
+  .panel .statebar .word.green { color: var(--green); } .panel .statebar .word.yellow { color: var(--yellow); } .panel .statebar .word.red { color: var(--red); } .panel .statebar .word.grey { color: var(--grey); }
+  .panel p { margin: 0 0 8px; }
+  .panel h4 { margin: 14px 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .panel ul { margin: 0; padding-left: 0; list-style: none; }
+  .panel li { padding: 6px 0; border-top: 1px dashed var(--line); }
+  .panel li:first-child { border-top: 0; }
+  .panel .acid { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
+  .panel .path { font-family: var(--mono); font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+  .panel .close { float: right; border: 0; background: none; font-size: 18px; line-height: 1; color: var(--muted); }
+  .panel .empty { color: var(--muted); font-style: italic; }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 12.5px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; }
+  .error { padding: 16px; border: 1px solid var(--red); border-radius: var(--radius); background: var(--red-soft); margin-top: 24px; max-width: 70ch; }
+  @media (prefers-reduced-motion: reduce) { .node .caret { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">zuri-next specification</div>
+      <h1>Spec Tree</h1>
+      <div class="meta" id="meta">Loading spec-tree.json</div>
+      <button class="btn" id="theme" aria-label="Theme" style="margin-top:8px">◐ auto</button>
+    </div>
+    <div class="totals" id="totals" hidden>
+      <div class="tot"><div class="eyebrow">Domains</div><div class="num" id="t-dom"></div></div>
+      <div class="tot"><div class="eyebrow">Features</div><div class="num" id="t-feat"></div><div class="stack" id="s-feat"></div></div>
+      <div class="tot"><div class="eyebrow">Requirements</div><div class="num" id="t-req"></div><div class="stack" id="s-req"></div></div>
+    </div>
+  </header>
+  <div class="legend" id="legend"></div>
+  <div id="error" class="error" hidden></div>
+
+  <div class="toolbar" id="toolbar" hidden>
+    <input id="q" type="search" placeholder="Search id or title (FR-042, inbox, DOM-CRM)" aria-label="Search">
+    <button class="chip" data-state="green" aria-pressed="true"><span class="dot green"></span>green <span id="c-green" class="mono"></span></button>
+    <button class="chip" data-state="yellow" aria-pressed="true"><span class="dot yellow"></span>yellow <span id="c-yellow" class="mono"></span></button>
+    <button class="chip" data-state="red" aria-pressed="true"><span class="dot red"></span>red <span id="c-red" class="mono"></span></button>
+    <button class="chip" data-state="grey" aria-pressed="true"><span class="dot grey"></span>grey <span id="c-grey" class="mono"></span></button>
+    <span class="sep"></span>
+    <button class="btn" data-level="1">Domains</button>
+    <button class="btn" data-level="2">Features</button>
+    <button class="btn" data-level="3">Requirements</button>
+  </div>
+
+  <div class="layout">
+    <ul class="tree" id="tree" role="tree"></ul>
+    <aside class="panel" id="panel" hidden></aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  const $ = (s, el) => (el || document).querySelector(s);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const STATES = ['green', 'yellow', 'red', 'grey'];
+  let data, index = {}, selected = null;
+  const enabled = { green: true, yellow: true, red: true, grey: true };
+
+  const counts = (c) => STATES.map((s) => `<span class="cnt ${s} ${c[s] ? '' : 'zero'}" title="${c[s]} ${s}">${c[s]}</span>`).join('');
+  const stack = (el, c) => { const n = STATES.reduce((a, s) => a + c[s], 0) || 1; el.innerHTML = STATES.map((s) => `<i style="width:${100 * c[s] / n}%;background:var(--${s})" title="${c[s]} ${s}"></i>`).join(''); };
+
+  function reqNode(r) {
+    index[r.id] = r;
+    return `<li data-id="${esc(r.id)}" data-state="${r.state}" data-kind="req" data-search="${esc((r.id + ' ' + r.title).toLowerCase())}">
+      <div class="node leaf" role="treeitem" tabindex="0"><span class="caret">▶</span><span class="dot ${r.state}"></span><span class="id">${esc(r.id)}</span><span class="title">${esc(r.title)}</span><span class="right"><span class="kind">${r.kind}</span><span class="status ${r.state}">${esc(r.reason)}</span></span></div></li>`;
+  }
+  function featNode(f, opts = {}) {
+    index[f.id] = f;
+    const parts = f.participants || [];
+    let inner;
+    if (parts.length && !opts.onlyPart) {
+      const groups = parts.map((p) => {
+        const rs = f.requirements.filter((r) => r.part === p.part);
+        const c = { green: 0, yellow: 0, red: 0, grey: 0 }; rs.forEach((r) => c[r.state]++);
+        return `<li class="open" data-id="${esc(p.part)}" data-kind="part" data-search="${esc((p.part + ' ' + p.role + ' ' + p.domain).toLowerCase())}"><div class="node part" role="treeitem" tabindex="0"><span class="caret">▶</span><span class="dot ${f.state}"></span><span class="id">${esc(p.part)}</span><span class="title">${esc(p.domain)} · ${esc(p.role)}</span><span class="right">${counts(c)}</span></div><ul>${rs.map(reqNode).join('')}</ul></li>`;
+      }).join('');
+      const rest = f.requirements.filter((r) => !r.part).map(reqNode).join('');
+      inner = groups + rest;
+    } else if (opts.onlyPart) inner = f.requirements.filter((r) => r.part === opts.onlyPart).map(reqNode).join('');
+    else inner = f.requirements.map(reqNode).join('');
+    const c = opts.onlyPart ? (() => { const c = { green: 0, yellow: 0, red: 0, grey: 0 }; f.requirements.filter((r) => r.part === opts.onlyPart).forEach((r) => c[r.state]++); return c; })() : f.counts;
+    const cls = opts.onlyPart ? 'ref' : '';
+    const title = opts.onlyPart ? `${f.title} · participates via ${opts.onlyPart} (owner ${f.owner})` : f.title;
+    return `<li data-id="${esc(f.id)}${opts.onlyPart ? '@' + esc(opts.onlyPart) : ''}" data-state="${f.state}" data-kind="feat" data-search="${esc((f.id + ' ' + f.title).toLowerCase())}">
+      <div class="node ${cls}" role="treeitem" tabindex="0" data-feat="${esc(f.id)}"><span class="caret">▶</span><span class="dot ${f.state}"></span><span class="id">${esc(f.id)}</span><span class="title">${esc(title)}</span><span class="right">${counts(c)}<span class="status ${f.state}">${esc(f.reason)}</span></span></div>
+      <ul>${inner}</ul></li>`;
+  }
+  function domNode(d) {
+    index[d.id] = d;
+    const feats = d.features.map((f) => featNode(f)).join('');
+    const refs = d.participates.map((p) => { const f = data.domains.flatMap((x) => x.features).find((x) => x.id === p.feature); return f ? featNode(f, { onlyPart: p.part }) : ''; }).join('');
+    return `<li class="open" data-id="${esc(d.id)}" data-state="${d.state}" data-kind="dom" data-search="${esc((d.id + ' ' + d.title).toLowerCase())}">
+      <div class="node dom" role="treeitem" tabindex="0"><span class="caret">▶</span><span class="dot ${d.state}"></span><span class="id">${esc(d.id)}</span><span class="title">${esc(d.title)}</span><span class="right">${counts(d.counts)}<span class="status ${d.state}">${esc(d.status || 'unknown')} · ${d.features.length} feat</span></span></div>
+      <ul>${feats}${refs}</ul></li>`;
+  }
+
+  function render() {
+    $('#tree').innerHTML = data.domains.map(domNode).join('');
+    $('#meta').textContent = `Generated ${data.generated} by tools/spec-tree.mjs · domain › feature › FR / NFR · click a row to open, click a requirement for details`;
+    $('#totals').hidden = false; $('#toolbar').hidden = false;
+    $('#t-dom').textContent = data.totals.domains; $('#t-feat').textContent = data.totals.features;
+    const rq = data.totals.requirements; $('#t-req').textContent = STATES.reduce((a, s) => a + rq[s], 0);
+    stack($('#s-feat'), data.totals.featuresByState); stack($('#s-req'), rq);
+    for (const s of STATES) $('#c-' + s).textContent = rq[s];
+    $('#legend').innerHTML = STATES.map((s) => `<span><span class="dot ${s}"></span>${esc(data.legend[s])}</span>`).join('');
+  }
+
+  function applyFilter() {
+    const q = $('#q').value.trim().toLowerCase();
+    const items = [...document.querySelectorAll('#tree li')];
+    // pass 1: leaves and self-match
+    for (const li of items.reverse()) {
+      const kind = li.dataset.kind, st = li.dataset.state;
+      const self = (!q || li.dataset.search.includes(q));
+      const children = [...li.querySelectorAll(':scope > ul > li')];
+      const anyChild = children.some((c) => !c.classList.contains('hidden'));
+      let show;
+      if (kind === 'req') show = enabled[st] && self;
+      else if (kind === 'part') show = anyChild || (self && q);
+      else show = anyChild || (self && q && (kind === 'dom' || enabled[st]));
+      li.classList.toggle('hidden', !show);
+      if (q && show && children.length) li.classList.add('open');
+    }
+  }
+
+  function setLevel(n) {
+    for (const li of document.querySelectorAll('#tree li')) {
+      const k = li.dataset.kind;
+      li.classList.toggle('open', (k === 'dom' && n >= 2) || (k === 'feat' && n >= 3) || (k === 'part' && n >= 3));
+    }
+  }
+
+  function showPanel(id) {
+    const o = index[id]; const p = $('#panel'); if (!o) return;
+    p.hidden = false; selected = id;
+    document.querySelectorAll('.node.selected').forEach((n) => n.classList.remove('selected'));
+    document.querySelectorAll(`li[data-id="${CSS.escape(id)}"] > .node, li[data-id^="${CSS.escape(id)}@"] > .node`).forEach((n) => n.classList.add('selected'));
+    let body;
+    if (o.acs) {
+      body = `<p>${esc(o.statement || '')}</p>
+        <dl class="kv"><dt>Delivery</dt><dd>${esc(o.delivery)}</dd>${o.part ? `<dt>Part</dt><dd class="mono">${esc(o.part)} · ${esc(o.owner || '')}</dd>` : ''}<dt>Test cases</dt><dd class="mono">${o.tcs.length ? o.tcs.map(esc).join(', ') : '<span class="empty">none</span>'}</dd></dl>
+        <h4>Acceptance criteria · ${o.acs.length}</h4>
+        <ul>${o.acs.map((a) => `<li><span class="acid">${esc(a.id)}</span>${esc(a.text)}</li>`).join('') || '<li class="empty">none</li>'}</ul>`;
+    } else if (o.requirements) {
+      body = `<dl class="kv"><dt>Type</dt><dd>${esc(o.type)}</dd><dt>Owner</dt><dd class="mono">${esc(o.owner)}</dd><dt>Runtime</dt><dd class="mono">${esc(o.runtime || '')}</dd><dt>Spec status</dt><dd>${esc(o.status)}</dd><dt>Delivery</dt><dd>${esc(o.delivery)}</dd></dl>
+        ${o.participants.length ? `<h4>Participants</h4><ul>${o.participants.map((x) => `<li><span class="acid">${esc(x.part)}</span>${esc(x.domain)} · ${esc(x.role)}</li>`).join('')}</ul>` : ''}
+        <h4>Requirements · ${o.requirements.length}</h4><div class="statebar">${counts(o.counts)}</div>`;
+    } else {
+      body = `<dl class="kv"><dt>README status</dt><dd>${esc(o.status || 'unknown')}</dd><dt>Owned features</dt><dd>${o.features.length}</dd><dt>Participates in</dt><dd>${o.participates.length}</dd></dl><h4>Requirements</h4><div class="statebar">${counts(o.counts)}</div>`;
+    }
+    p.innerHTML = `<button class="close" id="close" aria-label="Close">×</button><div class="id">${esc(o.id)}${o.kind ? ' · ' + o.kind : ''}</div><h2>${esc(o.title)}</h2>
+      <div class="statebar"><span class="dot ${o.state}"></span><span class="word ${o.state}">${esc(o.reason || o.status || o.state)}</span></div>
+      ${body}<h4>File</h4><div class="path">${esc(o.path || '')}</div>`;
+    $('#close').addEventListener('click', () => { p.hidden = true; document.querySelectorAll('.node.selected').forEach((n) => n.classList.remove('selected')); });
+  }
+
+  function wire() {
+    $('#tree').addEventListener('click', (e) => {
+      const node = e.target.closest('.node'); if (!node) return;
+      const li = node.parentElement;
+      if (node.classList.contains('ref') && e.target.closest('.id')) { const owner = document.querySelector(`li[data-id="${CSS.escape(node.dataset.feat)}"]`); if (owner) { let p = owner; while (p && p.tagName === 'LI') { p.classList.add('open'); p = p.parentElement.closest('li'); } owner.scrollIntoView({ block: 'center' }); showPanel(node.dataset.feat); } return; }
+      if (li.querySelector(':scope > ul')) li.classList.toggle('open');
+      showPanel(li.dataset.id.split('@')[0]);
+    });
+    $('#tree').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.target.click(); } });
+    $('#q').addEventListener('input', applyFilter);
+    for (const b of document.querySelectorAll('.chip[data-state]')) b.addEventListener('click', () => { enabled[b.dataset.state] = !enabled[b.dataset.state]; b.setAttribute('aria-pressed', String(enabled[b.dataset.state])); applyFilter(); });
+    for (const b of document.querySelectorAll('.btn[data-level]')) b.addEventListener('click', () => { setLevel(+b.dataset.level); document.querySelectorAll('.btn[data-level]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); });
+    if (/^#[A-Z]+-[0-9-]+$/.test(location.hash)) { const id = location.hash.slice(1); const li = document.querySelector(`li[data-id="${CSS.escape(id)}"]`); if (li) { let p = li; while (p && p.tagName === 'LI') { p.classList.add('open'); p = p.parentElement.closest('li'); } li.scrollIntoView({ block: 'center' }); showPanel(id); } }
+  }
+
+  async function boot() {
+    try { const r = await fetch('spec-tree.json', { cache: 'no-store' }); if (!r.ok) throw new Error(r.status + ' ' + r.statusText); data = await r.json(); }
+    catch (err) { $('#meta').textContent = 'Tree not loaded'; const e = $('#error'); e.hidden = false; e.innerHTML = `<b>Could not read <code>spec-tree.json</code></b> (${esc(err.message)}). Run <code>node tools/spec-tree.mjs</code>, then serve this folder over HTTP (<code>npx serve docs/governance/plans</code>) or open the published artifact.`; return; }
+    render(); setLevel(2); document.querySelector('.btn[data-level="2"]').setAttribute('aria-pressed', 'true'); wire();
+  }
+  boot();
+})();
+</script>

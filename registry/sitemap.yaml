@@ -1,0 +1,451 @@
+# Product navigation map (sitemap) — the authored half. tools/sitemap.mjs merges this with every
+# console path the specification mentions (backticked `/…` paths in feature, domain and product docs)
+# and writes docs/governance/plans/sitemap.json, rendered by sitemap.html.
+#
+# Levels: surface → slot (domain bar entry) → module (sub-domain) → page → view (in-canvas tab or
+# client-side view). Every node cites the artifact it comes from; the tool checks each evidence id.
+# `path: null` = the specification names the page but not its URL. `planned: true` = named with no
+# href in the product (FR-002-007). Labels are the English spec names; Thai UI copy lives in the product.
+
+surfaces:
+  - id: web-console
+    label: Web console
+    role: back office — detail, complex edits, reconciliation, audit, configuration
+    users: owners, staff, operator
+    evidence: [PRD-001, FEAT-002, FEAT-034, FEAT-035]
+  - id: line
+    label: LINE
+    role: primary surface — AI-native intake and interaction through the Business's LINE Official Accounts
+    users: customers, staff
+    evidence: [PRD-001, FEAT-093]
+    entries:
+      - label: Customer conversation (grounded answers, one reply owner per event)
+        evidence: [FEAT-093, FEAT-096, FEAT-063]
+      - label: Phase 1 activation path (PENDING → real customer answer)
+        evidence: [FEAT-065]
+      - label: Rich menus and LIFF apps published by the Studio
+        evidence: [FEAT-049]
+      - label: "Staff command `#sku` — preview before write, verified sender only"
+        evidence: [FR-081-003]
+      - label: Staff asset intake handoff (photo + payment proof)
+        evidence: [FEAT-087, FR-086-002]
+      - label: Consent attestation on first contact
+        evidence: [FEAT-043]
+  - id: enterprise-api
+    label: Enterprise API
+    role: upsert and resolve by external ids through the intake pipeline (Tenant-bound API keys, OpenAPI)
+    users: integrators
+    evidence: [PRD-001, FEAT-008]
+    entries:
+      - label: Intake envelope upsert / resolve
+        evidence: [FEAT-008, FEAT-007]
+      - label: Usage report endpoint (deployment bearer)
+        evidence: [FR-037-003]
+  - id: plugin-mcp
+    label: Plugin / MCP
+    role: agent clients acting for a signed-in person (PKCE public client; capabilities from the person's authority)
+    users: agent tools
+    evidence: [PRD-001, FEAT-028]
+    entries:
+      - label: Plugin authorization and capability discovery
+        evidence: [FEAT-028]
+      - label: Read tools (Gate E) and write tools (Gate F) over domain services
+        evidence: [FEAT-061, ADR-100]
+
+# Entry flow before the Business shell: no domain bar, no shell chrome.
+entry:
+  label: Entry
+  domain: DOM-IAM
+  paths: [/, /login, /signup, /businesses, /profile]
+  evidence: [FEAT-002, FEAT-023, FEAT-025]
+  pages:
+    - path: /
+      label: Landing
+      note: Full-viewport branded landing with exactly one action, to /login; renders outside the shell.
+      evidence: [FR-002-006, FR-023-002]
+    - path: /login
+      label: Login
+      evidence: [FR-023-002, FEAT-023]
+    - path: /signup
+      label: Sign up
+      note: Self-serve signup is the one door into the product.
+      evidence: [FR-025-003]
+    - path: null
+      label: Password reset (owner-assisted)
+      note: No public forgot-password route; an owner resets on the person's behalf.
+      evidence: [FR-026-001]
+    - path: /profile
+      label: My Profile
+      note: Profile-first onboarding; a Profile-only member waits in the Waiting Room.
+      evidence: [FR-024-001, FR-025-001, FR-025-005]
+      views:
+        - label: Waiting Room
+          evidence: [FR-025-001]
+    - path: /businesses
+      label: Business chooser
+      note: Lists only Businesses the viewer may see; the shell mounts after one is selected.
+      evidence: [FR-023-002, AC-002-002-02]
+
+# Domain bar slots of the Business shell. `group` is navigation only (PRD-001 §4, FR-035-001).
+# `paths` lists root-level paths that belong to the slot when the first URL segment is not the key.
+# A multi-page module renders its pages as in-canvas tabs (FR-035-002); those tabs are `views`.
+slots:
+  - key: projects
+    label: Projects & Work
+    domain: DOM-PRJ
+    paths: [/overview, /roadmap, /projects, /work, /execution, /timeline, /dependencies, /milestones, /files, /repositories, /workspace]
+    note: Six logical modules; only the selected module's views show in content navigation.
+    evidence: [FEAT-002, FR-002-007]
+    modules:
+      - label: Project Management
+        evidence: [FR-002-007, FEAT-015, FEAT-003]
+      - label: Work Management
+        views: [Execution Roadmap, Structure Plan, Board, Work Items, Schedule, Milestones, Dependency Map]
+        entered_at: Structure Plan
+        evidence: [FR-002-007, FEAT-006, FEAT-010]
+      - label: Delivery Design
+        views: [Pipeline builder canvas (planned)]
+        evidence: [FR-002-007, FEAT-016]
+      - label: Resource Coordination
+        views: [Team, Files, Repositories]
+        evidence: [FR-002-007, FEAT-004, FEAT-017]
+      - label: Delivery Governance
+        views: [Approvals, Execution trace]
+        evidence: [FR-002-007, FEAT-010, FEAT-011]
+      - label: Agent Delivery
+        views: [Agent / meeting intake, Approval gateway]
+        evidence: [FR-002-007, FEAT-010, FEAT-011]
+    pages:
+      - path: /overview
+        label: Business Home (Overview)
+        note: Execution KPIs, Project health, strategy and shortcuts for the selected Business; the shell's home.
+        evidence: [FR-018-001, FR-018-002]
+      - path: /roadmap
+        label: Business roadmap, goals and key results
+        evidence: [FR-019-002, FEAT-019]
+        views:
+          - label: Balanced scorecard KPIs and 4DX (declared)
+            evidence: [FEAT-020]
+      - path: /projects
+        label: Projects dashboard
+        note: Priority, PIC and teams; Project list read contract.
+        evidence: [FR-015-001, FR-003-002]
+        views:
+          - label: Project — Structure Plan (per-Workstream hierarchy)
+            evidence: [FR-003-005]
+          - label: Project — Board
+            evidence: [FR-006-004]
+          - label: Project — Execution views (/projects/{id}/execution/{mode})
+            evidence: [FR-006-001]
+          - label: Project — Dependency Map
+            evidence: [FR-006-003]
+          - label: Project — Domains view
+            evidence: [FR-013-001]
+          - label: Project — Team
+            evidence: [FR-004-003]
+          - label: Project — Inventory snapshot
+            evidence: [FEAT-012]
+          - label: Project — Features
+            evidence: [FEAT-014]
+          - label: Project — Import plan (persistent action, dry run and preview)
+            evidence: [FR-007-002, FEAT-009]
+      - path: /work
+        label: Work Items (All Work)
+        evidence: [FR-003-006]
+        views:
+          - label: Standalone task inbox
+            evidence: [FR-007-006]
+      - path: /execution
+        label: Execution views by mode
+        note: Sprint board, Migration monitor, Sales pipeline, Campaign control, Launch timeline, Operations board, Expansion portfolio at /execution/{mode}.
+        evidence: [FR-006-001]
+        views:
+          - label: Execution Roadmap
+            evidence: [FR-010-001]
+      - path: /timeline
+        label: Schedule (timeline)
+        evidence: [FR-002-007]
+      - path: /dependencies
+        label: Dependency Map
+        evidence: [FR-006-003]
+      - path: /milestones
+        label: Milestones
+        evidence: [FR-002-007]
+      - path: /files
+        label: File Manager
+        note: Four client-side views over the same asset set.
+        evidence: [FR-017-009]
+        views:
+          - label: Grid
+            evidence: [FR-017-009]
+          - label: Timeline
+            evidence: [FR-017-009]
+          - label: By project
+            evidence: [FR-017-009]
+          - label: Preview
+            evidence: [FR-017-009]
+      - path: /repositories
+        label: Repositories
+        evidence: [FEAT-004]
+      - path: /workspace
+        label: Workspace (Space) administration
+        evidence: [FEAT-001, FR-001-002]
+
+  - key: customer
+    label: Customer
+    domain: DOM-CRM
+    group: CRM
+    evidence: [FEAT-092, FR-092-007]
+    pages:
+      - path: /customer
+        label: Customer dashboard
+        evidence: [FR-092-007]
+      - path: /customer/conversations
+        label: Inbox
+        note: Session dividers, previews and unread counts, search, staff replies, conversation analyses behind consent.
+        evidence: [FR-092-001, FR-042-006, FR-095-007, FR-095-008, FR-047-001, FR-046-002]
+      - path: /customer/sales-tasks
+        label: Sales tasks (งานขาย)
+        evidence: [FEAT-045, FR-045-001]
+      - path: /customer/line-crm
+        label: LINE CRM (customer record)
+        evidence: [FEAT-041, FEAT-043]
+
+  - key: market
+    label: Market Intelligence
+    domain: DOM-MKI
+    group: CRM
+    evidence: [PRD-001, FEAT-088]
+    pages:
+      - path: /market
+        label: Market observations
+        evidence: [FEAT-088]
+
+  - key: growth
+    label: Growth (Marketing)
+    domain: DOM-MKT
+    evidence: [PRD-001, FEAT-089]
+    pages:
+      - path: null
+        label: Strategy plans, reviews and decisions
+        evidence: [FR-089-001]
+      - path: /growth/operations
+        label: Marketing operations
+        evidence: [FEAT-089]
+      - path: /growth/insights
+        label: Marketing Insights (read-only)
+        evidence: [FR-090-001]
+
+  - key: inventory
+    label: Inventory & Catalogue
+    domain: DOM-INV
+    group: SCM
+    note: In-canvas tabs alongside the catalogue / ledger page.
+    evidence: [FR-079-008, FR-035-001]
+    pages:
+      - path: /inventory
+        label: Catalogue and stock ledger
+        evidence: [FR-079-008, FEAT-077, FEAT-080]
+        views:
+          - label: Catalogue hygiene report
+            evidence: [FR-080-006]
+          - label: Catalogue intake (resolve before create)
+            evidence: [FR-081-001]
+      - path: /inventory/locations
+        label: Locations
+        evidence: [FR-079-008]
+      - path: /inventory/work-orders
+        label: Work orders (customization, kitting)
+        evidence: [FR-079-008]
+      - path: /inventory/reservations
+        label: Reservations (ATP)
+        evidence: [FR-079-008]
+
+  - key: warehouse
+    label: Warehouse (reserved)
+    domain: DOM-INV
+    group: SCM
+    note: Reserved, disabled "soon" child of the SCM group until it is built.
+    evidence: [FR-035-001]
+    pages: []
+
+  - key: procurement
+    label: Procurement
+    domain: DOM-PRC
+    group: SCM
+    evidence: [PRD-001, FEAT-082]
+    pages:
+      - path: /procurement
+        label: Suppliers
+        evidence: [FR-082-001]
+      - path: /procurement/purchase-orders
+        label: Purchase orders
+        evidence: [FR-082-001]
+      - path: /procurement/receipts
+        label: Goods receipts
+        evidence: [FEAT-082]
+
+  - key: commerce
+    label: Order Management
+    domain: DOM-COM
+    group: SCM
+    evidence: [PRD-001, FEAT-083]
+    pages:
+      - path: /commerce/orders
+        label: Sales orders and payments
+        evidence: [FR-083-001, FEAT-083]
+      - path: null
+        label: POS checkout
+        note: Atomic walk-in checkout with document preview and issuance.
+        evidence: [FR-084-001, FR-084-004, FR-084-005]
+      - path: /commerce/pricing-rules
+        label: Pricing rules and formula console
+        evidence: [FEAT-085, FR-085-001, FR-085-002]
+
+  - key: assets
+    label: Assets
+    domain: DOM-AST
+    evidence: [FR-086-001]
+    pages:
+      - path: /assets
+        label: Asset register
+        note: Registration, custody, allocation, depreciation preview.
+        evidence: [FEAT-086]
+        views:
+          - label: Evidence intake and review queue
+            evidence: [FR-087-002]
+          - label: Workbook / Google Sheets import and export
+            evidence: [FR-087-003]
+
+  - key: knowledge
+    label: Knowledge (GKS)
+    domain: DOM-KNW
+    evidence: [FR-076-003]
+    pages:
+      - path: /knowledge
+        label: Knowledge home
+        evidence: [FR-076-003]
+      - path: /knowledge/console
+        label: Knowledge base console
+        note: Admitted sources, runs with per-stage evidence, corpus generations, cited chunk drill-down.
+        evidence: [FR-073-002]
+      - path: /knowledge/documents
+        label: Documents
+        evidence: [FEAT-073]
+      - path: /knowledge/data-pipeline
+        label: Data Pipeline Map
+        evidence: [FR-076-002]
+        views:
+          - label: Live pipeline health overlay
+            evidence: [FR-076-004]
+      - path: null
+        label: LINE knowledge candidates and gap report
+        evidence: [FR-096-002, FR-096-003]
+
+  - key: line-oa
+    label: LINE OA Studio
+    domain: DOM-LOA
+    evidence: [PRD-001, FEAT-048]
+    pages:
+      - path: /line-oa
+        label: Accounts
+        note: Several LINE Official Accounts per Business; transport health.
+        evidence: [FEAT-048, FEAT-052]
+        views:
+          - label: Connect LINE OA yourself (Thai wizard, step-up)
+            evidence: [FR-094-008]
+          - label: Model-key readiness
+            evidence: [FR-050-003]
+          - label: Conversation timing
+            evidence: [FEAT-051]
+          - label: Answer grounding mode and description admission
+            evidence: [FEAT-096]
+      - path: /line-oa/rich-menus
+        label: Rich menus and LIFF apps
+        evidence: [FR-049-001, FEAT-049]
+
+  - key: people
+    label: People Directory
+    domain: DOM-IAM
+    note: A peer ERP domain over Person / Membership / Employment, not a Projects sub-screen.
+    evidence: [FR-031-003]
+    pages:
+      - path: null
+        label: People roster
+        evidence: [FR-031-003, FEAT-031]
+      - path: null
+        label: Access — memberships, roles, domain visibility, invites
+        evidence: [FEAT-024, FR-030-001, FR-032-001]
+
+  - key: platform
+    label: Platform
+    domain: DOM-INT
+    note: Integrations, users and the SoT pipeline; each page keeps its owning domain.
+    evidence: [PRD-001]
+    pages:
+      - path: /platform/integrations
+        label: Integrations (connector catalog, connections, health)
+        evidence: [FEAT-057, FR-057-001, FEAT-058, FEAT-054]
+      - path: /platform/users
+        label: Users
+        evidence: [FEAT-024]
+      - path: /platform/sot-pipeline
+        label: SoT pipeline board
+        evidence: [FEAT-055, FR-055-001]
+        views:
+          - label: Inbox (pending decisions)
+            path: /platform/sot-pipeline/inbox
+            evidence: [FR-055-004]
+          - label: Graph
+            path: /platform/sot-pipeline/graph
+            evidence: [FR-055-006]
+      - path: /platform/customer-import-reviews
+        label: Customer import review queue
+        evidence: [FR-044-005]
+      - path: /platform/product-readiness
+        label: Product readiness dashboard
+        evidence: [FEAT-022, FR-022-001]
+
+  - key: control
+    label: Control (installation operator only)
+    domain: DOM-PLT
+    note: Mounted outside the Business shell; admitted only by isOperator.
+    evidence: [FR-036-001]
+    pages:
+      - path: /control/roadmap
+        label: Platform Programme Roadmap
+        evidence: [FR-036-001]
+        views:
+          - label: Domain map (?view=domains)
+            evidence: [FR-036-002]
+          - label: Member view (time-boxed, redacted)
+            evidence: [FR-036-003]
+      - path: /control/usage
+        label: Agent usage detail
+        evidence: [FEAT-038, FR-038-002, FEAT-037]
+      - path: /control/errors
+        label: Errors
+        evidence: [FR-039-001]
+      - path: /control/inference
+        label: Inference pool operations (declared)
+        evidence: [FEAT-097]
+      - path: null
+        label: Mission Control evidence view
+        evidence: [FEAT-040, FR-040-005]
+      - path: null
+        label: Snapshot backup preview and restore
+        evidence: [FR-021-004, FR-021-003]
+      - path: null
+        label: Operator grants
+        evidence: [FR-026-002]
+
+# Shell-wide controls (not pages): available on every shell route.
+shell:
+  - label: Domain bar and sidebar (groups SCM, CRM; module tabs in canvas)
+    evidence: [FEAT-035, FR-035-001, FR-035-002]
+  - label: Base Context Bar (Group › Organization › Business) and breadcrumb
+    evidence: [FR-002-002, FR-002-004]
+  - label: Command palette (Ctrl+K) over every reachable route
+    evidence: [FR-034-002]
+  - label: Business shell guard and shell mode
+    evidence: [FR-002-005, FR-002-001]

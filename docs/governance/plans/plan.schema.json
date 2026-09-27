@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "zuri-next governance plan",
+  "type": "object",
+  "required": ["id", "title", "version", "updated", "lanes", "metrics", "phases"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^PLAN-[0-9]{3}$" },
+    "title": { "type": "string" },
+    "version": { "type": "string" },
+    "updated": { "type": "string", "format": "date" },
+    "owner": { "type": "string" },
+    "summary": { "type": "string" },
+    "how_to_use": { "type": "array", "items": { "type": "string" } },
+    "lanes": {
+      "type": "array",
+      "items": { "type": "object", "required": ["id", "name"], "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "description": { "type": "string" } } }
+    },
+    "status_values": { "type": "array", "items": { "type": "string" } },
+    "baseline": { "type": "object", "properties": { "date": { "type": "string" }, "commit": { "type": "string" }, "note": { "type": "string" } } },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "baseline", "target", "direction"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "baseline": { "type": "number" },
+          "current": { "type": "number", "description": "Written by tools/plan-metrics.mjs --write; absent until it runs" },
+          "target": { "type": "number" },
+          "direction": { "enum": ["min", "max", "info"] },
+          "how": { "type": "string", "description": "Command or rule that produces the number" }
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "goal", "exit_criteria", "tasks"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^P[0-9]+$" },
+          "title": { "type": "string" },
+          "goal": { "type": "string" },
+          "target_window": { "type": "string", "description": "YYYY-MM" },
+          "exit_criteria": { "type": "array", "items": { "type": "string" } },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "title", "lane", "status", "checklist", "acceptance"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^P[0-9]+-T[0-9]+$" },
+                "title": { "type": "string" },
+                "lane": { "type": "string" },
+                "status": { "enum": ["todo", "doing", "blocked", "done"] },
+                "effort": { "enum": ["S", "M", "L"] },
+                "depends_on": { "type": "array", "items": { "type": "string" } },
+                "why": { "type": "string" },
+                "touches": { "type": "array", "items": { "type": "string" } },
+                "checklist": {
+                  "type": "array",
+                  "items": { "type": "object", "required": ["id", "text", "done"], "properties": { "id": { "type": "string" }, "text": { "type": "string" }, "done": { "type": "boolean" } } }
+                },
+                "acceptance": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["id", "given", "when", "then"],
+                    "properties": { "id": { "type": "string" }, "given": { "type": "string" }, "when": { "type": "string" }, "then": { "type": "string" }, "verify": { "type": "string" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

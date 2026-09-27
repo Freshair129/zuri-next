@@ -1,0 +1,616 @@
+{
+  "$schema": "./plan.schema.json",
+  "id": "PLAN-001",
+  "title": "Documentation structure and content master plan",
+  "version": "0.1.0",
+  "updated": "2026-09-27",
+  "owner": "governance",
+  "summary": "Bring the zuri-next specification into full conformance with STD-001..STD-004, raise the content quality of every feature folder to a reviewable standard, and leave the repository ready for the first implementation slice. Structure first, then requirements, design, verification, approval, views, and finally the hand-off to code.",
+  "how_to_use": [
+    "This file is the canonical plan. The `status` of each task and the `done` flag of each checklist item are changed here, in a pull request, like any other document.",
+    "Every phase has exit criteria; a phase is closed only when all of them hold and `node tools/validate-docs.mjs` still reports 0 errors and 0 warnings.",
+    "Every task has acceptance criteria in Given / When / Then form and a `verify` command where one exists. Run the command before marking the task done.",
+    "The dashboard (dashboard.html next to this file) renders this JSON. Ticks made in the dashboard are stored in the viewer's browser only; copy the exported JSON back into this file to make them official.",
+    "IDs inside this plan (P1-T2, P1-T2-C1, P1-T2-A1) are plan-local and are never STD-002 artifact IDs."
+  ],
+  "lanes": [
+    { "id": "governance", "name": "Governance", "description": "Standards, ADRs, approval decisions" },
+    { "id": "tooling", "name": "Tooling", "description": "tools/*.mjs, CI, generated views" },
+    { "id": "content", "name": "Content", "description": "Feature folders: requirements, design, verification" },
+    { "id": "domains", "name": "Domain owners", "description": "Per-domain review and approval, one owner per DOM-*" }
+  ],
+  "status_values": ["todo", "doing", "blocked", "done"],
+  "baseline": {
+    "date": "2026-09-27",
+    "commit": "eb38090",
+    "note": "Measured on main after PR #1. Counts come from the commands listed under each metric; refresh them with tools/plan-metrics.mjs once P0-T2 lands."
+  },
+  "metrics": [
+    { "id": "validator.errors", "label": "validate-docs errors", "baseline": 0, "target": 0, "direction": "min", "how": "node tools/validate-docs.mjs" },
+    { "id": "validator.warnings", "label": "validate-docs warnings", "baseline": 0, "target": 0, "direction": "min", "how": "node tools/validate-docs.mjs" },
+    { "id": "structure.violations", "label": "STD-003 structure violations", "baseline": 18, "target": 0, "direction": "min", "how": "node tools/validate-docs.mjs --structure (after P0-T1); today: 9 SERVICE.md without hosts:, 9 without implements:" },
+    { "id": "features.total", "label": "Features", "baseline": 97, "target": 97, "direction": "info", "how": "ls docs/features | wc -l" },
+    { "id": "features.approved", "label": "Features approved", "baseline": 31, "target": 97, "direction": "max", "how": "grep -l '^status: approved' docs/features/*/feature.md | wc -l" },
+    { "id": "features.draft", "label": "Features in draft", "baseline": 54, "target": 0, "direction": "min", "how": "grep -l '^status: draft' docs/features/*/feature.md | wc -l" },
+    { "id": "features.proposed", "label": "Features proposed", "baseline": 12, "target": 0, "direction": "min", "how": "grep -l '^status: proposed' docs/features/*/feature.md | wc -l" },
+    { "id": "fr.total", "label": "Functional requirements", "baseline": 411, "target": 411, "direction": "info", "how": "find docs/features -name 'FR-*.md' | wc -l" },
+    { "id": "fr.empty_verification", "label": "FRs with an empty Verification section", "baseline": 55, "target": 0, "direction": "min", "how": "FR files whose '## Verification' section names no TC" },
+    { "id": "fr.declared", "label": "FRs still 'declared' (no behaviour yet)", "baseline": 16, "target": 0, "direction": "min", "how": "grep -l '^delivery: declared' docs/features/*/requirements/FR-*.md | wc -l; each becomes building, or retired with a reason" },
+    { "id": "fr.legacy_impl_path", "label": "FRs whose Implementation section is a zuri-ai path", "baseline": 168, "target": 0, "direction": "min", "how": "grep -lE '^- apps/server' docs/features/*/requirements/FR-*.md | wc -l" },
+    { "id": "ac.total", "label": "Acceptance criteria", "baseline": 961, "target": 961, "direction": "info", "how": "unique AC-ids in FR files" },
+    { "id": "ac.not_gwt", "label": "ACs not in Given / When / Then form", "baseline": 190, "target": 0, "direction": "min", "how": "AC lines that do not contain given, when and then" },
+    { "id": "tc.total", "label": "Test cases", "baseline": 349, "target": 349, "direction": "info", "how": "TC headings in verification.md" },
+    { "id": "tc.bound_local", "label": "TCs bound to a test in this repository", "baseline": 0, "target": 349, "direction": "max", "how": "TC entries whose test: path exists in this repository (all 349 point to zuri-ai today)" },
+    { "id": "sdd.thin", "label": "Design docs under 25 lines", "baseline": 38, "target": 0, "direction": "min", "how": "wc -l docs/features/*/design.md | awk '$1<25'" },
+    { "id": "std.proposed", "label": "Standards not yet approved", "baseline": 1, "target": 0, "direction": "min", "how": "STD-003 is 'proposed'" },
+    { "id": "views.stale", "label": "Stale generated views", "baseline": 0, "target": 0, "direction": "min", "how": "node tools/generate-views.mjs --check" }
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "title": "Measure and guard",
+      "goal": "Make every gap in this plan visible from a command, and make regressions fail a pull request, before any content is touched.",
+      "target_window": "2026-10",
+      "exit_criteria": [
+        "validate-docs has a --structure mode that reports every STD-003 R1..R6 violation listed in this plan.",
+        "tools/plan-metrics.mjs prints every metric id in this file with its current value.",
+        "A CI workflow runs validate-docs, generate-views --check and the structure check on every pull request."
+      ],
+      "tasks": [
+        {
+          "id": "P0-T1",
+          "title": "Add the STD-003 structure check to validate-docs",
+          "lane": "tooling",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": [],
+          "why": "validate-docs proves IDs and relations (STD-002 R8) but nothing checks folder shape, required files, frontmatter keys or naming. The 9 SERVICE.md gaps were invisible to it.",
+          "touches": ["tools/validate-docs.mjs", "tools/lib/"],
+          "checklist": [
+            { "id": "P0-T1-C1", "text": "Feature folder: name FEAT-nnn-<slug>; feature.md, requirements/, design.md, verification.md present; no other entries", "done": false },
+            { "id": "P0-T1-C2", "text": "feature.md frontmatter: id matches folder; type in {domain-feature, cross-domain-feature}; title, owner, status, delivery present; participants and parts/ only for cross-domain", "done": false },
+            { "id": "P0-T1-C3", "text": "Requirement files: FR|NFR-<feat>-<nnn>-<slug>.md; id matches filename; one requirement per file; FR has '## Acceptance criteria' with at least one AC; cross-domain FR has part and owner", "done": false },
+            { "id": "P0-T1-C4", "text": "Domain folder: only README.md, decisions.md, contracts.md; generated block markers present; slug registered in registry/domains.yaml", "done": false },
+            { "id": "P0-T1-C5", "text": "Service folder: SERVICE.md with hosts: and implements:", "done": false },
+            { "id": "P0-T1-C6", "text": "Structure findings are errors, not warnings, once P1 closes; until then they are reported under a separate STRUCTURE heading so ERRORS stays 0", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P0-T1-A1", "given": "the repository at the baseline commit", "when": "node tools/validate-docs.mjs --structure runs", "then": "it lists exactly the 18 SERVICE.md findings (9 missing hosts, 9 missing implements) and nothing else", "verify": "node tools/validate-docs.mjs --structure" },
+            { "id": "P0-T1-A2", "given": "a feature folder renamed to a slug without its FEAT id", "when": "the check runs", "then": "the folder is reported with its path and the rule it breaks (STD-003 R3)", "verify": "node tools/validate-docs.mjs --structure --scope FEAT-001" }
+          ]
+        },
+        {
+          "id": "P0-T2",
+          "title": "Write tools/plan-metrics.mjs",
+          "lane": "tooling",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": [],
+          "why": "The metric block in this plan was counted by hand today. A script makes the dashboard honest and lets CI post progress.",
+          "touches": ["tools/plan-metrics.mjs", "docs/governance/plans/PLAN-001.json"],
+          "checklist": [
+            { "id": "P0-T2-C1", "text": "One function per metric id in PLAN-001.json; unknown ids fail loudly", "done": false },
+            { "id": "P0-T2-C2", "text": "--json prints { id: value }; --write updates the `current` field of each metric in the plan file", "done": false },
+            { "id": "P0-T2-C3", "text": "Uses only the Node standard library, like the other tools", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P0-T2-A1", "given": "the baseline commit", "when": "node tools/plan-metrics.mjs --json runs", "then": "every value equals the baseline value recorded in this file", "verify": "node tools/plan-metrics.mjs --json" }
+          ]
+        },
+        {
+          "id": "P0-T3",
+          "title": "CI workflow for documentation pull requests",
+          "lane": "tooling",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P0-T1"],
+          "why": "The definition of done in CLAUDE.md is enforced by habit only. A failing check is cheaper than a review comment.",
+          "touches": [".github/workflows/docs.yml"],
+          "checklist": [
+            { "id": "P0-T3-C1", "text": "Runs on pull_request and push to main with Node 22", "done": false },
+            { "id": "P0-T3-C2", "text": "Steps: validate-docs (fails on any error or warning), generate-views --check, validate-docs --structure", "done": false },
+            { "id": "P0-T3-C3", "text": "Fails if any committed file has CRLF line endings", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P0-T3-A1", "given": "a pull request that adds an FR without an AC", "when": "CI runs", "then": "the workflow fails on the validate-docs step and the log names the FR", "verify": "gh run view --log" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P1",
+      "title": "Structural conformance to STD-003",
+      "goal": "Every folder, file and frontmatter key matches the standard, and the standard itself says what the repository actually does.",
+      "target_window": "2026-10",
+      "exit_criteria": [
+        "validate-docs --structure reports 0 findings.",
+        "STD-003 is approved and describes the real folder names (SRV-nnn-<slug>) and the real ID allocation rule.",
+        "registry/relations.yaml exists and validate-docs reads it."
+      ],
+      "tasks": [
+        {
+          "id": "P1-T1",
+          "title": "Add hosts: and implements: to every SERVICE.md",
+          "lane": "content",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P0-T1"],
+          "why": "STD-003 R4 requires both keys. Today the hosted domains are prose under '## Domains hosted', so no tool can derive service to domain or service to feature relations.",
+          "touches": ["docs/services/SRV-001-web/SERVICE.md", "docs/services/SRV-002-line-worker/SERVICE.md", "docs/services/SRV-003-conversation-runtime/SERVICE.md", "docs/services/SRV-004-genesis-worker/SERVICE.md", "docs/services/SRV-005-gks/SERVICE.md", "docs/services/SRV-006-knowledge-storage/SERVICE.md", "docs/services/SRV-007-market-intelligence/SERVICE.md", "docs/services/SRV-008-edge-desktop/SERVICE.md", "docs/services/SRV-009-db/SERVICE.md"],
+          "checklist": [
+            { "id": "P1-T1-C1", "text": "hosts: lists the DOM codes from the '## Domains hosted' section; the prose section stays as explanation", "done": false },
+            { "id": "P1-T1-C2", "text": "implements: lists FEAT ids (or FEAT-nnn-Pnn parts) whose feature.md runtime: names this service", "done": false },
+            { "id": "P1-T1-C3", "text": "validate-docs checks that every DOM in hosts: exists and every FEAT/part in implements: exists and points back (runtime:)", "done": false },
+            { "id": "P1-T1-C4", "text": "generate-views derives 'Services that host it' in the domain README from hosts:, not from prose", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P1-T1-A1", "given": "SRV-001 with hosts: [DOM-PRJ, ...]", "when": "generate-views runs", "then": "docs/domains/project-manager/README.md lists SRV-001 under 'Services that host it' inside the generated block", "verify": "node tools/generate-views.mjs --check" },
+            { "id": "P1-T1-A2", "given": "a feature whose runtime: is SRV-002", "when": "SRV-002 implements: omits it", "then": "validate-docs reports the mismatch as an error", "verify": "node tools/validate-docs.mjs --scope SRV-002" }
+          ]
+        },
+        {
+          "id": "P1-T2",
+          "title": "Create registry/relations.yaml (external systems + context map)",
+          "lane": "governance",
+          "status": "done",
+          "effort": "S",
+          "depends_on": [],
+          "why": "STD-003 R5 lists it as the home for relations no file can hold (external systems). It did not exist, so relations to the LINE platform, identity providers and inference providers were scattered in prose. Done 2026-09-28 by ADR-107, which also gave every domain a DDD subdomain type and a role in registry/domains.yaml.",
+          "touches": ["registry/relations.yaml", "registry/domains.yaml", "tools/validate-docs.mjs", "tools/generate-views.mjs", "docs/architecture/decisions.md"],
+          "checklist": [
+            { "id": "P1-T2-C1", "text": "Schema: external: [{ id, name }], context_map: [{ upstream, downstream, pattern, evidence, note }] using the eight DDD context-map patterns (ADR-107 D3)", "done": true },
+            { "id": "P1-T2-C2", "text": "Seed with the external systems already named in docs (LINE platform, model providers, MSP, GKS, GenesisBlockDB, Notion, GitHub, FlowAccount) by name only, never by hostname or key", "done": true },
+            { "id": "P1-T2-C3", "text": "validate-docs resolves every evidence id, rejects unknown contexts and patterns, and requires subdomain + role on every domain", "done": true }
+          ],
+          "acceptance": [
+            { "id": "P1-T2-A1", "given": "relations.yaml with a context-map entry whose downstream is not a registered domain, or whose evidence id does not exist", "when": "validate-docs runs", "then": "it reports an error naming the file, line and id", "verify": "node tools/validate-docs.mjs" }
+          ]
+        },
+        {
+          "id": "P1-T3",
+          "title": "Correct STD-003 and approve it",
+          "lane": "governance",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P1-T1", "P1-T2"],
+          "why": "The standard is still 'proposed' and contradicts the repository in three places: R4 names the folder SRV-<slug> but folders are SRV-nnn-<slug>; R7 cites tools/next-id, which does not exist; R6 promises a trace matrix and feature map that are not generated.",
+          "touches": ["docs/governance/standards/STD-003-REPOSITORY-DOCUMENT-STRUCTURE.md", "docs/governance/decisions.md"],
+          "checklist": [
+            { "id": "P1-T3-C1", "text": "R4: folder is docs/services/SRV-nnn-<slug>/", "done": false },
+            { "id": "P1-T3-C2", "text": "R7: replace tools/next-id with the CLAUDE.md rule (max + 1 on main) or implement tools/next-id.mjs; pick one", "done": false },
+            { "id": "P1-T3-C3", "text": "R1: list governance/plans/ and its contents (this plan)", "done": false },
+            { "id": "P1-T3-C4", "text": "R6: mark trace matrix and feature map as delivered by P6 or remove them", "done": false },
+            { "id": "P1-T3-C5", "text": "Bump version, set status: approved, record the decision as an ADR in docs/governance/decisions.md", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P1-T3-A1", "given": "STD-003 at status approved", "when": "a reader follows every path and command it names", "then": "each one exists in the repository", "verify": "grep -oE 'tools/[a-z-]+' docs/governance/standards/STD-003-*.md | sort -u | xargs -I{} test -e {}.mjs" }
+          ]
+        },
+        {
+          "id": "P1-T4",
+          "title": "Templates for every canonical file type",
+          "lane": "governance",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": [],
+          "why": "Only feature.md and requirement.md have templates. New services, parts, designs and verification files are copied from neighbours and drift.",
+          "touches": ["docs/templates/"],
+          "checklist": [
+            { "id": "P1-T4-C1", "text": "service.md.template with hosts:, implements:, Responsibility, Entrypoints, Configuration (names only)", "done": false },
+            { "id": "P1-T4-C2", "text": "part.md.template (FEAT-nnn-Pnn) with role, owner, runtime, FRs, boundary contracts", "done": false },
+            { "id": "P1-T4-C3", "text": "design.md.template with the SDD minimum sections decided in P3-T1", "done": false },
+            { "id": "P1-T4-C4", "text": "verification.md.template with the TC form decided in P4-T1", "done": false },
+            { "id": "P1-T4-C5", "text": "AGENTS.md §3 points to each template", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P1-T4-A1", "given": "a new feature created only from the templates", "when": "validate-docs and --structure run", "then": "0 errors, 0 warnings, 0 structure findings before any content is written", "verify": "node tools/validate-docs.mjs --scope FEAT-098" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "title": "Requirements content",
+      "goal": "Every FR is testable on its own: a behaviour statement, ACs in Given / When / Then, a verification link, and an honest implementation pointer.",
+      "target_window": "2026-11",
+      "exit_criteria": [
+        "0 FRs with delivery implemented or live have an empty Verification section.",
+        "0 ACs outside Given / When / Then form, or the exception form is written into STD-001 and used explicitly.",
+        "0 FRs whose Implementation section is a bare zuri-ai path.",
+        "0 FRs left at delivery: declared without a decision recorded in feature.md."
+      ],
+      "tasks": [
+        {
+          "id": "P2-T1",
+          "title": "Fill the 55 empty Verification sections",
+          "lane": "content",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": ["P0-T2"],
+          "why": "An FR with no TC cannot be proven. 55 of 411 FR files have a '## Verification' heading and nothing under it.",
+          "touches": ["docs/features/*/requirements/FR-*.md", "docs/features/*/verification.md"],
+          "checklist": [
+            { "id": "P2-T1-C1", "text": "List the 55 with tools/plan-metrics.mjs --list fr.empty_verification", "done": false },
+            { "id": "P2-T1-C2", "text": "For implemented/live FRs: add or extend a TC in verification.md and link it", "done": false },
+            { "id": "P2-T1-C3", "text": "For building/declared FRs: write the TC heading now with 'Test: none yet' so tests-for can find it", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P2-T1-A1", "given": "any FR with delivery implemented or live", "when": "node tools/tests-for.mjs <FR-id> runs", "then": "it prints at least one TC and one test path", "verify": "node tools/plan-metrics.mjs --json | grep fr.empty_verification" }
+          ]
+        },
+        {
+          "id": "P2-T2",
+          "title": "Rewrite the 190 ACs that are not Given / When / Then",
+          "lane": "content",
+          "status": "todo",
+          "effort": "L",
+          "depends_on": ["P0-T2"],
+          "why": "STD-003 shows the Given / When / Then form; 190 ACs are single clauses or invariants that a tester cannot execute as written.",
+          "touches": ["docs/features/*/requirements/FR-*.md", "docs/governance/standards/STD-001-DOCUMENT-ARTIFACT-STANDARD.md"],
+          "checklist": [
+            { "id": "P2-T2-C1", "text": "Decide in STD-001 whether an 'Invariant:' form is allowed for rules that hold at all times; if yes, define its syntax", "done": false },
+            { "id": "P2-T2-C2", "text": "Rewrite per feature, one PR per domain lane so owners review their own", "done": false },
+            { "id": "P2-T2-C3", "text": "Never change an AC's meaning; if the behaviour changes, retire the FR and declare a new one with supersedes (STD-003 R7)", "done": false },
+            { "id": "P2-T2-C4", "text": "validate-docs warns on an AC line that matches neither form", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P2-T2-A1", "given": "the finished rewrite", "when": "node tools/plan-metrics.mjs --json runs", "then": "ac.not_gwt is 0", "verify": "node tools/plan-metrics.mjs --json | grep ac.not_gwt" },
+            { "id": "P2-T2-A2", "given": "an AC written as a bare clause", "when": "validate-docs runs", "then": "it warns with the AC id", "verify": "node tools/validate-docs.mjs" }
+          ]
+        },
+        {
+          "id": "P2-T3",
+          "title": "Decide the 16 FRs still at delivery: declared",
+          "lane": "domains",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": [],
+          "why": "A declared FR has no behaviour and no test. Each one is either wanted (becomes building, with an owner and a target) or not (retired with a reason).",
+          "touches": ["docs/features/*/requirements/FR-*.md", "docs/features/*/feature.md"],
+          "checklist": [
+            { "id": "P2-T3-C1", "text": "Owner of each domain answers keep / retire per FR", "done": false },
+            { "id": "P2-T3-C2", "text": "Kept: delivery: building and a line in feature.md scope stating the target", "done": false },
+            { "id": "P2-T3-C3", "text": "Retired: delivery: retired plus reason line; ID never reused", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P2-T3-A1", "given": "the 16 FRs", "when": "plan-metrics runs", "then": "fr.declared is 0 and no FR id was removed or renumbered", "verify": "node tools/plan-metrics.mjs --json | grep fr.declared" }
+          ]
+        },
+        {
+          "id": "P2-T4",
+          "title": "Separate legacy code pointers from this repository's Implementation section",
+          "lane": "governance",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": [],
+          "why": "168 FRs list apps/server/... under '## Implementation'. Those paths are in zuri-ai, not here, and read as if they were this repository's code. The link is valuable and must be kept, but labelled.",
+          "touches": ["docs/governance/standards/STD-003-REPOSITORY-DOCUMENT-STRUCTURE.md", "docs/templates/requirement.md.template", "docs/features/*/requirements/FR-*.md", "docs/features/*/design.md"],
+          "checklist": [
+            { "id": "P2-T4-C1", "text": "ADR: legacy pointers move to frontmatter `legacy_code: [path, ...]`, or the heading becomes '## Implementation (zuri-ai reference)'; choose one", "done": false },
+            { "id": "P2-T4-C2", "text": "Mechanical rewrite with a script under tools/migration/, reviewed by diff, one PR", "done": false },
+            { "id": "P2-T4-C3", "text": "'## Implementation' is reserved for code in this repository and reads '- none yet' until P7", "done": false },
+            { "id": "P2-T4-C4", "text": "Same treatment for the 'Current code (legacy repo path)' column in design.md implementation maps", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P2-T4-A1", "given": "the rewrite", "when": "grep -lE '^- apps/server' runs over FR files", "then": "it matches 0 files, and every former path is still present under the chosen legacy key", "verify": "node tools/plan-metrics.mjs --json | grep fr.legacy_impl_path" }
+          ]
+        },
+        {
+          "id": "P2-T5",
+          "title": "Reconcile feature status with delivery",
+          "lane": "domains",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": [],
+          "why": "22 features are 'draft' spec yet 'live' delivery, and one is 'proposed' yet 'retired'. A live behaviour with an unapproved specification is the gap this repository exists to close.",
+          "touches": ["docs/features/*/feature.md", "docs/governance/standards/STD-001-DOCUMENT-ARTIFACT-STANDARD.md"],
+          "checklist": [
+            { "id": "P2-T5-C1", "text": "STD-001: write the allowed status x delivery matrix (e.g. live requires approved or an explicit 'approved-pending' review date)", "done": false },
+            { "id": "P2-T5-C2", "text": "validate-docs warns on a disallowed pair", "done": false },
+            { "id": "P2-T5-C3", "text": "Fix the proposed + retired feature first", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P2-T5-A1", "given": "a feature.md with status: draft and delivery: live", "when": "validate-docs runs", "then": "it warns and names the feature", "verify": "node tools/validate-docs.mjs" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "title": "Design content",
+      "goal": "Every SDD lets an engineer who has never seen zuri-ai build the feature: components, owned data, main sequence, failure modes, contracts, decisions.",
+      "target_window": "2026-11",
+      "exit_criteria": [
+        "STD-001 defines the SDD minimum and design.md.template carries it.",
+        "0 design.md files under the minimum (sdd.thin = 0), approved features first.",
+        "Every domain README has purpose, language, owned data, business rules and public contracts filled, not placeholders."
+      ],
+      "tasks": [
+        {
+          "id": "P3-T1",
+          "title": "Define the SDD minimum",
+          "lane": "governance",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": [],
+          "why": "Design docs range from 17 lines of bullets to full sequences. Without a minimum, review cannot say a design is incomplete.",
+          "touches": ["docs/governance/standards/STD-001-DOCUMENT-ARTIFACT-STANDARD.md", "docs/templates/design.md.template"],
+          "checklist": [
+            { "id": "P3-T1-C1", "text": "Required sections: Context, Components (CMP ids), Data owned, Sequences (one per main FR group), Failure modes, Contracts (API/EVT), Decisions (ADR), Implementation map", "done": false },
+            { "id": "P3-T1-C2", "text": "validate-docs --structure checks the headings exist in every design.md", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P3-T1-A1", "given": "a design.md missing the Failure modes section", "when": "validate-docs --structure runs", "then": "it reports the SDD id and the missing heading", "verify": "node tools/validate-docs.mjs --structure" }
+          ]
+        },
+        {
+          "id": "P3-T2",
+          "title": "Expand the 38 thin design docs",
+          "lane": "content",
+          "status": "todo",
+          "effort": "L",
+          "depends_on": ["P3-T1"],
+          "why": "38 SDDs are under 25 lines. Most describe planned features in four bullets. They must reach the minimum, approved and live features first.",
+          "touches": ["docs/features/*/design.md"],
+          "checklist": [
+            { "id": "P3-T2-C1", "text": "Order: approved + live, then approved + building, then draft", "done": false },
+            { "id": "P3-T2-C2", "text": "Source of truth for live behaviour is the zuri-ai code at 9e5b104e; describe what it does, never copy it", "done": false },
+            { "id": "P3-T2-C3", "text": "Every sequence names the API/EVT it crosses; cross-domain writes go through a declared contract (AGENTS.md §8)", "done": false },
+            { "id": "P3-T2-C4", "text": "Anything found to be wrong in the code goes to private/open-issues, not into the SDD", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P3-T2-A1", "given": "the finished pass", "when": "plan-metrics runs", "then": "sdd.thin is 0 and validate-docs --structure reports 0 missing SDD sections", "verify": "node tools/plan-metrics.mjs --json | grep sdd.thin" }
+          ]
+        },
+        {
+          "id": "P3-T3",
+          "title": "Domain README quality pass",
+          "lane": "domains",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": [],
+          "why": "The domain README is the entry point for every task in that area (CLAUDE.md 'Read before working'). Its hand-written half must be as complete as its generated half.",
+          "touches": ["docs/domains/*/README.md", "docs/domains/*/contracts.md"],
+          "checklist": [
+            { "id": "P3-T3-C1", "text": "Each README: purpose (3 sentences), ubiquitous language table, owned data, business rules (BR links), public contracts (API/EVT links)", "done": false },
+            { "id": "P3-T3-C2", "text": "Every BR, API and EVT named in a README resolves (validate-docs already checks ids; add a check that each domain owns at least one contract or says why not)", "done": false },
+            { "id": "P3-T3-C3", "text": "Domain owner signs off with status: approved on the README", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P3-T3-A1", "given": "all 14 domain READMEs", "when": "a reviewer reads the hand-written section", "then": "no section is a placeholder or a single bullet, and each README is status approved", "verify": "grep -L '^status: approved' docs/domains/*/README.md" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "title": "Verification content",
+      "goal": "Every TC states what it proves and where the proof runs, and the tooling can report AC coverage.",
+      "target_window": "2026-12",
+      "exit_criteria": [
+        "verification.md uses one form (template) in all 97 features.",
+        "Every AC of an implemented or live FR is named by at least one TC.",
+        "tools/coverage.mjs prints AC coverage per feature and in total."
+      ],
+      "tasks": [
+        {
+          "id": "P4-T1",
+          "title": "TC form and the legacy-test convention",
+          "lane": "governance",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P2-T4"],
+          "why": "All 349 TCs point at zuri-ai test files. Like the Implementation sections, they must be labelled as legacy proof until a test in this repository replaces them.",
+          "touches": ["docs/governance/standards/STD-002-IDENTITY-AND-TRACEABILITY.md", "docs/templates/verification.md.template", "tools/tests-for.mjs"],
+          "checklist": [
+            { "id": "P4-T1-C1", "text": "TC line carries `Verifies:` (FR and AC ids), `Test:` (this repository, or 'none yet') and `Legacy test:` (zuri-ai path)", "done": false },
+            { "id": "P4-T1-C2", "text": "tests-for prints both and marks a TC 'unproven here' when Test: is none yet", "done": false },
+            { "id": "P4-T1-C3", "text": "Mechanical rewrite of the 97 verification.md files with a tools/migration script", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P4-T1-A1", "given": "TC-001-001 after the rewrite", "when": "node tools/tests-for.mjs FR-001-001 runs", "then": "it prints the TC, its legacy test paths and 'Test: none yet'", "verify": "node tools/tests-for.mjs FR-001-001" }
+          ]
+        },
+        {
+          "id": "P4-T2",
+          "title": "AC coverage tool and gap closure",
+          "lane": "tooling",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": ["P4-T1", "P2-T1"],
+          "why": "The review checklist requires every implemented or live FR to have a TC; nothing checks that every AC is covered.",
+          "touches": ["tools/coverage.mjs", "docs/features/*/verification.md"],
+          "checklist": [
+            { "id": "P4-T2-C1", "text": "coverage.mjs: for each FR, set of AC ids vs AC ids named by TCs; prints per feature and total; --scope supported", "done": false },
+            { "id": "P4-T2-C2", "text": "Ranges like AC-001-008-01..04 are expanded", "done": false },
+            { "id": "P4-T2-C3", "text": "Close gaps for implemented/live FRs by extending TCs, never by deleting ACs", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P4-T2-A1", "given": "the repository after gap closure", "when": "node tools/coverage.mjs runs", "then": "coverage for implemented and live FRs is 100% and the total is printed", "verify": "node tools/coverage.mjs" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "title": "Review and approval",
+      "goal": "Every feature specification is approved by its domain owner, and the private backlog is triaged.",
+      "target_window": "2026-12",
+      "exit_criteria": [
+        "features.approved = 97 (or retired with a reason).",
+        "All four standards are approved.",
+        "Each private/open-issues file has a disposition per item: new FR/ADR (public, written as a requirement), fixed in code later (kept private with a target), or dropped."
+      ],
+      "tasks": [
+        {
+          "id": "P5-T1",
+          "title": "Domain review rounds",
+          "lane": "domains",
+          "status": "todo",
+          "effort": "L",
+          "depends_on": ["P2-T2", "P3-T2", "P4-T2"],
+          "why": "54 draft and 12 proposed features need an owner's decision. Reviewing per domain keeps each round small and the reviewer accountable.",
+          "touches": ["docs/features/*/feature.md"],
+          "checklist": [
+            { "id": "P5-T1-C1", "text": "One review round per domain, in the order of the domain's live feature count (largest first)", "done": false },
+            { "id": "P5-T1-C2", "text": "Review uses AGENTS.md §8 plus: SDD minimum met, AC coverage 100%, status x delivery pair allowed", "done": false },
+            { "id": "P5-T1-C3", "text": "Outcome per feature: approved, or a listed reason and a return date in feature.md", "done": false },
+            { "id": "P5-T1-C4", "text": "Dashboard shows approved count per domain", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P5-T1-A1", "given": "the end of the rounds", "when": "plan-metrics runs", "then": "features.draft and features.proposed are 0", "verify": "node tools/plan-metrics.mjs --json | grep -E 'features\\.(draft|proposed)'" }
+          ]
+        },
+        {
+          "id": "P5-T2",
+          "title": "Approve the standards and close draft decisions",
+          "lane": "governance",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P1-T3"],
+          "why": "A standard at 'proposed' cannot be a review blocker. Decision registers that are still draft cannot be cited.",
+          "touches": ["docs/governance/standards/", "docs/governance/decisions.md", "docs/architecture/decisions.md", "docs/domains/*/decisions.md"],
+          "checklist": [
+            { "id": "P5-T2-C1", "text": "STD-001, STD-002, STD-004: confirm status approved and version bumped where P2..P4 changed them", "done": false },
+            { "id": "P5-T2-C2", "text": "Every ADR has status accepted, superseded or rejected; none left at draft or proposed", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P5-T2-A1", "given": "the standards folder", "when": "grep for status: proposed runs", "then": "it matches nothing", "verify": "grep -l '^status: proposed' docs/governance/standards/*.md" }
+          ]
+        },
+        {
+          "id": "P5-T3",
+          "title": "Triage the private open-issues backlog",
+          "lane": "domains",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": [],
+          "why": "97 private files hold the spec-vs-code gaps. They are the implementation backlog but have no disposition, owner or target.",
+          "touches": ["private/open-issues/*.md"],
+          "checklist": [
+            { "id": "P5-T3-C1", "text": "Add a disposition line per item: requirement (becomes a public FR/ADR written as desired behaviour, never as a weakness), code (stays private, target phase), dropped (reason)", "done": false },
+            { "id": "P5-T3-C2", "text": "New public FRs go through the normal number allocation and get ACs", "done": false },
+            { "id": "P5-T3-C3", "text": "Never commit the private text; CLAUDE.md hard rule", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P5-T3-A1", "given": "any open-issues file", "when": "it is read", "then": "every bullet has a disposition tag and, for 'code', a target phase", "verify": "grep -L 'disposition:' private/open-issues/*.md" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P6",
+      "title": "Views and dashboard",
+      "goal": "Every relationship the standards promise as a view is generated, and progress on this plan is measured by a command.",
+      "target_window": "2027-01",
+      "exit_criteria": [
+        "generate-views produces the domain feature index, the trace matrix and the feature map.",
+        "docs/README.md 'Size' section is generated, not typed.",
+        "plan-metrics --write keeps PLAN-001.json current and the dashboard shows it."
+      ],
+      "tasks": [
+        {
+          "id": "P6-T1",
+          "title": "Trace matrix and feature map generators",
+          "lane": "tooling",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": ["P4-T2"],
+          "why": "STD-003 R6 lists three generated views; only the domain feature index exists.",
+          "touches": ["tools/generate-views.mjs", "docs/architecture/", "docs/README.md"],
+          "checklist": [
+            { "id": "P6-T1-C1", "text": "Trace matrix: FR -> SDD -> TC -> test, one generated file, GENERATED markers, --check support", "done": false },
+            { "id": "P6-T1-C2", "text": "Feature map: domain x feature x runtime service, generated into docs/README.md or docs/architecture/", "done": false },
+            { "id": "P6-T1-C3", "text": "docs/README.md 'Size' block becomes generated", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P6-T1-A1", "given": "a hand edit inside any generated block", "when": "generate-views --check runs", "then": "it fails and names the file", "verify": "node tools/generate-views.mjs --check" }
+          ]
+        },
+        {
+          "id": "P6-T2",
+          "title": "Keep the plan dashboard current",
+          "lane": "tooling",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P0-T2"],
+          "why": "A plan whose numbers are typed by hand stops being trusted after the second week.",
+          "touches": ["docs/governance/plans/PLAN-001.json", "docs/governance/plans/dashboard.html", ".github/workflows/docs.yml"],
+          "checklist": [
+            { "id": "P6-T2-C1", "text": "plan-metrics --write fills metric.current and baseline.date on every merge to main (CI commits, or a pre-merge step)", "done": false },
+            { "id": "P6-T2-C2", "text": "Dashboard renders current vs baseline vs target for each metric", "done": false },
+            { "id": "P6-T2-C3", "text": "Task status changes are reviewed like any document change", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P6-T2-A1", "given": "a merge that closes 10 empty Verification sections", "when": "CI finishes", "then": "PLAN-001.json fr.empty_verification.current is 10 lower and the dashboard shows it", "verify": "node tools/plan-metrics.mjs --json" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "title": "Ready for code",
+      "goal": "The repository can receive the first implementation slice without changing the documentation rules.",
+      "target_window": "2027-01",
+      "exit_criteria": [
+        "apps/, services/, packages/ layout and registry/services.yaml code roots agreed in an ADR.",
+        "The @trace annotation lint exists and runs in CI.",
+        "The first slice is named: features, FR count, TC count, and the tests-for command that proves it."
+      ],
+      "tasks": [
+        {
+          "id": "P7-T1",
+          "title": "Code layout decision",
+          "lane": "governance",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P1-T3"],
+          "why": "STD-003 R1 names apps/ services/ packages/ but no ADR says which service goes where or what registry/services.yaml code_root means.",
+          "touches": ["docs/architecture/decisions.md", "registry/services.yaml"],
+          "checklist": [
+            { "id": "P7-T1-C1", "text": "ADR: one folder per SRV under apps/ or services/; shared code under packages/", "done": false },
+            { "id": "P7-T1-C2", "text": "registry/services.yaml code_root filled for every SRV", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P7-T1-A1", "given": "registry/services.yaml", "when": "each code_root is checked", "then": "the folder exists (may be empty with a README) and validate-docs verifies it", "verify": "node tools/validate-docs.mjs" }
+          ]
+        },
+        {
+          "id": "P7-T2",
+          "title": "@trace annotation lint",
+          "lane": "tooling",
+          "status": "todo",
+          "effort": "M",
+          "depends_on": ["P7-T1"],
+          "why": "STD-002 defines @trace implements FR-042-003 in code. Without a lint, the first code lands unlinked.",
+          "touches": ["tools/trace-lint.mjs", ".github/workflows/docs.yml"],
+          "checklist": [
+            { "id": "P7-T2-C1", "text": "Scans code roots for @trace lines; every id must exist; every implemented/live FR must be traced from at least one file once its feature has code", "done": false },
+            { "id": "P7-T2-C2", "text": "Feeds the trace matrix (P6-T1) with the code column", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P7-T2-A1", "given": "a source file with @trace implements FR-999-001", "when": "trace-lint runs", "then": "it fails naming the file and the unknown id", "verify": "node tools/trace-lint.mjs" }
+          ]
+        },
+        {
+          "id": "P7-T3",
+          "title": "Name the first implementation slice",
+          "lane": "domains",
+          "status": "todo",
+          "effort": "S",
+          "depends_on": ["P5-T1"],
+          "why": "Implementation should start from features that are approved, live in zuri-ai, and foundational: scope, entry gate, authorization.",
+          "touches": ["docs/governance/plans/PLAN-002.json"],
+          "checklist": [
+            { "id": "P7-T3-C1", "text": "Candidate slice: FEAT-001 scope hierarchy, FEAT-023 entry and viewer gate, FEAT-024 authorization, FEAT-025 onboarding; confirm with owners", "done": false },
+            { "id": "P7-T3-C2", "text": "For each: FR count, AC coverage 100%, SDD at minimum, status approved", "done": false },
+            { "id": "P7-T3-C3", "text": "Write PLAN-002 (implementation) in this same format", "done": false }
+          ],
+          "acceptance": [
+            { "id": "P7-T3-A1", "given": "the chosen slice", "when": "node tools/tests-for.mjs runs for each of its FRs", "then": "every FR has a TC, and the slice is listed in PLAN-002 with its counts", "verify": "node tools/tests-for.mjs FR-001-001" }
+          ]
+        }
+      ]
+    }
+  ]
+}

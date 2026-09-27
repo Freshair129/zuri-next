@@ -1,0 +1,909 @@
+<title>zuri-next Spec Graph</title>
+<meta charset="utf-8">
+<script>
+(function(){var k='zuri-plans-theme',r=document.documentElement,v='auto';try{v=localStorage.getItem(k)||'auto'}catch(e){}
+function apply(){if(v==='light'||v==='dark')r.setAttribute('data-theme',v);else r.removeAttribute('data-theme');var b=document.getElementById('theme');if(b)b.textContent=v==='dark'?'☾ dark':v==='light'?'☀ light':'◐ auto';}
+document.addEventListener('DOMContentLoaded',apply);apply();
+document.addEventListener('click',function(e){if(!e.target.closest('#theme'))return;v=v==='auto'?'dark':v==='dark'?'light':'auto';try{localStorage.setItem(k,v)}catch(err){}apply();});})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root {
+    --paper: #F6F7F4; --surface: #FFFFFF; --ink: #1B2430; --muted: #66707A; --line: #C9CFC8; --line-strong: #B9BFB8;
+    --accent: #2A5BA8; --accent-ink: #FFFFFF; --accent-soft: #E4ECF8;
+    --green: #2C7A5A; --green-soft: #DFF0E7; --yellow: #C08A1C; --yellow-soft: #F8ECCF; --red: #B23A32; --red-soft: #F6DEDC; --grey: #7C858E; --grey-soft: #E8EAE6;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+    --radius: 6px; --gap: 22px; --panel: 400px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #3A434B; --line-strong: #4A545E;
+      --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+      --green: #6FC49B; --green-soft: #1E3A2E; --yellow: #E4B85A; --yellow-soft: #3E3118; --red: #EE8A82; --red-soft: #452321; --grey: #9AA3AA; --grey-soft: #262D34;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #3A434B; --line-strong: #4A545E;
+    --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+    --green: #6FC49B; --green-soft: #1E3A2E; --yellow: #E4B85A; --yellow-soft: #3E3118; --red: #EE8A82; --red-soft: #452321; --grey: #9AA3AA; --grey-soft: #262D34;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.4; display: flex; flex-direction: column; overflow: hidden; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 600; margin: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .mono { font-family: var(--mono); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; }
+  .dot.green { background: var(--green); } .dot.yellow { background: var(--yellow); } .dot.red { background: var(--red); } .dot.grey { background: var(--grey); }
+  .cnt { font-family: var(--mono); font-size: 10px; padding: 0 5px; border-radius: 8px; line-height: 16px; }
+  .cnt.green { background: var(--green-soft); color: var(--green); } .cnt.yellow { background: var(--yellow-soft); color: var(--yellow); } .cnt.red { background: var(--red-soft); color: var(--red); } .cnt.grey { background: var(--grey-soft); color: var(--grey); }
+  .cnt.zero { display: none; }
+  .fill-green { fill: var(--green); } .fill-yellow { fill: var(--yellow); } .fill-red { fill: var(--red); } .fill-grey { fill: var(--grey); }
+
+  header.top { padding: 12px 20px 10px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; }
+  header.top h1 { font-size: 20px; }
+  .meta { color: var(--muted); font-size: 12px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
+  .legend svg { vertical-align: -2px; margin-right: 4px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 20px; border-bottom: 1px solid var(--line); }
+  .crumbs { display: flex; align-items: center; gap: 6px; font-size: 13px; flex-wrap: wrap; }
+  .crumbs button { border: 0; background: none; padding: 2px 4px; color: var(--accent); font-family: var(--mono); font-size: 12.5px; }
+  .crumbs button.current { color: var(--ink); font-weight: 600; cursor: default; }
+  .crumbs .sepc { color: var(--muted); }
+  .toolbar input { flex: 1 1 180px; min-width: 0; font: inherit; font-size: 13px; padding: 6px 9px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); }
+  .btn { padding: 5px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); font-size: 12.5px; }
+  .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .btn.small { padding: 3px 8px; font-size: 11.5px; }
+  .sep { width: 1px; height: 22px; background: var(--line); }
+  .zoomv { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 44px; text-align: center; }
+  .spacer { flex: 1; }
+
+  .stage { position: relative; flex: 1; min-height: 320px; overflow: hidden; }
+  .view { position: absolute; inset: 0; }
+  .view[hidden] { display: none; }
+
+  /* main graph */
+  svg.graph { width: 100%; height: 100%; display: block; background: var(--paper); cursor: grab; }
+  svg.graph:active { cursor: grabbing; }
+  .link { stroke: var(--line-strong); stroke-opacity: .7; fill: none; }
+  .link.part { stroke-dasharray: 4 3; stroke: var(--accent); stroke-opacity: .55; }
+  .link.req { stroke-opacity: .45; }
+  .link.cm { stroke: var(--muted); stroke-opacity: .5; stroke-dasharray: 2 4; }
+  .ring { fill: none; stroke: var(--line-strong); stroke-width: 1px; stroke-dasharray: 6 6; }
+  .ring.ring-foundation { fill: var(--accent-soft); fill-opacity: .35; stroke: var(--accent); stroke-dasharray: none; stroke-width: 1.5px; }
+  .ringlabel { font-family: var(--mono); font-size: 10px; fill: var(--muted); letter-spacing: .08em; pointer-events: none; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; }
+  .arrowhead { fill: var(--muted); }
+  .n.dom .halo { fill: none; stroke: var(--ink); stroke-width: 1px; stroke-dasharray: 3 3; }
+  .n.dom.role-foundation circle:not(.halo) { stroke-width: 3px; }
+  .n.dom.role-platform circle:not(.halo) { stroke-dasharray: 5 3; }
+  .n.dom.sub-core text:not(.sub) { font-size: 13px; }
+  .n.dom text.sub { font-size: 8.5px; font-weight: 400; fill: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+  .n { cursor: pointer; }
+  .n circle { stroke: var(--surface); stroke-width: 1.5px; }
+  .n.dom circle { stroke: var(--ink); stroke-width: 2px; }
+  .n.feat.expanded circle { stroke: var(--accent); stroke-width: 2px; }
+  .n.selected circle { stroke: var(--accent); stroke-width: 3px; }
+  .n text { font-family: var(--mono); fill: var(--ink); pointer-events: none; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; }
+  .n.dom text { font-size: 12px; font-weight: 600; }
+  .n.feat text { font-size: 9px; }
+  .n.req text { font-size: 7.5px; display: none; }
+  .zoomed-in .n.req text { display: block; }
+  .n.nfr circle { stroke-dasharray: 2 1.5; }
+  .n.dim { opacity: .15; }
+  .link.dim { opacity: .08; }
+  .tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.12); max-width: 280px; z-index: 3; }
+  .tip .tid { font-family: var(--mono); color: var(--muted); font-size: 11px; }
+  .tip .tt { font-weight: 500; margin: 2px 0 4px; }
+  .tip .cta { color: var(--accent); font-size: 11px; margin-top: 4px; }
+  .hint { position: absolute; left: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 8px; pointer-events: none; z-index: 2; max-width: min(30%, 380px); box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  .toolbar .brand { font-size: 15px; margin-right: 4px; white-space: nowrap; display: flex; align-items: baseline; gap: 8px; }
+  .toolbar { padding: 6px 16px; }
+  .island { position: absolute; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); z-index: 2; max-width: min(46%, 520px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 10px; box-shadow: 0 2px 10px rgba(0,0,0,.08); transition: right .28s cubic-bezier(.2,.7,.2,1); }
+  .island .legend { font-size: 11px; gap: 2px 10px; }
+  .island .meta { font-size: 10.5px; margin-top: 4px; }
+  #panel.open ~ .island { right: calc(min(var(--panel), 100%) + 16px); }
+  @media (max-width: 700px) { .island, .hint { max-width: calc(100% - 32px); } .island { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .island { transition: none; } }
+
+  /* org chart */
+  .ocstage { position: absolute; inset: 0; overflow: hidden; cursor: grab; touch-action: none; background:
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 40px 40px, linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 40px 40px, var(--paper); }
+  .ocstage.dragging { cursor: grabbing; }
+  .canvas { position: absolute; left: 0; top: 0; transform-origin: 0 0; width: max-content; padding: 30px 60px 80px; }
+  .oc, .oc ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; }
+  .oc ul { padding-top: var(--gap); position: relative; }
+  .oc ul::before { content: ''; position: absolute; top: 0; left: 50%; width: 0; height: var(--gap); border-left: 1.5px solid var(--line-strong); }
+  .oc li { position: relative; padding: var(--gap) 6px 0; display: flex; flex-direction: column; align-items: center; }
+  .oc li::before, .oc li::after { content: ''; position: absolute; top: 0; right: 50%; width: 50%; height: var(--gap); border-top: 1.5px solid var(--line-strong); }
+  .oc li::after { right: auto; left: 50%; border-left: 1.5px solid var(--line-strong); }
+  .oc li:only-child::before, .oc li:only-child::after { display: none; }
+  .oc li:only-child { padding-top: 0; }
+  .oc li:first-child::before, .oc li:last-child::after { border: 0 none; }
+  .oc li:last-child::before { border-right: 1.5px solid var(--line-strong); border-radius: 0 6px 0 0; }
+  .oc li:first-child::after { border-radius: 6px 0 0 0; }
+  .oc > li { padding-top: 0; }
+  .oc > li::before, .oc > li::after { display: none; }
+  .oc li.collapsed > ul { display: none; }
+  .box { position: relative; width: 168px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 8px 10px 8px 12px; text-align: left; cursor: pointer; user-select: none; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .box::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: var(--radius) 0 0 var(--radius); background: var(--grey); }
+  .box.green::before { background: var(--green); } .box.yellow::before { background: var(--yellow); } .box.red::before { background: var(--red); } .box.grey::before { background: var(--grey); }
+  .box.red { border-color: var(--red); }
+  .box.selected { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent); }
+  .box .id { font-family: var(--mono); font-size: 11.5px; font-weight: 500; white-space: nowrap; }
+  .box .title { font-size: 12px; line-height: 1.3; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .box .foot { display: flex; align-items: center; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .box .status { font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .box.red .status { color: var(--red); font-weight: 600; }
+  .box.root { width: 210px; }
+  .box.root .title { font-family: var(--serif); font-weight: 600; font-size: 14px; }
+  .box.dom { width: 200px; }
+  .box.dom .title { font-family: var(--serif); font-weight: 600; font-size: 13.5px; }
+  .box.part { width: 160px; background: var(--paper); border-style: dashed; }
+  .box.ref { border-style: dashed; }
+  .box.ref .title { color: var(--muted); font-style: italic; }
+  .box.leaf { width: 150px; }
+  .box .drill { position: absolute; right: 6px; top: 6px; font-size: 10px; color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 0 4px; background: var(--surface); }
+  .kind { font-size: 9.5px; padding: 0 4px; border: 1px solid var(--line-strong); border-radius: 3px; color: var(--muted); }
+  .toggle { position: absolute; left: 50%; bottom: -11px; transform: translateX(-50%); width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-family: var(--mono); font-size: 10px; line-height: 1; display: grid; place-items: center; z-index: 1; padding: 0; }
+  li.collapsed > .box .toggle { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  /* sitemap view (scoped) */
+  .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; }
+  .seg .btn { border: 0; border-radius: 0; }
+  .seg .btn + .btn { border-left: 1px solid var(--line-strong); }
+  #sm-view .oc { gap: 40px; align-items: flex-start; }
+  #sm-view .oc ul { align-items: flex-start; }
+  #sm-view .oc ul.col { flex-direction: column; align-items: stretch; padding-top: 0; margin-top: var(--gap); border-left: 1.5px solid var(--line-strong); margin-left: 50%; transform: translateX(-1px); }
+  #sm-view .oc ul.col::before { display: none; }
+  #sm-view .oc ul.col > li { padding: 6px 0 0 18px; align-items: flex-start; flex-direction: row; }
+  #sm-view .oc ul.col > li::before, #sm-view .oc ul.col > li::after { display: none; }
+  #sm-view .oc ul.col > li > .pline { position: absolute; left: 0; top: 50%; width: 16px; border-top: 1.5px solid var(--line-strong); }
+  #sm-view .box { width: 190px; }
+  #sm-view .box::before { background: var(--line-strong); }
+  #sm-view .box .title { font-weight: 500; }
+  #sm-view .box .tag { font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  #sm-view .box.surface { width: 230px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  #sm-view .box.surface::before { display: none; }
+  #sm-view .box.surface .title { font-family: var(--serif); font-size: 15px; -webkit-line-clamp: 1; }
+  #sm-view .box.surface .id, #sm-view .box.surface .tag { color: var(--paper); opacity: .75; }
+  #sm-view .box.slot { width: 210px; }
+  #sm-view .box.slot .title { font-family: var(--serif); font-weight: 600; font-size: 13.5px; }
+  #sm-view .box.slot::before { background: var(--accent); }
+  #sm-view .box.module { width: 200px; border-style: dashed; background: var(--paper); }
+  #sm-view .box.page { width: 200px; }
+  #sm-view .box.page.d-core::before { background: var(--accent); }
+  #sm-view .box.noroute { border-style: dotted; }
+  #sm-view .box.noroute .id { font-style: italic; color: var(--muted); }
+  #sm-view .box.derived, #sm-view .box.slot.derived { border-color: var(--yellow); }
+  .chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+  .chip { font-size: 10.5px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); color: var(--ink); }
+  .chip.view { border-style: dashed; }
+  .chip.entered { border-color: var(--accent); color: var(--accent); }
+  .chip.planned { color: var(--muted); font-style: italic; }
+  .chip.derived { border-color: var(--yellow); }
+  .group { font-size: 9.5px; padding: 0 5px; border: 1px solid var(--line-strong); border-radius: 3px; color: var(--muted); }
+  .pbody li .path { font-family: var(--mono); font-size: 11.5px; }
+
+  /* sitemap free canvas */
+  .smstage { position: absolute; inset: 0; overflow: hidden; background: var(--paper); cursor: default; touch-action: none; }
+  .smstage.dots { background-image: radial-gradient(var(--line) 1px, transparent 1.2px); background-size: 24px 24px; }
+  .smstage.hand { cursor: grab; } .smstage.hand.dragging { cursor: grabbing; }
+  .smcanvas { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  #smlinks { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; width: 1px; height: 1px; }
+  #smlinks path { fill: none; stroke: var(--line-strong); stroke-width: 1.5px; }
+  #smlinks path.hi { stroke: var(--accent); stroke-width: 2px; }
+  #sm-view .card { position: absolute; margin: 0; }
+  #sm-view .card.dragging { box-shadow: 0 10px 28px rgba(0,0,0,.18); z-index: 5; cursor: grabbing; }
+  #sm-view .card.hidden { display: none; }
+  #sm-view .card .toggle { bottom: -11px; }
+  #sm-view .card .grip { position: absolute; right: 6px; top: 6px; font-size: 11px; color: var(--muted); opacity: 0; }
+  #sm-view .card:hover .grip { opacity: 1; }
+  #sm-view .card.moved { border-style: solid; box-shadow: inset 0 0 0 1px var(--accent-soft); }
+  /* Stitch-like canvas: quiet cards with a small caption above, a floating tool rail, a zoom badge */
+  #sm-view .card { border-color: var(--line); box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  #sm-view .card::before { width: 3px; }
+  #sm-view .card .cap { position: absolute; left: 0; top: -17px; font-family: var(--mono); font-size: 10px; color: var(--muted); white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  #sm-view .card .cap .ci { display: inline-block; width: 9px; height: 9px; border: 1.5px solid var(--muted); border-radius: 2px; vertical-align: -1px; margin-right: 4px; }
+  #sm-view .card.surface .cap, #sm-view .card.surface .cap .ci { color: var(--ink); border-color: var(--ink); font-weight: 600; }
+  #sm-view .card .id { display: none; }
+  #sm-view .card.noroute .cap { font-style: italic; }
+  .rail { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.12); z-index: 3; transition: right .28s cubic-bezier(.2,.7,.2,1); }
+  .rail .rbtn { width: 34px; height: 34px; border: 0; border-radius: 8px; background: transparent; font-size: 16px; line-height: 1; display: grid; place-items: center; color: var(--ink); }
+  .rail .rbtn:hover { background: var(--accent-soft); }
+  .rail .rbtn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+  .rail .rsep { height: 1px; background: var(--line); margin: 2px 4px; }
+  .stage:has(#panel.open) .rail { right: calc(min(var(--panel), 100%) + 16px); }
+  .zoombadge { position: absolute; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); font-family: var(--mono); font-size: 12px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 8px; z-index: 3; transition: right .28s cubic-bezier(.2,.7,.2,1); }
+  .stage:has(#panel.open) .zoombadge { right: calc(min(var(--panel), 100%) + 16px); }
+  .stage:has(#sm-view:not([hidden])) .island { display: none; }
+  @media (prefers-reduced-motion: reduce) { .rail, .zoombadge { transition: none; } }
+
+  /* pipeline view */
+  .pl-lane-bg { fill: var(--surface); fill-opacity: .55; stroke: var(--line); }
+  .pl-lane-label { font-family: var(--mono); font-size: 10.5px; fill: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+  .pl-edge { fill: none; stroke: var(--line-strong); stroke-width: 1.4px; }
+  .pl-edge.queue { stroke: var(--yellow); stroke-width: 2.2px; stroke-dasharray: 7 4; }
+  .pl-edge.relay { stroke: var(--accent); stroke-dasharray: 5 3; stroke-width: 1.8px; }
+  .pl-edge.report, .pl-edge.pull { stroke: var(--muted); stroke-dasharray: 2 3; }
+  .pl-edge.publish { stroke: var(--green); stroke-width: 2.2px; }
+  .pl-edge.read { stroke: var(--line-strong); stroke-opacity: .7; }
+  .pl-edge.mcp { stroke: var(--accent); stroke-dasharray: 8 3 2 3; }
+  .pl-edge.dim { opacity: .12; }
+  .pl-edge.hi { stroke-width: 2.6px; opacity: 1; }
+  .pl-arrowhead { fill: var(--line-strong); }
+  .pl-elabel { font-family: var(--mono); font-size: 8px; fill: var(--muted); paint-order: stroke; stroke: var(--paper); stroke-width: 3px; pointer-events: none; }
+  .pl-nolabels .pl-elabel { display: none; }
+  .plnode { box-sizing: border-box; width: 100%; height: 100%; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); padding: 5px 8px; font-family: var(--sans); font-size: 11.5px; line-height: 1.25; cursor: pointer; overflow: hidden; color: var(--ink); border-left-width: 4px; }
+  .plnode .plk { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .plnode .pll { font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .plnode.tier-t1 { border-left-color: var(--accent); } .plnode.tier-t2 { border-left-color: #8E6BD1; } .plnode.tier-t3 { border-left-color: var(--green); } .plnode.tier-t4 { border-left-color: var(--yellow); } .plnode.tier-db { border-left-color: var(--grey); } .plnode.tier-ext { border-left-color: var(--line-strong); border-style: dashed; }
+  .plnode.kind-store { background: var(--grey-soft); } .plnode.kind-transport { background: var(--accent-soft); } .plnode.kind-surface { background: var(--paper); } .plnode.kind-recipient { background: var(--green-soft); }
+  .plnode.selected { box-shadow: 0 0 0 2px var(--accent); }
+  .plnode.dim { opacity: .3; }
+  .tierdot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+  .pbody .edgerow { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; align-items: baseline; cursor: pointer; }
+  .pbody .edgerow:hover { color: var(--accent); }
+  .pbody .ek { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+
+  /* slide-in panel */
+  aside.panel { position: absolute; top: 0; right: 0; bottom: 0; width: min(var(--panel), 100%); background: var(--surface); border-left: 1px solid var(--line); box-shadow: -8px 0 28px rgba(0,0,0,.14); z-index: 4; display: flex; flex-direction: column; transform: translateX(100%); transition: transform .28s cubic-bezier(.2,.7,.2,1); visibility: hidden; }
+  aside.panel.open { transform: translateX(0); visibility: visible; }
+  @media (prefers-reduced-motion: reduce) { aside.panel { transition: none; } }
+  .phead { padding: 14px 16px 10px; border-bottom: 1px solid var(--line); }
+  .phead .row { display: flex; align-items: flex-start; gap: 8px; }
+  .phead .pid { font-family: var(--mono); color: var(--muted); font-size: 12px; flex: 1; }
+  .phead h2 { font-size: 16px; margin-top: 2px; }
+  .phead .close { border: 0; background: none; font-size: 20px; line-height: 1; color: var(--muted); padding: 0 2px; }
+  .phead .statebar { display: flex; gap: 8px; align-items: center; margin-top: 6px; font-size: 12px; flex-wrap: wrap; }
+  .word { font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; }
+  .word.green { color: var(--green); } .word.yellow { color: var(--yellow); } .word.red { color: var(--red); } .word.grey { color: var(--grey); }
+  .pactions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .local { border-bottom: 1px solid var(--line); background: var(--paper); }
+  .local .eyebrow { padding: 8px 16px 0; }
+  .local svg { width: 100%; height: 250px; display: block; }
+  .local .ln { cursor: pointer; }
+  .local .ln circle { stroke: var(--surface); stroke-width: 1.5px; }
+  .local .ln.center circle { stroke: var(--accent); stroke-width: 3px; }
+  .local .ln text { font-family: var(--mono); font-size: 9px; fill: var(--ink); pointer-events: none; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; }
+  .local .ln.center text { font-size: 10px; font-weight: 600; }
+  .local .ll { stroke: var(--line-strong); stroke-width: 1.2px; }
+  .local .ll.part { stroke: var(--accent); stroke-dasharray: 4 3; }
+  .local .ll.cm { stroke: var(--muted); stroke-dasharray: 2 4; }
+  .local .lpat { font-family: var(--mono); font-size: 7.5px; fill: var(--muted); pointer-events: none; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; }
+  .local .ln.nfr circle { stroke-dasharray: 2 1.5; }
+  .pbody { padding: 12px 16px 24px; overflow: auto; flex: 1; }
+  .pbody p { margin: 0 0 8px; font-size: 13px; }
+  .pbody h4 { margin: 12px 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .pbody ul { margin: 0; padding: 0; list-style: none; }
+  .pbody li { padding: 6px 0; border-top: 1px dashed var(--line); font-size: 12.5px; }
+  .pbody li:first-child { border-top: 0; }
+  .pbody li.linkrow { cursor: pointer; display: flex; gap: 8px; align-items: center; }
+  .pbody li.linkrow:hover { color: var(--accent); }
+  .pbody .acid { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
+  .pbody .path { font-family: var(--mono); font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 12.5px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; }
+  .empty { color: var(--muted); font-style: italic; }
+  .error { margin: 24px 20px; padding: 16px; border: 1px solid var(--red); border-radius: var(--radius); background: var(--red-soft); max-width: 70ch; }
+</style>
+
+<div class="toolbar" id="toolbar">
+  <h1 class="brand">Spec Graph <span class="eyebrow">zuri-next</span></h1>
+  <span class="seg"><button class="btn" id="mode-graph" aria-pressed="true">Graph</button><button class="btn" id="mode-sitemap" aria-pressed="false">Sitemap</button><button class="btn" id="mode-pipeline" aria-pressed="false">Pipeline</button></span>
+  <div class="crumbs" id="crumbs"></div>
+  <span class="spacer"></span>
+  <input id="q" type="search" placeholder="Find ID or title, then Enter" aria-label="Find">
+  <span class="sep"></span>
+  <span id="graph-tools">
+    <button class="btn" id="g-links" aria-pressed="true">Participation links</button>
+    <button class="btn" id="g-cm" aria-pressed="true">Context map</button>
+    <button class="btn" id="g-expand">Expand all features</button>
+    <button class="btn" id="g-collapse">Collapse</button>
+    <button class="btn" id="g-fit">Fit</button>
+  </span>
+  <span id="oc-tools" hidden>
+    <button class="btn" data-level="1">Fold</button>
+    <button class="btn" data-level="3">Unfold all</button>
+    <button class="btn" id="z-out" aria-label="Zoom out">−</button>
+    <span class="zoomv" id="zoomv">100%</span>
+    <button class="btn" id="z-in" aria-label="Zoom in">+</button>
+    <button class="btn" id="fit">Fit</button>
+  </span>
+  <span id="sm-tools" hidden>
+    <button class="btn" data-smlevel="1">Slots</button>
+    <button class="btn" data-smlevel="2">Pages</button>
+  </span>
+  <span id="pl-tools" hidden>
+    <button class="btn" id="pl-labels" aria-pressed="true">Edge labels</button>
+    <button class="btn" id="pl-fit">Fit</button>
+  </span>
+  <span class="sep"></span>
+  <button class="btn" id="theme" aria-label="Theme">◐ auto</button>
+</div>
+<div id="error" class="error" hidden></div>
+<div class="stage" id="stage">
+  <div class="view" id="graph-view"><svg class="graph" id="svg"></svg><div class="tip" id="tip" hidden></div><div class="hint">Scroll to zoom · drag to pan · click a node: panel slides in with its local graph · a feature also unfolds its FR / NFR nodes</div></div>
+  <div class="view" id="oc-view" hidden><div class="ocstage" id="ocstage"><div class="canvas" id="canvas"><ul class="oc" id="oc"></ul></div></div><div class="hint">Drag to pan · Ctrl + wheel to zoom · click a box for details · ● folds · ↓ drills into a feature</div></div>
+  <div class="view" id="sm-view" hidden>
+    <div class="smstage" id="smstage"><div class="smcanvas" id="smcanvas"><svg id="smlinks"></svg><div id="sm"></div></div></div>
+    <div class="rail" id="sm-rail">
+      <button class="rbtn" id="sm-tool-select" aria-pressed="true" title="Select / move cards (V)">↖</button>
+      <button class="rbtn" id="sm-tool-hand" aria-pressed="false" title="Pan (H, or hold Space)">✋</button>
+      <span class="rsep"></span>
+      <button class="rbtn" id="sm-in" title="Zoom in">+</button>
+      <button class="rbtn" id="sm-out" title="Zoom out">−</button>
+      <button class="rbtn" id="sm-fit" title="Fit to view">⤢</button>
+      <span class="rsep"></span>
+      <button class="rbtn" id="sm-undo" title="Undo move (Ctrl+Z)">↶</button>
+      <button class="rbtn" id="sm-redo" title="Redo move (Ctrl+Shift+Z)">↷</button>
+      <span class="rsep"></span>
+      <button class="rbtn" id="sm-auto" title="Auto layout: recompute every position from the tree">⊞</button>
+      <button class="rbtn" id="sm-copy" title="Copy the current positions as sitemap.layout.json">⎘</button>
+      <button class="rbtn" id="sm-dots" aria-pressed="false" title="Dot grid">·:</button>
+    </div>
+    <div class="zoombadge" id="sm-zoomv">100%</div>
+    <div class="hint" id="sm-hint">surface › slot › module › page · drag a card to place it · wheel = pan, Ctrl + wheel = zoom · click a card for the features behind it</div>
+  </div>
+  <div class="view" id="pl-view" hidden><svg class="graph" id="plsvg"></svg><div class="hint" id="pl-hint">GenesisRAG17 data flow · columns = where it runs · scroll to zoom · drag to pan · click a node for its neighbours, evidence and edges</div></div>
+  <aside class="panel" id="panel" aria-label="Details">
+    <div class="phead" id="phead"></div>
+    <div class="local" id="local"><div class="eyebrow">Local graph · click a neighbour to move</div><svg id="lsvg"></svg></div>
+    <div class="pbody" id="pbody"></div>
+  </aside>
+  <div class="island right"><div class="legend" id="legend"></div><div class="meta" id="meta">Loading spec-tree.json</div></div>
+</div>
+
+<script>
+(function () {
+  const $ = (s, el) => (el || document).querySelector(s);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const STATES = ['green', 'yellow', 'red', 'grey'];
+  let data, index = {}, feats = [], mode = 'graph', focus = null, selected = null;
+  const counts = (c) => STATES.map((s) => `<span class="cnt ${s} ${c[s] ? '' : 'zero'}" title="${c[s]} ${s}">${c[s]}</span>`).join('');
+  const sum = (c) => STATES.reduce((a, s) => a + c[s], 0);
+  const featOf = (rid) => 'FEAT-' + rid.split('-')[1];
+
+  /* ---------- index ---------- */
+  function buildIndex() {
+    for (const d of data.domains) { index[d.id] = d; for (const f of d.features) { index[f.id] = f; feats.push(f); for (const r of f.requirements) index[r.id] = r; for (const p of f.participants) { const rs = f.requirements.filter((r) => r.part === p.part); const pc = { green: 0, yellow: 0, red: 0, grey: 0 }; rs.forEach((r) => pc[r.state]++); index[p.part] = { id: p.part, title: p.role, state: f.state, reason: p.domain, isPart: true, feature: f.id, domain: p.domain, role: p.role, counts: pc, path: f.path }; } } }
+  }
+  const kindOf = (o) => (!o ? 'part' : o.features ? 'dom' : o.requirements ? 'feat' : o.acs ? 'req' : 'part');
+
+  /* ---------- main graph (dynamic) ---------- */
+  let sim, gZoom, gRoot, linkG, nodeG, showPartLinks = true;
+  let nodes = [], links = [];
+  const expanded = new Set();
+  const nodeById = () => Object.fromEntries(nodes.map((n) => [n.id, n]));
+  function baseGraph() {
+    // Seed every domain on its role ring at an even angle so the rings read as rings; the
+    // radial force keeps the radius and the seeded angle survives (the other forces are weak).
+    const W = $('#stage').clientWidth, H = $('#stage').clientHeight, SEED = { foundation: 55, platform: 210, business: 420 };
+    const byRole = {}; for (const d of data.domains) (byRole[d.role] ??= []).push(d);
+    const seat = {}; for (const [role, ds] of Object.entries(byRole)) ds.forEach((d, i) => { const a = -Math.PI / 2 + (i / ds.length) * Math.PI * 2 + (role === 'business' ? Math.PI / ds.length : 0); seat[d.id] = { x: W / 2 + Math.cos(a) * (SEED[role] ?? 420), y: H / 2 + Math.sin(a) * (SEED[role] ?? 420) }; });
+    nodes = [
+      ...data.domains.map((d) => ({ id: d.id, kind: 'dom', state: d.state, role: d.role, sub: d.subdomain, r: (d.subdomain === 'core' ? 20 : 15) + Math.sqrt(d.features.length) * 3.5, o: d, ...seat[d.id] })),
+      ...feats.map((f, i) => ({ id: f.id, kind: 'feat', state: f.state, r: 5 + Math.sqrt(f.requirements.length) * 1.6, o: f, x: (seat[f.owner]?.x ?? W / 2) + Math.cos(i) * 40, y: (seat[f.owner]?.y ?? H / 2) + Math.sin(i) * 40 })),
+    ];
+    links = [];
+    for (const f of feats) { links.push({ id: `${f.owner}>${f.id}`, source: f.owner, target: f.id, kind: 'own' }); for (const p of f.participants) if (p.domain !== f.owner && index[p.domain]) links.push({ id: `${p.domain}~${f.id}`, source: p.domain, target: f.id, kind: 'part' }); }
+    // context map (ADR-107): upstream → downstream between domains; "all" entries are not drawn (they would touch every node)
+    for (const e of data.contextMap || []) for (const u of e.upstream) for (const dn of e.downstream) if (index[u]?.features && index[dn]?.features) links.push({ id: `${u}=>${dn}`, source: u, target: dn, kind: 'cm', pattern: e.pattern });
+    expanded.clear();
+  }
+  function expandFeature(fid, quiet) {
+    if (expanded.has(fid)) return;
+    const f = index[fid]; const fn = nodeById()[fid]; if (!f || !fn) return;
+    expanded.add(fid);
+    f.requirements.forEach((r, i) => { const a = (i / f.requirements.length) * Math.PI * 2; nodes.push({ id: r.id, kind: 'req', state: r.state, r: r.kind === 'NFR' ? 3.2 : 3.8, o: r, x: fn.x + Math.cos(a) * 30, y: fn.y + Math.sin(a) * 30 }); links.push({ id: `${fid}>${r.id}`, source: fid, target: r.id, kind: 'req' }); });
+    if (!quiet) update();
+  }
+  function collapseFeature(fid, quiet) {
+    if (!expanded.has(fid)) return;
+    expanded.delete(fid);
+    const drop = new Set(index[fid].requirements.map((r) => r.id));
+    nodes = nodes.filter((n) => !drop.has(n.id)); links = links.filter((l) => !drop.has(l.target.id ?? l.target));
+    if (!quiet) update();
+  }
+  function update() {
+    const link = linkG.selectAll('line').data(links, (l) => l.id).join((enter) => enter.append('line').attr('class', (l) => 'link ' + l.kind).attr('stroke-width', (l) => (l.kind === 'own' ? 1.2 : 1)).attr('marker-end', (l) => (l.kind === 'cm' ? 'url(#arrow)' : null)));
+    link.append('title').text((l) => (l.kind === 'cm' ? `${l.source.id ?? l.source} → ${l.target.id ?? l.target} · ${l.pattern}` : ''));
+    const node = nodeG.selectAll('g.n').data(nodes, (n) => n.id).join((enter) => {
+      const g = enter.append('g').attr('class', (n) => `n ${n.kind}${n.kind === 'req' && n.o.kind === 'NFR' ? ' nfr' : ''}${n.kind === 'dom' ? ` role-${n.role} sub-${n.sub}` : ''}`).attr('data-id', (n) => n.id);
+      g.filter((n) => n.kind === 'dom' && n.role === 'foundation').append('circle').attr('class', 'halo').attr('r', (n) => n.r + 6);
+      g.append('circle').attr('r', (n) => n.r).attr('class', (n) => 'fill-' + n.state);
+      g.append('text').attr('text-anchor', 'middle').attr('dy', (n) => (n.kind === 'dom' ? 4 : n.r + 9)).text((n) => (n.kind === 'dom' ? n.o.title : n.id));
+      g.filter((n) => n.kind === 'dom').append('text').attr('class', 'sub').attr('text-anchor', 'middle').attr('dy', (n) => n.r + 12).text((n) => `${n.id.slice(4)} · ${n.sub} · ${n.role}`);
+      g.on('mouseenter', (e, n) => showTip(e, n)).on('mousemove', (e) => moveTip(e)).on('mouseleave', hideTip).on('click', (e, n) => { e.stopPropagation(); hideTip(); select(n.id); });
+      g.call(d3.drag().on('start', (e, n) => { if (!e.active) sim.alphaTarget(0.2).restart(); n.fx = n.x; n.fy = n.y; }).on('drag', (e, n) => { n.fx = e.x; n.fy = e.y; }).on('end', (e, n) => { if (!e.active) sim.alphaTarget(0); n.fx = null; n.fy = null; }));
+      return g;
+    });
+    node.classed('expanded', (n) => expanded.has(n.id));
+    sim.nodes(nodes); sim.force('link').links(links);
+    sim.on('tick', () => { link.attr('x1', (l) => l.source.x).attr('y1', (l) => l.source.y).attr('x2', (l) => l.target.x).attr('y2', (l) => l.target.y); node.attr('transform', (n) => `translate(${n.x},${n.y})`); });
+    sim.alpha(0.3).restart();
+    applyLinkToggle(); if (selected) highlightGraph(selected);
+  }
+  function renderGraph() {
+    const svg = d3.select('#svg'); svg.selectAll('*').remove();
+    const W = $('#stage').clientWidth, H = $('#stage').clientHeight;
+    svg.append('defs').html('<marker id="arrow" viewBox="0 -4 8 8" refX="8" refY="0" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,-4L8,0L0,4Z" class="arrowhead"></path></marker>');
+    gRoot = svg.append('g');
+    // Domains sit on rings by role (ADR-107): foundation at the centre, platform next, business outside.
+    const RING = { foundation: 0, platform: 210, business: 420 };
+    const rings = gRoot.append('g').attr('class', 'rings');
+    for (const [role, r] of [['foundation', 110], ['platform', RING.platform], ['business', RING.business]]) {
+      rings.append('circle').attr('class', 'ring ring-' + role).attr('cx', W / 2).attr('cy', H / 2).attr('r', r);
+      rings.append('text').attr('class', 'ringlabel').attr('x', W / 2).attr('y', H / 2 - r + 14).attr('text-anchor', 'middle').text(role.toUpperCase() + (role === 'foundation' ? ' · the core everything hangs from' : role === 'platform' ? ' · supplies the business contexts' : ' · owns business truth'));
+    }
+    linkG = gRoot.append('g'); nodeG = gRoot.append('g');
+    baseGraph();
+    sim = d3.forceSimulation()
+      .force('link', d3.forceLink().id((n) => n.id).distance((l) => ({ own: 46, part: 120, req: 22, cm: 220 }[l.kind])).strength((l) => ({ own: 0.9, part: 0.15, req: 1, cm: 0.02 }[l.kind])))
+      .force('charge', d3.forceManyBody().strength((n) => ({ dom: -1600, feat: -60, req: -18 }[n.kind])))
+      .force('collide', d3.forceCollide().radius((n) => n.r + ({ dom: 14, feat: 6, req: 2 }[n.kind])))
+      .force('radial', d3.forceRadial((n) => (n.kind === 'dom' ? RING[n.role] ?? 420 : 0), W / 2, H / 2).strength((n) => (n.kind === 'dom' ? 1 : 0)))
+      .force('x', d3.forceX(W / 2).strength(0.02)).force('y', d3.forceY(H / 2).strength(0.03));
+    gZoom = d3.zoom().scaleExtent([0.15, 6]).on('zoom', (e) => { if (!isFinite(e.transform.k) || !isFinite(e.transform.x)) return; gRoot.attr('transform', e.transform); svg.classed('zoomed-in', e.transform.k >= 1.6); });
+    svg.call(gZoom).on('dblclick.zoom', null);
+    svg.on('click', () => { hideTip(); closePanel(); });
+    update();
+    setTimeout(fitGraph, 900);
+  }
+  let showCm = true;
+  function applyLinkToggle() { d3.selectAll('.link.part').style('display', showPartLinks ? null : 'none'); d3.selectAll('.link.cm').style('display', showCm ? null : 'none'); }
+  function fitGraph() {
+    const svg = d3.select('#svg'); const b = gRoot.node().getBBox(); const W = $('#stage').clientWidth - ($('#panel').classList.contains('open') ? Math.min(400, W0()) : 0), H = $('#stage').clientHeight;
+    if (!b.width || !b.height) return;
+    const s = Math.min(3, 0.92 / Math.max(b.width / W, b.height / H));
+    if (!isFinite(s) || s <= 0) return;
+    svg.transition().duration(400).call(gZoom.transform, d3.zoomIdentity.translate(W / 2 - s * (b.x + b.width / 2), H / 2 - s * (b.y + b.height / 2)).scale(s));
+  }
+  const W0 = () => $('#stage').clientWidth;
+  function neighbours(id) {
+    const o = index[id]; const out = [];
+    if (o.features) {
+      o.features.forEach((f) => out.push({ id: f.id, kind: 'own' })); o.participates.forEach((p) => out.push({ id: p.feature, kind: 'part', via: p.part }));
+      for (const e of data.contextMap || []) {
+        if (e.upstream.includes(id)) for (const dn of e.downstream) if (index[dn]?.features) out.push({ id: dn, kind: 'cm', dir: 'downstream', pattern: e.pattern });
+        if (e.downstream.includes(id)) for (const u of e.upstream) if (index[u]?.features) out.push({ id: u, kind: 'cm', dir: 'upstream', pattern: e.pattern });
+      }
+    }
+    else if (o.requirements) { out.push({ id: o.owner, kind: 'own' }); o.participants.forEach((p) => { if (p.domain !== o.owner) out.push({ id: p.domain, kind: 'part', via: p.part }); }); o.requirements.forEach((r) => out.push({ id: r.id, kind: 'req' })); }
+    else if (o.acs) { const f = index[featOf(id)]; out.push({ id: f.id, kind: 'req' }); f.requirements.filter((r) => r.id !== id && (r.part || null) === (o.part || null)).forEach((r) => out.push({ id: r.id, kind: 'sib' })); }
+    return out;
+  }
+  function highlightGraph(id) {
+    const near = new Set([id, ...neighbours(id).map((n) => n.id)]);
+    d3.selectAll('.n').classed('dim', (n) => !near.has(n.id)).classed('selected', (n) => n.id === id);
+    d3.selectAll('.link').classed('dim', (l) => !(near.has(l.source.id) && near.has(l.target.id)));
+  }
+  function clearGraphHighlight() { d3.selectAll('.n').classed('dim', false).classed('selected', false); d3.selectAll('.link').classed('dim', false); }
+  function centerGraphOn(id) {
+    const n = nodeById()[id]; if (!n) return;
+    const panelW = $('#panel').classList.contains('open') ? Math.min(400, W0()) : 0;
+    const W = W0() - panelW, H = $('#stage').clientHeight; const t = d3.zoomTransform($('#svg')); const s = Math.max(1.4, t.k);
+    d3.select('#svg').transition().duration(450).call(gZoom.transform, d3.zoomIdentity.translate(W / 2 - s * n.x, H / 2 - s * n.y).scale(s));
+  }
+  function showTip(e, n) {
+    const o = n.o; const t = $('#tip'); t.hidden = false;
+    const extra = o.features ? `${o.features.length} features · ${sum(o.counts)} requirements` : o.requirements ? `${o.owner} · ${o.requirements.length} requirements${o.participants.length ? ' · cross-domain' : ''}` : `${o.kind} · ${o.delivery} · ${o.acs.length} AC · ${o.tcs.length} TC`;
+    t.innerHTML = `<div class="tid">${esc(o.id)}</div><div class="tt">${esc(o.title)}</div><div><span class="dot ${o.state}"></span>${esc(o.reason || o.status)} · ${esc(extra)}</div>${o.counts ? `<div>${counts(o.counts)}</div>` : ''}<div class="cta">${n.kind === 'feat' ? (expanded.has(n.id) ? 'Click: details · fold in the panel' : 'Click: details + unfold FR / NFR') : 'Click for details and local graph'}</div>`;
+    moveTip(e);
+  }
+  function moveTip(e) { const t = $('#tip'); const r = $('#stage').getBoundingClientRect(); let x = e.clientX - r.left + 14, y = e.clientY - r.top + 14; if (x + t.offsetWidth > r.width - 8) x = e.clientX - r.left - t.offsetWidth - 14; if (y + t.offsetHeight > r.height - 8) y = e.clientY - r.top - t.offsetHeight - 14; t.style.left = x + 'px'; t.style.top = y + 'px'; }
+  function hideTip() { $('#tip').hidden = true; }
+
+  /* ---------- select: slide panel + local graph ---------- */
+  function select(id, opts = {}) {
+    const o = index[id]; if (!o) return;
+    if (mode === 'sitemap' || mode === 'pipeline') { if (mode === 'pipeline') plClear(); mode = 'graph'; focus = null; showViews('graph'); crumbs(); }
+    if (selected && selected !== id) unpin(selected);
+    selected = id;
+    if (mode === 'graph') {
+      if (o.requirements && !expanded.has(id)) expandFeature(id);
+      if (o.acs && !expanded.has(featOf(id))) expandFeature(featOf(id));
+      pin(id); highlightGraph(id);
+      if (!opts.noCenter) { centerGraphOn(id); clearTimeout(select.t); select.t = setTimeout(() => { if (selected === id) centerGraphOn(id); }, 900); }
+    } else {
+      document.querySelectorAll('.box.selected').forEach((n) => n.classList.remove('selected'));
+      document.querySelectorAll(`.box[data-id="${CSS.escape(id)}"]`).forEach((n) => n.classList.add('selected'));
+    }
+    renderPanel(o); $('#panel').classList.add('open');
+  }
+  const pin = (id) => { const n = nodeById()[id]; if (n) { n.fx = n.x; n.fy = n.y; } };
+  const unpin = (id) => { const n = nodeById()[id]; if (n) { n.fx = null; n.fy = null; } };
+  function closePanel() { $('#panel').classList.remove('open'); if (selected) unpin(selected); selected = null; if (mode === 'graph') clearGraphHighlight(); if (mode === 'pipeline' && pl.rendered) plClear(); document.querySelectorAll('.box.selected').forEach((n) => n.classList.remove('selected')); }
+
+  function renderLocal(o, nbOverride, onClick) {
+    const svg = d3.select('#lsvg'); svg.selectAll('*').remove();
+    const W = $('#local').clientWidth || 380, H = 250, cx = W / 2, cy = H / 2;
+    const nb = (nbOverride || (o.isPart ? [] : neighbours(o.id))).map((n) => ({ ...n, o: n.o || index[n.id] || { id: n.id, title: n.id, state: 'grey' } }));
+    const go = onClick || select;
+    if (!nb.length) { svg.append('text').attr('x', cx).attr('y', cy).attr('text-anchor', 'middle').attr('fill', 'var(--muted)').attr('font-size', 12).text('No neighbours'); return; }
+    const rings = nb.length > 18 ? 2 : 1; const R1 = Math.min(W, H) / 2 - 34, R2 = R1 - 38;
+    const pts = nb.map((n, i) => { const ring = rings === 2 && i % 2 ? R2 : R1; const a = -Math.PI / 2 + (i / nb.length) * Math.PI * 2; return { ...n, x: cx + Math.cos(a) * ring, y: cy + Math.sin(a) * ring, a }; });
+    svg.append('g').selectAll('line').data(pts).join('line').attr('class', (p) => 'll ' + (p.kind === 'part' ? 'part' : p.kind === 'cm' ? 'cm' : '')).attr('x1', cx).attr('y1', cy).attr('x2', (p) => p.x).attr('y2', (p) => p.y);
+    svg.append('g').selectAll('text').data(pts.filter((p) => p.kind === 'cm')).join('text').attr('class', 'lpat').attr('x', (p) => (cx + p.x) / 2).attr('y', (p) => (cy + p.y) / 2 - 3).attr('text-anchor', 'middle').text((p) => `${p.dir === 'upstream' ? '◂' : '▸'} ${p.pattern}`);
+    const g = svg.append('g').selectAll('g').data(pts).join('g').attr('class', (p) => `ln ${kindOf(p.o)}${p.o.kind === 'NFR' ? ' nfr' : ''}`).attr('transform', (p) => `translate(${p.x},${p.y})`).on('click', (e, p) => go(p.id));
+    g.append('circle').attr('r', (p) => ({ dom: 9, feat: 7, req: 5 }[kindOf(p.o)])).attr('class', (p) => 'fill-' + p.o.state);
+    g.append('text').attr('dy', (p) => (Math.sin(p.a) > 0.3 ? 16 : Math.sin(p.a) < -0.3 ? -10 : 3.5)).attr('dx', (p) => (Math.abs(Math.sin(p.a)) > 0.3 ? 0 : Math.cos(p.a) > 0 ? 11 : -11)).attr('text-anchor', (p) => (Math.abs(Math.sin(p.a)) > 0.3 ? 'middle' : Math.cos(p.a) > 0 ? 'start' : 'end')).text((p) => (p.o?.features ? p.o.title : p.id.replace(/^(N?FR)-\d{3}-/, '$1·')));
+    g.append('title').text((p) => `${p.id} — ${p.o.title} (${p.o.reason || p.o.status})`);
+    const c = svg.append('g').attr('class', `ln center ${kindOf(o)}`).attr('transform', `translate(${cx},${cy})`);
+    c.append('circle').attr('r', 13).attr('class', 'fill-' + o.state);
+    c.append('text').attr('dy', 26).attr('text-anchor', 'middle').text(o.features ? o.title : o.id);
+  }
+  function cmRows(id) {
+    const rows = [];
+    for (const e of data.contextMap || []) {
+      if (e.upstream.includes(id) || (e.upstream.includes('all') && !e.downstream.includes(id))) rows.push(['upstream of', e.downstream, e]);
+      if (e.downstream.includes(id) || (e.downstream.includes('all') && !e.upstream.includes(id))) rows.push(['downstream of', e.upstream, e]);
+    }
+    if (!rows.length) return '';
+    const ctx = (c) => (index[c] ? `<span class="linkrow" style="cursor:pointer;display:inline" data-select="${esc(c)}"><span class="mono">${esc(c)}</span></span>` : `<span class="mono">${esc(c)}</span>`);
+    return `<dt>Context map</dt><dd><ul style="margin:0">${rows.map(([dir, cs, e]) => `<li style="padding:4px 0"><span class="acid">${esc(dir)}</span>${cs.map(ctx).join(', ')} · <b>${esc(e.pattern)}</b>${e.note ? `<div style="color:var(--muted);font-size:12px">${esc(e.note)}</div>` : ''}<div class="acid">evidence: ${esc(e.evidence.join(', '))}</div></li>`).join('')}</ul></dd>`;
+  }
+  function renderPanel(o) {
+    const k = kindOf(o);
+    const actions = [];
+    if (k === 'dom' || k === 'feat') actions.push(`<button class="btn small" data-go="${esc(o.id)}">Open as org chart</button>`);
+    if (k === 'feat' && mode === 'graph') actions.push(expanded.has(o.id) ? `<button class="btn small" data-fold="${esc(o.id)}">Fold FR / NFR</button>` : `<button class="btn small" data-unfold="${esc(o.id)}">Unfold FR / NFR</button>`);
+    if (k === 'req') actions.push(`<button class="btn small" data-select="${esc(featOf(o.id))}">Go to ${esc(featOf(o.id))}</button>`);
+    if (mode === 'chart') actions.push(`<button class="btn small" data-graph="${esc(o.id)}">Show in graph</button>`);
+    $('#phead').innerHTML = `<div class="row"><div class="pid">${esc(o.id)}${o.kind ? ' · ' + o.kind : ''}</div><button class="close" id="close" aria-label="Close">×</button></div><h2>${esc(o.title)}</h2><div class="statebar"><span class="dot ${o.state}"></span><span class="word ${o.state}">${esc(o.reason || o.status || o.state)}</span>${o.counts ? counts(o.counts) : ''}</div><div class="pactions">${actions.join('')}</div>`;
+    $('#close').addEventListener('click', closePanel);
+    renderLocal(o);
+    let body;
+    const row = (x, extra = '') => `<li class="linkrow" data-select="${esc(x.id)}"><span class="dot ${x.state}"></span><span class="mono">${esc(x.id)}</span><span style="flex:1">${esc(x.title)}</span>${extra}</li>`;
+    if (k === 'req') body = `<p>${esc(o.statement || '')}</p><dl class="kv"><dt>Delivery</dt><dd>${esc(o.delivery)}</dd>${o.part ? `<dt>Part</dt><dd class="mono">${esc(o.part)} · ${esc(o.owner || '')}</dd>` : ''}<dt>Test cases</dt><dd class="mono">${o.tcs.length ? o.tcs.map(esc).join(', ') : '<span class="empty">none</span>'}</dd></dl><h4>Acceptance criteria · ${o.acs.length}</h4><ul>${o.acs.map((a) => `<li><span class="acid">${esc(a.id)}</span>${esc(a.text)}</li>`).join('') || '<li class="empty">none</li>'}</ul>`;
+    else if (k === 'feat') body = `<dl class="kv"><dt>Type</dt><dd>${esc(o.type)}</dd><dt>Owner</dt><dd><span class="linkrow" style="cursor:pointer" data-select="${esc(o.owner)}" class="mono">${esc(o.owner)}</span></dd><dt>Runtime</dt><dd class="mono">${esc(o.runtime || '')}</dd><dt>Spec status</dt><dd>${esc(o.status)}</dd><dt>Delivery</dt><dd>${esc(o.delivery)}</dd></dl>${o.participants.length ? `<h4>Participants</h4><ul>${o.participants.map((x) => `<li class="linkrow" data-select="${esc(x.domain)}"><span class="acid">${esc(x.part)}</span><span class="mono">${esc(x.domain)}</span><span style="flex:1">${esc(x.role)}</span></li>`).join('')}</ul>` : ''}<h4>Requirements · ${o.requirements.length}</h4><ul>${o.requirements.map((r) => row(r, `<span class="kind">${r.kind}</span>`)).join('')}</ul>${(() => { const pg = pagesOfFeature(o.id); return pg.length ? `<h4>Where it appears in the product · ${pg.length}</h4><ul>${pg.map((p) => `<li class="linkrow" data-sm="${esc(p.key)}"><span class="path">${esc(p.path || '—')}</span><span style="flex:1">${esc(p.label)}</span><span class="acid">${esc(p.slot)}</span></li>`).join('')}</ul>` : ''; })()}`;
+    else if (k === 'dom') body = `<dl class="kv"><dt>Subdomain</dt><dd><b>${esc(o.subdomain)}</b> — ${esc(data.classification?.subdomain?.[o.subdomain] || '')}</dd><dt>Role</dt><dd><b>${esc(o.role)}</b> — ${esc(data.classification?.role?.[o.role] || '')}</dd>${cmRows(o.id)}<dt>README status</dt><dd>${esc(o.status || 'unknown')}</dd><dt>Owned features</dt><dd>${o.features.length}</dd><dt>Participates in</dt><dd>${o.participates.length}</dd></dl><h4>Owned features · ${o.features.length}</h4><ul>${o.features.map((f) => row(f, counts(f.counts))).join('')}</ul>${o.participates.length ? `<h4>Participates in</h4><ul>${o.participates.map((p) => `<li class="linkrow" data-select="${esc(p.feature)}"><span class="acid">${esc(p.part)}</span><span class="mono">${esc(p.feature)}</span><span style="flex:1">${esc(p.role)}</span></li>`).join('')}</ul>` : ''}`;
+    else body = `<dl class="kv"><dt>Feature</dt><dd class="mono">${esc(o.feature)}</dd><dt>Domain</dt><dd class="mono">${esc(o.domain)}</dd><dt>Role</dt><dd>${esc(o.role)}</dd></dl>`;
+    $('#pbody').innerHTML = body + `<h4>File</h4><div class="path">${esc(o.path || '')}</div>`;
+  }
+
+  /* ---------- org chart ---------- */
+  const view = { x: 0, y: 0, s: 1 };
+  const ocstage = $('#ocstage'), canvas = $('#canvas');
+  const box = (o, cls, extra = '', childCount = 0, drill = false) => `<button class="box ${cls} ${o.state}" data-id="${esc(o.id)}" type="button"><span class="id">${esc(o.id)}</span><div class="title">${esc(o.title)}</div><div class="foot">${extra}</div>${drill ? `<span class="drill" data-drill="${esc(o.id)}" title="open this feature as the chart root">↓</span>` : ''}${childCount ? `<span class="toggle" data-toggle="1" title="fold / unfold">${childCount}</span>` : ''}</button>`;
+  const reqLi = (r) => `<li data-kind="req" data-id="${esc(r.id)}">${box(r, 'leaf', `<span class="kind">${r.kind}</span><span class="status">${esc(r.reason)}</span>`)}</li>`;
+  function featChildren(f, part) {
+    if (part) return f.requirements.filter((r) => r.part === part).map(reqLi).join('');
+    if (f.participants.length) return f.participants.map((p) => { const rs = f.requirements.filter((r) => r.part === p.part); const pi = index[p.part]; return `<li class="collapsed" data-kind="part" data-id="${esc(p.part)}">${box(pi, 'part', `<span class="status">${esc(p.domain)}</span>${counts(pi.counts)}`, rs.length)}<ul>${rs.map(reqLi).join('')}</ul></li>`; }).join('') + f.requirements.filter((r) => !r.part).map(reqLi).join('');
+    return f.requirements.map(reqLi).join('');
+  }
+  function featLi(f, part, isRoot) {
+    const c = part ? index[part].counts : f.counts;
+    const n = part ? sum(c) : (f.participants.length ? f.participants.length + f.requirements.filter((r) => !r.part).length : f.requirements.length);
+    const o = part ? { ...f, title: `${f.title} · via ${part}` } : f;
+    return `<li class="${isRoot ? '' : 'collapsed'}" data-kind="feat" data-id="${esc(f.id)}${part ? '@' + esc(part) : ''}">${box(o, isRoot ? 'root' : (part ? 'ref' : ''), `<span class="status">${esc(f.reason)}</span>${counts(c)}`, n, !isRoot)}<ul>${featChildren(f, part)}</ul></li>`;
+  }
+  function renderChart(id) {
+    const o = index[id]; let html;
+    if (o.features) { const kids = o.features.map((f) => featLi(f)).join('') + o.participates.map((p) => featLi(index[p.feature], p.part)).join(''); html = `<li data-kind="dom" data-id="${esc(o.id)}">${box(o, 'root dom', `<span class="status">${esc(o.status || 'unknown')} · ${o.features.length} feat</span>${counts(o.counts)}`, 0)}<ul>${kids}</ul></li>`; }
+    else html = featLi(o, null, true);
+    $('#oc').innerHTML = html; view.s = 1; view.x = 20; view.y = 12; applyView(); requestAnimationFrame(fitChart);
+  }
+  function applyView() { canvas.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.s})`; $('#zoomv').textContent = Math.round(view.s * 100) + '%'; }
+  function fitChart() { const w = canvas.scrollWidth, h = canvas.scrollHeight, W = ocstage.clientWidth, H = ocstage.clientHeight; view.s = Math.min(1.25, Math.max(0.45, Math.min(W / w, H / h) * 0.98)); view.x = Math.max(12, (W - w * view.s) / 2); view.y = 8; applyView(); }
+  function zoomAt(f, cx, cy) { const ns = Math.min(3, Math.max(0.2, view.s * f)); view.x = cx - (cx - view.x) * (ns / view.s); view.y = cy - (cy - view.y) * (ns / view.s); view.s = ns; applyView(); }
+  function setLevel(n) { for (const li of document.querySelectorAll('#oc li')) { if (li.parentElement.id === 'oc') continue; const k = li.dataset.kind; li.classList.toggle('collapsed', (k === 'feat' || k === 'part') && n < 3); } requestAnimationFrame(fitChart); }
+  function expandTo(li) { let p = li.parentElement.closest('li'); while (p) { p.classList.remove('collapsed'); p = p.parentElement.closest('li'); } }
+  function centerChartOn(el) { const r = el.getBoundingClientRect(), s = ocstage.getBoundingClientRect(); view.x += (s.left + s.width / 2) - (r.left + r.width / 2); view.y += (s.top + s.height / 3) - (r.top + r.height / 2); applyView(); }
+
+  /* ---------- sitemap (surface › slot › module › page › view) ---------- */
+  // Free canvas: every card is absolutely positioned; positions come from auto layout, then from the
+  // optional authored sitemap.layout.json, then from what the viewer dragged (localStorage). Links are
+  // an SVG layer redrawn from card positions, so a card can be moved anywhere and stays connected.
+  const sm = { data: null, nodes: {}, rendered: false, view: { x: 0, y: 0, s: 1 }, layout: {}, authored: {}, local: {}, cards: {}, parent: {}, children: {}, level: 2, hand: false };
+  const smstage = $('#smstage'), smcanvas = $('#smcanvas'), smlinks = $('#smlinks');
+  const SM_LS = 'zuri-plans-sitemap-layout';
+  const smCounts = (fs) => { const c = { green: 0, yellow: 0, red: 0, grey: 0 }; (fs || []).forEach((f) => c[f.state]++); return c; };
+  function smApply() { smcanvas.style.transform = `translate(${sm.view.x}px, ${sm.view.y}px) scale(${sm.view.s})`; $('#sm-zoomv').textContent = Math.round(sm.view.s * 100) + '%'; }
+  function smBounds() { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; for (const [k, el] of Object.entries(sm.cards)) { if (el.classList.contains('hidden')) continue; const p = sm.layout[k]; x0 = Math.min(x0, p.x); y0 = Math.min(y0, p.y); x1 = Math.max(x1, p.x + el.offsetWidth); y1 = Math.max(y1, p.y + el.offsetHeight); } return x0 === Infinity ? { x0: 0, y0: 0, x1: 100, y1: 100 } : { x0, y0, x1, y1 }; }
+  function smFit() { const b = smBounds(); const W = smstage.clientWidth - ($('#panel').classList.contains('open') ? Math.min(400, smstage.clientWidth) : 0), H = smstage.clientHeight; const w = b.x1 - b.x0 + 80, h = b.y1 - b.y0 + 80; sm.view.s = Math.min(1.25, Math.max(0.15, Math.min(W / w, H / h))); sm.view.x = (W - w * sm.view.s) / 2 - (b.x0 - 40) * sm.view.s; sm.view.y = (H - h * sm.view.s) / 2 - (b.y0 - 40) * sm.view.s; smApply(); }
+  function smZoomAt(f, cx, cy) { const ns = Math.min(3, Math.max(0.15, sm.view.s * f)); sm.view.x = cx - (cx - sm.view.x) * (ns / sm.view.s); sm.view.y = cy - (cy - sm.view.y) * (ns / sm.view.s); sm.view.s = ns; smApply(); }
+  function smCenterOn(el) { const r = el.getBoundingClientRect(), s = smstage.getBoundingClientRect(); const panelW = $('#panel').classList.contains('open') ? Math.min(400, s.width) : 0; sm.view.x += (s.left + (s.width - panelW) / 2) - (r.left + r.width / 2); sm.view.y += (s.top + s.height / 3) - (r.top + r.height / 2); smApply(); }
+  const smKind = (key) => key.split(':')[0];
+  function smSetLevel(n) {
+    sm.level = n;
+    for (const [k, el] of Object.entries(sm.cards)) { const kind = smKind(k); const fold = (kind === 'page' || kind === 'module' || kind === 'entry') && n < 2; el.classList.toggle('hidden', fold); }
+    for (const [k, el] of Object.entries(sm.cards)) if (smKind(k) === 'slot' || smKind(k) === 'surface') el.classList.toggle('folded', n < 2 && (sm.children[k] || []).length > 0);
+    document.querySelectorAll('.btn[data-smlevel]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.smlevel === n)));
+    smDrawLinks(); requestAnimationFrame(smFit);
+  }
+  function smToggle(key) { const kids = sm.children[key] || []; const open = kids.some((k) => sm.cards[k].classList.contains('hidden')); const walk = (k) => { for (const c of sm.children[k] || []) { sm.cards[c].classList.toggle('hidden', !open); if (!open) walk(c); } }; walk(key); sm.cards[key].classList.toggle('folded', !open); smDrawLinks(); }
+  function smExpandTo(key) { let p = sm.parent[key]; while (p) { for (const c of sm.children[p] || []) sm.cards[c].classList.remove('hidden'); sm.cards[p].classList.remove('folded'); p = sm.parent[p]; } smDrawLinks(); }
+  function smAutoLayout() {
+    // surfaces on a row; web console's slots on a row below it; each slot's modules then pages stacked in a column
+    const L = {}; const COL = 250, GAP = 12, X0 = 40, Y0 = 40;
+    const console_ = sm.data.surfaces.find((s) => s.id === 'web-console');
+    const h = (k) => sm.cards[k].offsetHeight;
+    const slotKeys = (sm.children['surface:web-console'] || []);
+    let x = X0; const slotY = Y0 + h('surface:web-console') + 90;
+    for (const sk of slotKeys) { L[sk] = { x, y: slotY }; let y = slotY + h(sk) + 34; for (const ck of sm.children[sk] || []) { L[ck] = { x: x + 12, y }; y += h(ck) + GAP; } x += COL; }
+    L['surface:web-console'] = { x: X0 + Math.max(0, (slotKeys.length * COL - COL) / 2), y: Y0 };
+    x += 60;
+    for (const sf of sm.data.surfaces) { if (sf.id === 'web-console') continue; const k = 'surface:' + sf.id; L[k] = { x, y: Y0 }; let y = Y0 + h(k) + 34; for (const ck of sm.children[k] || []) { L[ck] = { x: x + 12, y }; y += h(ck) + GAP; } x += COL + 20; }
+    return L;
+  }
+  function smPlace() { for (const [k, el] of Object.entries(sm.cards)) { const p = sm.layout[k] || { x: 0, y: 0 }; el.style.left = p.x + 'px'; el.style.top = p.y + 'px'; el.classList.toggle('moved', !!sm.local[k]); } smDrawLinks(); }
+  function smDrawLinks() {
+    const paths = [];
+    for (const [child, parent] of Object.entries(sm.parent)) {
+      const a = sm.cards[parent], b = sm.cards[child]; if (!a || !b || a.classList.contains('hidden') || b.classList.contains('hidden')) continue;
+      const pa = sm.layout[parent], pb = sm.layout[child];
+      const ax = pa.x + a.offsetWidth / 2, ay = pa.y + a.offsetHeight, bx = pb.x + b.offsetWidth / 2, by = pb.y;
+      const below = by >= ay;
+      const d = below ? `M${ax},${ay} C${ax},${ay + (by - ay) / 2} ${bx},${by - (by - ay) / 2} ${bx},${by}` : `M${pa.x + a.offsetWidth},${pa.y + a.offsetHeight / 2} C${pa.x + a.offsetWidth + 60},${pa.y + a.offsetHeight / 2} ${pb.x - 60},${pb.y + b.offsetHeight / 2} ${pb.x},${pb.y + b.offsetHeight / 2}`;
+      paths.push(`<path d="${d}" data-child="${esc(child)}" data-parent="${esc(parent)}"></path>`);
+    }
+    smlinks.innerHTML = paths.join('');
+  }
+  function smSaveLocal() { try { localStorage.setItem(SM_LS, JSON.stringify(sm.local)); } catch {} }
+  function renderSitemap() {
+    const d = sm.data; const core = new Set(data.domains.filter((x) => x.subdomain === 'core').map((x) => x.id));
+    sm.nodes = {}; sm.cards = {}; sm.parent = {}; sm.children = {};
+    const html = [];
+    const card = (key, parentKey, cls, id, title, foot = '', extra = '', childCount = 0) => { if (parentKey) { sm.parent[key] = parentKey; (sm.children[parentKey] ??= []).push(key); } html.push(`<button class="box card ${cls}" data-key="${esc(key)}" type="button"><span class="cap"><span class="ci"></span>${esc(id)}</span><span class="grip" title="drag to move">⠿</span><div class="id">${esc(id)}</div><div class="title">${esc(title)}</div>${extra}<div class="foot">${foot}</div>${childCount ? `<span class="toggle" data-toggle="1" title="fold / unfold">${childCount}</span>` : ''}</button>`); };
+    const dtag = (x) => (x ? `<span class="tag">${esc(x)}</span>` : '');
+    const viewChip = (v) => `<span class="chip view ${v.planned ? 'planned' : ''} ${v.derived ? 'derived' : ''} ${v.entered ? 'entered' : ''}" title="${esc(v.path || (v.evidence || []).join(', '))}">${esc(v.label)}${v.planned ? ' · planned' : ''}</span>`;
+    for (const sf of d.surfaces) {
+      const k = 'surface:' + sf.id; sm.nodes[k] = { kind: 'surface', ...sf };
+      card(k, null, 'surface', 'surface', sf.label, `<span class="tag">${esc(sf.users)}</span>`, '', sf.id === 'web-console' ? d.console.slots.length : (sf.entries || []).length);
+      if (sf.id === 'web-console') {
+        if ((d.shell || []).length) { sm.nodes['shell'] = { kind: 'shell', label: 'Shell controls', entries: d.shell }; card('shell', k, 'module', 'every shell route', 'Shell controls', '', `<div class="chips">${d.shell.map((e) => `<span class="chip">${esc(e.label)}</span>`).join('')}</div>`); }
+        for (const s of d.console.slots.filter((s) => s.pages.length || s.modules.length)) {
+          const key = 'slot:' + s.key; sm.nodes[key] = { kind: 'slot', ...s };
+          card(key, k, 'slot' + (s.authored === false ? ' derived' : ''), s.key.startsWith('__') ? s.label : `/${s.key}`, s.label, `${dtag(s.domain)}${s.group ? `<span class="group">${esc(s.group)}</span>` : ''}${counts(s.counts)}`, '', s.pages.length + s.modules.length);
+          s.modules.forEach((m, i) => { const mk = `module:${s.key}:${i}`; sm.nodes[mk] = { kind: 'module', slot: s, ...m }; card(mk, key, 'module', 'module', m.label, `<span class="tag">evidence ${esc(m.evidence.join(', '))}</span>`, m.views.length ? `<div class="chips">${m.views.map((v) => viewChip({ ...v, entered: v.label === m.entered_at })).join('')}</div>` : ''); });
+          s.pages.forEach((p, i) => { const pk = 'page:' + (p.path || `${s.key}#${i}`); sm.nodes[pk] = { kind: 'page', slot: s, key: pk, ...p }; card(pk, key, 'page' + (p.domain && core.has(p.domain) ? ' d-core' : '') + (p.path ? '' : ' noroute') + (p.derived ? ' derived' : ''), p.path || 'route not stated in the spec', p.label, `${dtag(p.domain)}${counts(p.counts)}${p.derived ? '<span class="group">derived</span>' : ''}`, p.views.length ? `<div class="chips">${p.views.map(viewChip).join('')}</div>` : ''); });
+        }
+      } else (sf.entries || []).forEach((e, i) => { const ek = `entry:${sf.id}:${i}`; sm.nodes[ek] = { kind: 'entry', surface: sf, ...e, counts: smCounts(e.features) }; card(ek, k, 'page', 'entry', e.label, counts(smCounts(e.features))); });
+    }
+    $('#sm').innerHTML = html.join('');
+    for (const el of document.querySelectorAll('#sm .card')) sm.cards[el.dataset.key] = el;
+    try { sm.local = JSON.parse(localStorage.getItem(SM_LS) || '{}') || {}; } catch { sm.local = {}; }
+    const auto = smAutoLayout();
+    sm.layout = {}; for (const k of Object.keys(sm.cards)) sm.layout[k] = sm.local[k] || sm.authored[k] || auto[k] || { x: 0, y: 0 };
+    smPlace(); sm.rendered = true;
+  }
+  function pagesOfFeature(fid) {
+    const out = []; if (!sm.data) return out;
+    for (const s of sm.data.console.slots) s.pages.forEach((p, i) => { const key = 'page:' + (p.path || `${s.key}#${i}`); if (p.features.some((f) => f.id === fid)) out.push({ key, label: p.label, path: p.path, slot: s.label }); for (const v of p.views) if ((v.features || []).some((f) => f.id === fid)) out.push({ key, label: `${p.label} › ${v.label}`, path: v.path || p.path, slot: s.label }); });
+    for (const sf of sm.data.surfaces) (sf.entries || []).forEach((e, i) => { if ((e.features || []).some((f) => f.id === fid)) out.push({ key: `entry:${sf.id}:${i}`, label: e.label, path: null, slot: sf.label }); });
+    return out;
+  }
+  function showSmPanel(key) {
+    const o = sm.nodes[key]; if (!o) return;
+    document.querySelectorAll('.box.selected').forEach((b) => b.classList.remove('selected'));
+    document.querySelector(`#sm .box[data-key="${CSS.escape(key)}"]`)?.classList.add('selected');
+    const featList = (fs) => (fs?.length ? `<ul>${fs.map((f) => `<li class="linkrow" data-select="${esc(f.id)}"><span class="dot ${f.state}"></span><span class="mono">${esc(f.id)}</span><span style="flex:1">${esc(f.title)}</span><span class="tag mono" style="font-size:10px;color:var(--muted)">${esc(f.owner)}</span></li>`).join('')}</ul>` : '<p class="empty">No feature cites this page.</p>');
+    let title, id, body, all = [];
+    if (o.kind === 'page') { title = o.label; id = o.path || 'route not stated in the specification'; all = [...new Map([...o.features, ...o.views.flatMap((v) => v.features || [])].map((f) => [f.id, f])).values()]; body = `<dl class="kv"><dt>Slot</dt><dd>${esc(o.slot.label)}</dd><dt>Domain</dt><dd>${o.domain ? `<span class="linkrow mono" style="cursor:pointer;display:inline" data-select="${esc(o.domain)}">${esc(o.domain)}</span>` : ''}</dd>${o.note ? `<dt>Note</dt><dd>${esc(o.note)}</dd>` : ''}${o.evidence?.length ? `<dt>Evidence</dt><dd class="mono">${esc(o.evidence.join(', '))}</dd>` : ''}${o.cited_by?.length ? `<dt>Path cited by</dt><dd class="mono">${esc(o.cited_by.join(', '))}</dd>` : ''}${o.derived ? '<dt>Origin</dt><dd>derived from a path in the docs; not yet in registry/sitemap.yaml</dd>' : ''}</dl><h4>Features behind this page · ${o.features.length}</h4>${featList(o.features)}${o.views.map((v) => `<h4>View · ${esc(v.label)}${v.path ? ` <span class="mono">${esc(v.path)}</span>` : ''}${v.planned ? ' (planned)' : ''}</h4>${v.evidence?.length ? `<div class="acid">evidence ${esc(v.evidence.join(', '))}</div>` : ''}${featList(v.features || [])}`).join('')}`; }
+    else if (o.kind === 'slot') { title = o.label; id = o.key.startsWith('__') ? '' : '/' + o.key; all = [...new Map(o.pages.flatMap((p) => [...p.features, ...p.views.flatMap((v) => v.features || [])]).map((f) => [f.id, f])).values()]; body = `<dl class="kv"><dt>Domain</dt><dd>${o.domain ? `<span class="linkrow mono" style="cursor:pointer;display:inline" data-select="${esc(o.domain)}">${esc(o.domain)}</span>` : ''}</dd>${o.group ? `<dt>Group</dt><dd>${esc(o.group)} (navigation only)</dd>` : ''}${o.note ? `<dt>Note</dt><dd>${esc(o.note)}</dd>` : ''}<dt>Evidence</dt><dd class="mono">${esc(o.evidence.join(', '))}</dd></dl><h4>Pages · ${o.pages.length}</h4><ul>${o.pages.map((p, i) => `<li class="linkrow" data-sm="page:${esc(p.path || `${o.key}#${i}`)}"><span class="path">${esc(p.path || '—')}</span><span style="flex:1">${esc(p.label)}</span>${counts(p.counts)}</li>`).join('')}</ul><h4>Features · ${all.length}</h4>${featList(all)}`; }
+    else if (o.kind === 'module') { title = o.label; id = 'module of ' + o.slot.label; body = `<dl class="kv"><dt>Views</dt><dd>${o.views.length ? o.views.map((v) => esc(v.label)).join(' · ') : '<span class="empty">named only</span>'}</dd>${o.entered_at ? `<dt>Entered at</dt><dd>${esc(o.entered_at)}</dd>` : ''}<dt>Evidence</dt><dd class="mono">${esc(o.evidence.join(', '))}</dd></dl>`; all = [...new Map(o.evidence.map(featOfId).filter((x) => index[x]?.requirements).map((x) => [x, feat0(x)])).values()]; }
+    else if (o.kind === 'entry') { title = o.label; id = o.surface.label + ' entry'; all = o.features || []; body = `<dl class="kv"><dt>Evidence</dt><dd class="mono">${esc(o.evidence.join(', '))}</dd></dl><h4>Features · ${all.length}</h4>${featList(all)}`; }
+    else if (o.kind === 'shell') { title = o.label; id = 'available on every shell route'; body = `<ul>${o.entries.map((e) => `<li><span style="flex:1">${esc(e.label)}</span><span class="acid">${esc(e.evidence.join(', '))}</span></li>`).join('')}</ul>`; }
+    else { title = o.label; id = 'surface'; body = `<dl class="kv"><dt>Role</dt><dd>${esc(o.role)}</dd><dt>Users</dt><dd>${esc(o.users)}</dd><dt>Evidence</dt><dd class="mono">${esc(o.evidence.join(', '))}</dd></dl>`; }
+    $('#phead').innerHTML = `<div class="row"><div class="pid">${esc(id)}</div><button class="close" id="close" aria-label="Close">×</button></div><h2>${esc(title)}</h2><div class="statebar">${counts(smCounts(all))}</div>`;
+    $('#close').addEventListener('click', closePanel);
+    renderLocal({ id: id.length > 28 ? title : id, title, state: 'grey' }, all.map((f) => ({ id: f.id, kind: 'own' })));
+    $('#pbody').innerHTML = body;
+    $('#panel').classList.add('open');
+  }
+  const feat0 = (id) => (index[id] ? { id, title: index[id].title, state: index[id].state, owner: index[id].owner } : null);
+  const featOfId = (id) => (/^FEAT-/.test(id) ? id : /^(N?FR|AC)-(\d{3})/.test(id) ? 'FEAT-' + id.match(/^(?:N?FR|AC)-(\d{3})/)[1] : null);
+
+  /* ---------- pipeline (GenesisRAG17 data flow, registry/pipeline.yaml) ---------- */
+  const pl = { data: null, rendered: false, zoom: null, root: null, size: null, pos: {} };
+  const PL = { colW: 262, boxW: 214, boxH: 60, gapY: 14, top: 58, left: 30 };
+  const TIER = { t1: 'Zuri · Tier 1', t2: 'MSP · Tier 2', t3: 'GKS · Tier 3', t4: 'GenesisBlock · Tier 4', db: 'PostgreSQL', ext: 'external' };
+  const GLYPH = { surface: '▣', entry: '⇥', process: '⚙', store: '▤', transport: '⇄', recipient: '◎' };
+  const PL_LEGEND = `<span><b>columns</b> = where it runs · <b>kinds</b>: ▣ surface ⇥ entry ⚙ compute ▤ store ⇄ transport ◎ recipient</span><span><span class="tierdot" style="background:var(--accent)"></span>Zuri (Tier 1) <span class="tierdot" style="background:#8E6BD1"></span>MSP (2) <span class="tierdot" style="background:var(--green)"></span>GKS (3) <span class="tierdot" style="background:var(--yellow)"></span>GenesisBlock worker/storage (4) <span class="tierdot" style="background:var(--grey)"></span>PostgreSQL</span><span>edges: solid = call · <span style="color:var(--yellow)">dashed thick</span> = durable queue/ledger tick · <span style="color:var(--accent)">dashed</span> = MSP relay · dotted = evidence report/pull · <span style="color:var(--green)">green</span> = atomic publish · thin = read</span>`;
+  function renderPipeline() {
+    const d = pl.data; const svg = d3.select('#plsvg'); svg.selectAll('*').remove();
+    const laneIdx = Object.fromEntries(d.lanes.map((l, i) => [l.id, i]));
+    const byLane = {}; d.nodes.forEach((n) => (byLane[n.lane] ??= []).push(n));
+    const pos = pl.pos = {}; let maxN = 0;
+    for (const l of d.lanes) { const ns = byLane[l.id] || []; ns.forEach((n, i) => { pos[n.id] = { x: PL.left + laneIdx[l.id] * PL.colW, y: PL.top + i * (PL.boxH + PL.gapY) }; }); maxN = Math.max(maxN, ns.length); }
+    const W = PL.left * 2 + d.lanes.length * PL.colW, H = PL.top + maxN * (PL.boxH + PL.gapY) + 30;
+    svg.append('defs').html('<marker id="pl-arrow" viewBox="0 -4 8 8" refX="8" refY="0" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,-4L8,0L0,4Z" class="pl-arrowhead"></path></marker>');
+    pl.root = svg.append('g');
+    const lanesG = pl.root.append('g');
+    d.lanes.forEach((l, i) => { const x = PL.left + i * PL.colW - 12; lanesG.append('rect').attr('class', 'pl-lane-bg').attr('x', x).attr('y', 10).attr('width', PL.colW - 24).attr('height', H - 20).attr('rx', 8); lanesG.append('text').attr('class', 'pl-lane-label').attr('x', x + 10).attr('y', 32).text(l.label); });
+    const path = (e) => {
+      const a = pos[e.from], b = pos[e.to]; if (!a || !b) return '';
+      if (a.x === b.x) { if (b.y > a.y) { const x = a.x + PL.boxW / 2; return `M${x},${a.y + PL.boxH} L${x},${b.y}`; } const xo = a.x + PL.boxW + 22; return `M${a.x + PL.boxW},${a.y + PL.boxH / 2} C${xo},${a.y + PL.boxH / 2} ${xo},${b.y + PL.boxH / 2} ${b.x + PL.boxW},${b.y + PL.boxH / 2}`; }
+      const fwd = b.x > a.x; const sx = fwd ? a.x + PL.boxW : a.x, sy = a.y + PL.boxH / 2, tx = fwd ? b.x : b.x + PL.boxW, ty = b.y + PL.boxH / 2; const dx = (tx - sx) / 2;
+      return `M${sx},${sy} C${sx + dx},${sy} ${tx - dx},${ty} ${tx},${ty}`;
+    };
+    const eg = pl.root.append('g');
+    eg.selectAll('path').data(d.edges).join('path').attr('class', (e) => 'pl-edge ' + e.kind).attr('d', path).attr('marker-end', 'url(#pl-arrow)').append('title').text((e) => `${e.from} → ${e.to} · ${e.kind}${e.label ? ' · ' + e.label : ''}`);
+    const mid = (e) => { const a = pos[e.from], b = pos[e.to]; return [(a.x + b.x) / 2 + PL.boxW / 2, (a.y + b.y) / 2 + PL.boxH / 2 - 5]; };
+    eg.selectAll('text').data(d.edges.filter((e) => e.label)).join('text').attr('class', 'pl-elabel').attr('x', (e) => mid(e)[0]).attr('y', (e) => mid(e)[1]).attr('text-anchor', 'middle').text((e) => e.label);
+    const ng = pl.root.append('g').selectAll('foreignObject').data(d.nodes).join('foreignObject').attr('x', (n) => pos[n.id].x).attr('y', (n) => pos[n.id].y).attr('width', PL.boxW).attr('height', PL.boxH).attr('data-id', (n) => n.id);
+    ng.append('xhtml:div').attr('class', (n) => `plnode kind-${n.kind} tier-${n.tier}`).attr('data-id', (n) => n.id).html((n) => `<div class="plk">${GLYPH[n.kind] || ''} ${esc(n.kind)} · ${esc(TIER[n.tier] || n.tier)}</div><div class="pll">${esc(n.label)}</div>`);
+    ng.on('click', (e, n) => { e.stopPropagation(); showPlPanel(n.id); });
+    pl.zoom = d3.zoom().scaleExtent([0.25, 3]).on('zoom', (e) => pl.root.attr('transform', e.transform));
+    svg.call(pl.zoom).on('dblclick.zoom', null); svg.on('click', () => closePanel());
+    pl.size = { W, H }; pl.rendered = true; plFit();
+  }
+  function plFit() { const st = $('#stage'); const panelW = $('#panel').classList.contains('open') ? Math.min(400, st.clientWidth) : 0; const Wv = st.clientWidth - panelW, Hv = st.clientHeight; const s = Math.min(1.2, 0.95 / Math.max(pl.size.W / Wv, pl.size.H / Hv)); d3.select('#plsvg').transition().duration(300).call(pl.zoom.transform, d3.zoomIdentity.translate((Wv - pl.size.W * s) / 2, Math.max(0, (Hv - pl.size.H * s) / 2)).scale(s)); }
+  function plHighlight(id) {
+    const near = new Set([id]); for (const e of pl.data.edges) { if (e.from === id) near.add(e.to); if (e.to === id) near.add(e.from); }
+    d3.selectAll('#plsvg .plnode').classed('dim', function () { return !near.has(this.dataset.id); }).classed('selected', function () { return this.dataset.id === id; });
+    d3.selectAll('#plsvg .pl-edge').classed('dim', (e) => !(e.from === id || e.to === id)).classed('hi', (e) => e.from === id || e.to === id);
+  }
+  function plClear() { d3.selectAll('#plsvg .plnode').classed('dim', false).classed('selected', false); d3.selectAll('#plsvg .pl-edge').classed('dim', false).classed('hi', false); }
+  function showPlPanel(id) {
+    const n = pl.data.nodes.find((x) => x.id === id); if (!n) return;
+    plHighlight(id);
+    const ins = pl.data.edges.filter((e) => e.to === id), outs = pl.data.edges.filter((e) => e.from === id);
+    const node = (x) => pl.data.nodes.find((y) => y.id === x);
+    const evLink = (e) => (index[e] ? `<span class="linkrow mono" style="cursor:pointer;display:inline" data-select="${esc(index[e].acs ? featOfId(e) : e)}" title="open in graph">${esc(e)}</span>` : `<span class="mono">${esc(e)}</span>`);
+    $('#phead').innerHTML = `<div class="row"><div class="pid">${esc(id)} · ${esc(n.kind)} · ${esc(TIER[n.tier] || n.tier)}</div><button class="close" id="close" aria-label="Close">×</button></div><h2>${esc(n.label)}</h2><div class="statebar"><span class="word" style="color:var(--muted)">${GLYPH[n.kind] || ''} ${esc(n.kind)}</span></div>`;
+    $('#close').addEventListener('click', closePanel);
+    renderLocal({ id: n.id, title: n.label, state: 'grey' }, [...ins.map((e) => ({ id: e.from, kind: 'cm', dir: 'upstream', pattern: e.kind, o: { id: e.from, title: node(e.from)?.label || e.from, state: 'grey' } })), ...outs.map((e) => ({ id: e.to, kind: 'cm', dir: 'downstream', pattern: e.kind, o: { id: e.to, title: node(e.to)?.label || e.to, state: 'grey' } }))], showPlPanel);
+    const edgeRow = (e, other, arrow) => `<li class="edgerow" data-pl="${esc(other)}"><span class="ek">${arrow} ${esc(e.kind)}</span><span><b>${esc(node(other)?.label || other)}</b>${e.label ? `<div style="color:var(--muted);font-size:12px">${esc(e.label)}</div>` : ''}</span></li>`;
+    $('#pbody').innerHTML = `${n.detail ? `<p>${esc(n.detail)}</p>` : ''}<dl class="kv"><dt>Runs in</dt><dd>${esc(TIER[n.tier] || n.tier)}</dd><dt>Lane</dt><dd>${esc(pl.data.lanes.find((l) => l.id === n.lane)?.label || n.lane)}</dd><dt>Evidence</dt><dd>${n.evidence.map(evLink).join(', ')}</dd></dl><h4>Receives from · ${ins.length}</h4><ul>${ins.map((e) => edgeRow(e, e.from, '←')).join('') || '<li class="empty">nothing — this is an entry</li>'}</ul><h4>Sends to · ${outs.length}</h4><ul>${outs.map((e) => edgeRow(e, e.to, '→')).join('') || '<li class="empty">nothing — this is a sink</li>'}</ul>`;
+    $('#panel').classList.add('open');
+  }
+  function openPipeline(focusId) {
+    mode = 'pipeline'; focus = null; showViews('pipeline'); crumbs();
+    if (!pl.data) { $('#pl-hint').textContent = 'pipeline.json could not be loaded — run node tools/pipeline-map.mjs and publish it next to this page'; closePanel(); return; }
+    if (!pl.rendered) renderPipeline();
+    if (focusId) showPlPanel(focusId); else closePanel();
+  }
+
+  /* ---------- modes ---------- */
+  function crumbs() {
+    const parts = mode === 'sitemap' ? [['sitemap', 'Sitemap']] : mode === 'pipeline' ? [['pipeline', 'Pipeline']] : [['graph', 'Graph']];
+    if (focus) { const o = index[focus]; if (o.requirements) parts.push([o.owner, o.owner]); parts.push([focus, focus]); }
+    $('#crumbs').innerHTML = parts.map(([id, label], i) => `${i ? '<span class="sepc">›</span>' : ''}<button type="button" data-go="${esc(id)}" class="${i === parts.length - 1 ? 'current' : ''}">${esc(label)}</button>`).join('');
+  }
+  function showViews(which) {
+    for (const [k, el] of Object.entries({ graph: 'graph-view', chart: 'oc-view', sitemap: 'sm-view', pipeline: 'pl-view' })) $('#' + el).hidden = k !== which;
+    for (const [k, el] of Object.entries({ graph: 'graph-tools', chart: 'oc-tools', sitemap: 'sm-tools', pipeline: 'pl-tools' })) $('#' + el).hidden = k !== which;
+    $('#mode-graph').setAttribute('aria-pressed', String(which === 'graph' || which === 'chart')); $('#mode-sitemap').setAttribute('aria-pressed', String(which === 'sitemap')); $('#mode-pipeline').setAttribute('aria-pressed', String(which === 'pipeline'));
+    if (window.__legendGraph === undefined) window.__legendGraph = $('#legend').innerHTML;
+    $('#legend').innerHTML = which === 'pipeline' ? PL_LEGEND : window.__legendGraph;
+  }
+  function openChart(id) {
+    focus = id; mode = 'chart'; showViews('chart');
+    renderChart(id); crumbs(); select(id);
+  }
+  function openGraph(highlight) {
+    mode = 'graph'; focus = null; showViews('graph');
+    crumbs(); if (highlight) select(highlight); else closePanel();
+  }
+  function openSitemap(focusKey) {
+    mode = 'sitemap'; focus = null; showViews('sitemap'); crumbs();
+    if (!sm.data) { $('#sm-hint').textContent = 'sitemap.json could not be loaded — run node tools/sitemap.mjs and publish it next to this page'; closePanel(); return; }
+    if (!sm.rendered) { renderSitemap(); smSetLevel(2); }
+    if (focusKey) { const b = sm.cards[focusKey]; if (b) { smExpandTo(focusKey); requestAnimationFrame(() => { showSmPanel(focusKey); smCenterOn(b); }); return; } }
+    closePanel();
+  }
+
+  /* ---------- find ---------- */
+  function find(q) {
+    q = q.trim(); if (!q) return; const lq = q.toLowerCase();
+    if (mode === 'pipeline' && pl.rendered) {
+      const hit = pl.data.nodes.find((n) => n.id.toLowerCase() === lq) || pl.data.nodes.find((n) => n.id.toLowerCase().includes(lq) || n.label.toLowerCase().includes(lq) || (n.detail || '').toLowerCase().includes(lq) || n.evidence.some((x) => x.toLowerCase() === lq));
+      if (hit) { openPipeline(hit.id); return; }
+    }
+    if (mode === 'sitemap' && sm.rendered) {
+      const boxes = [...document.querySelectorAll('#sm .box')];
+      const hit = boxes.find((b) => b.dataset.key.toLowerCase().includes(lq) || b.textContent.toLowerCase().includes(lq)) || boxes.find((b) => { const o = sm.nodes[b.dataset.key]; return o?.features?.some((f) => f.id.toLowerCase() === lq || f.title.toLowerCase().includes(lq)); });
+      if (hit) { openSitemap(hit.dataset.key); return; }
+    }
+    const all = Object.values(index).filter((o) => !o.isPart);
+    const hit = all.find((o) => o.id.toLowerCase() === lq) || all.find((o) => o.id.toLowerCase().includes(lq) || (o.title || '').toLowerCase().includes(lq));
+    if (!hit) { $('#q').setCustomValidity('No match'); $('#q').reportValidity(); setTimeout(() => $('#q').setCustomValidity(''), 1200); return; }
+    if (mode === 'chart') { const li = document.querySelector(`#oc li[data-id="${CSS.escape(hit.id)}"]`); if (li) { expandTo(li); centerChartOn(li.querySelector('.box')); select(hit.id); return; } openGraph(hit.id); return; }
+    select(hit.id);
+  }
+
+  /* ---------- wiring ---------- */
+  function wire() {
+    const dispatch = (e) => {
+      const go = e.target.closest('[data-go]'); if (go) { if (go.dataset.go === 'sitemap') openSitemap(); else if (go.dataset.go === 'pipeline') openPipeline(); else if (go.dataset.go === 'graph') openGraph(selected && !index[selected]?.acs ? selected : null); else openChart(go.dataset.go); return; }
+      const plr = e.target.closest('[data-pl]'); if (plr) { e.stopPropagation(); openPipeline(plr.dataset.pl); return; }
+      const sel = e.target.closest('[data-select]'); if (sel) { e.stopPropagation(); if (mode === 'chart') { const li = document.querySelector(`#oc li[data-id="${CSS.escape(sel.dataset.select)}"]`); if (li) { expandTo(li); centerChartOn(li.querySelector('.box')); } } select(sel.dataset.select); return; }
+      const fo = e.target.closest('[data-fold]'); if (fo) { collapseFeature(fo.dataset.fold); select(fo.dataset.fold, { noCenter: true }); return; }
+      const un = e.target.closest('[data-unfold]'); if (un) { expandFeature(un.dataset.unfold); select(un.dataset.unfold, { noCenter: true }); return; }
+      const gr = e.target.closest('[data-graph]'); if (gr) { openGraph(gr.dataset.graph); return; }
+      const s = e.target.closest('[data-sm]'); if (s) { e.stopPropagation(); openSitemap(s.dataset.sm); }
+    };
+    document.addEventListener('click', dispatch);
+    $('#oc').addEventListener('click', (e) => {
+      const d = e.target.closest('[data-drill]'); if (d) { e.stopPropagation(); openChart(d.dataset.drill); return; }
+      const t = e.target.closest('[data-toggle]'); if (t) { e.stopPropagation(); t.closest('li').classList.toggle('collapsed'); return; }
+      const b = e.target.closest('.box'); if (b) select(b.dataset.id);
+    });
+    let drag = null;
+    ocstage.addEventListener('pointerdown', (e) => { if (e.button !== 0) return; drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false }; ocstage.setPointerCapture(e.pointerId); });
+    ocstage.addEventListener('pointermove', (e) => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; ocstage.classList.add('dragging'); } view.x = drag.vx + dx; view.y = drag.vy + dy; applyView(); });
+    const end = () => { if (drag?.moved) ocstage.addEventListener('click', (ev) => { ev.stopPropagation(); ev.preventDefault(); }, { capture: true, once: true }); drag = null; ocstage.classList.remove('dragging'); };
+    ocstage.addEventListener('pointerup', end); ocstage.addEventListener('pointercancel', end);
+    ocstage.addEventListener('wheel', (e) => { e.preventDefault(); if (e.ctrlKey || e.metaKey) { const r = ocstage.getBoundingClientRect(); zoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); } else { view.x -= e.deltaX; view.y -= e.deltaY; applyView(); } }, { passive: false });
+    $('#z-in').addEventListener('click', () => zoomAt(1.25, ocstage.clientWidth / 2, ocstage.clientHeight / 2));
+    $('#z-out').addEventListener('click', () => zoomAt(1 / 1.25, ocstage.clientWidth / 2, ocstage.clientHeight / 2));
+    $('#fit').addEventListener('click', fitChart);
+    for (const b of document.querySelectorAll('.btn[data-level]')) b.addEventListener('click', () => setLevel(+b.dataset.level));
+    $('#g-fit').addEventListener('click', fitGraph);
+    $('#g-links').addEventListener('click', () => { showPartLinks = !showPartLinks; $('#g-links').setAttribute('aria-pressed', String(showPartLinks)); applyLinkToggle(); });
+    $('#g-cm').addEventListener('click', () => { showCm = !showCm; $('#g-cm').setAttribute('aria-pressed', String(showCm)); applyLinkToggle(); });
+    $('#g-expand').addEventListener('click', () => { feats.forEach((f) => expandFeature(f.id, true)); update(); setTimeout(fitGraph, 800); });
+    $('#g-collapse').addEventListener('click', () => { [...expanded].forEach((id) => collapseFeature(id, true)); update(); if (selected && index[selected]?.acs) closePanel(); setTimeout(fitGraph, 800); });
+    $('#q').addEventListener('keydown', (e) => { if (e.key === 'Enter') find($('#q').value); });
+    $('#panel').addEventListener('click', (e) => { dispatch(e); e.stopPropagation(); });
+    // sitemap mode
+    $('#mode-graph').addEventListener('click', () => { if (mode === 'sitemap') openGraph(); });
+    $('#mode-sitemap').addEventListener('click', () => openSitemap());
+    $('#mode-pipeline').addEventListener('click', () => openPipeline());
+    $('#pl-fit').addEventListener('click', () => pl.rendered && plFit());
+    $('#pl-labels').addEventListener('click', () => { const on = $('#pl-labels').getAttribute('aria-pressed') !== 'true'; $('#pl-labels').setAttribute('aria-pressed', String(on)); $('#plsvg').classList.toggle('pl-nolabels', !on); });
+    $('#sm').addEventListener('click', (e) => { const t = e.target.closest('[data-toggle]'); if (t) { e.stopPropagation(); smToggle(t.closest('.card').dataset.key); return; } const b = e.target.closest('.card'); if (b) showSmPanel(b.dataset.key); });
+    // select tool: drag a card to move it (links follow); empty space or hand tool: pan
+    let sdrag = null;
+    const setHand = (on) => { sm.hand = on; smstage.classList.toggle('hand', on); $('#sm-tool-hand').setAttribute('aria-pressed', String(on)); $('#sm-tool-select').setAttribute('aria-pressed', String(!on)); };
+    $('#sm-tool-hand').addEventListener('click', () => setHand(true)); $('#sm-tool-select').addEventListener('click', () => setHand(false));
+    document.addEventListener('keydown', (e) => { if (mode !== 'sitemap' || e.target.matches('input, textarea')) return; if (e.key === 'h' || e.key === 'H') setHand(true); if (e.key === 'v' || e.key === 'V') setHand(false); if (e.key === ' ' && !sdrag) { smstage.classList.add('hand'); e.preventDefault(); } });
+    document.addEventListener('keyup', (e) => { if (e.key === ' ' && !sm.hand) smstage.classList.remove('hand'); });
+    smstage.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return; const card = e.target.closest('.card'); const panning = sm.hand || smstage.classList.contains('hand') || !card || e.target.closest('[data-toggle]');
+      sdrag = panning ? { pan: true, x: e.clientX, y: e.clientY, vx: sm.view.x, vy: sm.view.y, moved: false } : { pan: false, key: card.dataset.key, el: card, x: e.clientX, y: e.clientY, ox: sm.layout[card.dataset.key].x, oy: sm.layout[card.dataset.key].y, moved: false };
+      smstage.setPointerCapture(e.pointerId);
+    });
+    smstage.addEventListener('pointermove', (e) => {
+      if (!sdrag) return; const dx = e.clientX - sdrag.x, dy = e.clientY - sdrag.y;
+      if (!sdrag.moved && Math.abs(dx) + Math.abs(dy) > 3) { sdrag.moved = true; smstage.classList.add('dragging'); if (!sdrag.pan) sdrag.el.classList.add('dragging'); }
+      if (!sdrag.moved) return;
+      if (sdrag.pan) { sm.view.x = sdrag.vx + dx; sm.view.y = sdrag.vy + dy; smApply(); }
+      else { const p = { x: Math.round(sdrag.ox + dx / sm.view.s), y: Math.round(sdrag.oy + dy / sm.view.s) }; sm.layout[sdrag.key] = p; sdrag.el.style.left = p.x + 'px'; sdrag.el.style.top = p.y + 'px'; smDrawLinks(); }
+    });
+    const send = () => { if (!sdrag) return; if (sdrag.moved) { smstage.addEventListener('click', (ev) => { ev.stopPropagation(); ev.preventDefault(); }, { capture: true, once: true }); if (!sdrag.pan) { sm.undo.push({ key: sdrag.key, from: { x: sdrag.ox, y: sdrag.oy }, to: sm.layout[sdrag.key] }); sm.redo = []; sm.local[sdrag.key] = sm.layout[sdrag.key]; sdrag.el.classList.add('moved'); smSaveLocal(); } } if (!sdrag.pan) sdrag.el.classList.remove('dragging'); sdrag = null; smstage.classList.remove('dragging'); };
+    sm.undo = []; sm.redo = [];
+    const smMoveTo = (key, p) => { sm.layout[key] = p; sm.local[key] = p; sm.cards[key].style.left = p.x + 'px'; sm.cards[key].style.top = p.y + 'px'; sm.cards[key].classList.add('moved'); smSaveLocal(); smDrawLinks(); };
+    const smUndo = () => { const m = sm.undo.pop(); if (!m) return; sm.redo.push(m); smMoveTo(m.key, m.from); };
+    const smRedo = () => { const m = sm.redo.pop(); if (!m) return; sm.undo.push(m); smMoveTo(m.key, m.to); };
+    $('#sm-undo').addEventListener('click', smUndo); $('#sm-redo').addEventListener('click', smRedo);
+    document.addEventListener('keydown', (e) => { if (mode !== 'sitemap' || e.target.matches('input, textarea')) return; if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); e.shiftKey ? smRedo() : smUndo(); } });
+    smstage.addEventListener('pointerup', send); smstage.addEventListener('pointercancel', send);
+    smstage.addEventListener('wheel', (e) => { if (e.target.closest('.panel')) return; e.preventDefault(); if (e.ctrlKey || e.metaKey) { const r = smstage.getBoundingClientRect(); smZoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); } else { sm.view.x -= e.deltaX; sm.view.y -= e.deltaY; smApply(); } }, { passive: false });
+    $('#sm-in').addEventListener('click', () => smZoomAt(1.25, smstage.clientWidth / 2, smstage.clientHeight / 2));
+    $('#sm-out').addEventListener('click', () => smZoomAt(1 / 1.25, smstage.clientWidth / 2, smstage.clientHeight / 2));
+    $('#sm-fit').addEventListener('click', smFit);
+    $('#sm-auto').addEventListener('click', () => { sm.local = {}; smSaveLocal(); const auto = smAutoLayout(); for (const k of Object.keys(sm.cards)) sm.layout[k] = sm.authored[k] || auto[k]; smPlace(); smFit(); });
+    $('#sm-copy').addEventListener('click', () => { const text = JSON.stringify(Object.fromEntries(Object.keys(sm.cards).map((k) => [k, sm.layout[k]])), null, 1); const done = () => { $('#sm-hint').textContent = 'Layout copied — save it as docs/governance/plans/sitemap.layout.json and publish it next to this page to make it the default'; }; if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done, () => { $('#sm-hint').textContent = 'Clipboard refused; open the console and copy JSON.stringify(sm.layout)'; }); else done(); });
+    $('#sm-dots').addEventListener('click', () => { const on = $('#sm-dots').getAttribute('aria-pressed') !== 'true'; $('#sm-dots').setAttribute('aria-pressed', String(on)); smstage.classList.toggle('dots', on); });
+    for (const b of document.querySelectorAll('.btn[data-smlevel]')) b.addEventListener('click', () => smSetLevel(+b.dataset.smlevel));
+    window.addEventListener('resize', () => { if (mode === 'graph' && !selected) fitGraph(); });
+    if (/^#[A-Za-z]+-[0-9A-Za-z-]+$/.test(location.hash)) setTimeout(() => find(location.hash.slice(1)), 1000);
+  }
+
+  async function boot() {
+    try { const r = await fetch('spec-tree.json', { cache: 'no-store' }); if (!r.ok) throw new Error(r.status + ' ' + r.statusText); data = await r.json(); }
+    catch (err) { $('#meta').textContent = 'Graph not loaded'; const e = $('#error'); e.hidden = false; e.innerHTML = `<b>Could not read <code>spec-tree.json</code></b> (${esc(err.message)}). Run <code>node tools/spec-tree.mjs</code>, then serve this folder over HTTP (<code>npx serve docs/governance/plans</code>) or open the published artifact.`; return; }
+    if (typeof d3 === 'undefined') { $('#meta').textContent = 'd3 did not load'; return; }
+    buildIndex();
+    try { const r = await fetch('sitemap.json', { cache: 'no-store' }); if (r.ok) sm.data = await r.json(); } catch { sm.data = null; }
+    try { const r = await fetch('pipeline.json', { cache: 'no-store' }); if (r.ok) pl.data = await r.json(); } catch { pl.data = null; }
+    try { const r = await fetch('sitemap.layout.json', { cache: 'no-store' }); if (r.ok) sm.authored = await r.json(); } catch { sm.authored = {}; }
+    $('#meta').textContent = `Generated ${data.generated} · ${data.totals.domains} domains · ${data.totals.features} features · ${sum(data.totals.requirements)} requirements`;
+    $('#legend').innerHTML = STATES.map((s) => `<span><span class="dot ${s}"></span>${esc(data.legend[s])}</span>`).join('') + `<span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--line-strong)" stroke-width="1.5"/></svg>owns</span><span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3"/></svg>participates</span><span><svg width="14" height="12"><circle cx="7" cy="6" r="4" fill="var(--grey)" stroke="var(--surface)" stroke-width="1.5" stroke-dasharray="2 1.5"/></svg>NFR (dashed ring)</span><span><svg width="22" height="8"><line x1="0" y1="4" x2="22" y2="4" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="2 4"/></svg>context map (upstream → downstream, ADR-107)</span><span>rings: foundation · platform · business (role); label shows subdomain</span>`;
+    $('#toolbar').hidden = false;
+    crumbs(); renderGraph(); wire();
+  }
+  boot();
+})();
+</script>

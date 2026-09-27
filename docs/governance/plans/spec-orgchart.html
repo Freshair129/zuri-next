@@ -1,0 +1,281 @@
+<title>zuri-next Spec Org Chart</title>
+<meta charset="utf-8">
+<script>
+(function(){var k='zuri-plans-theme',r=document.documentElement,v='auto';try{v=localStorage.getItem(k)||'auto'}catch(e){}
+function apply(){if(v==='light'||v==='dark')r.setAttribute('data-theme',v);else r.removeAttribute('data-theme');var b=document.getElementById('theme');if(b)b.textContent=v==='dark'?'☾ dark':v==='light'?'☀ light':'◐ auto';}
+document.addEventListener('DOMContentLoaded',apply);apply();
+document.addEventListener('click',function(e){if(!e.target.closest('#theme'))return;v=v==='auto'?'dark':v==='dark'?'light':'auto';try{localStorage.setItem(k,v)}catch(err){}apply();});})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F6F7F4; --surface: #FFFFFF; --ink: #1B2430; --muted: #66707A; --line: #C9CFC8; --line-strong: #B9BFB8;
+    --accent: #2A5BA8; --accent-ink: #FFFFFF; --accent-soft: #E4ECF8;
+    --green: #2C7A5A; --green-soft: #DFF0E7; --yellow: #C08A1C; --yellow-soft: #F8ECCF; --red: #B23A32; --red-soft: #F6DEDC; --grey: #7C858E; --grey-soft: #E8EAE6;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+    --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+    --radius: 6px; --gap: 22px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #3A434B; --line-strong: #4A545E;
+      --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+      --green: #6FC49B; --green-soft: #1E3A2E; --yellow: #E4B85A; --yellow-soft: #3E3118; --red: #EE8A82; --red-soft: #452321; --grey: #9AA3AA; --grey-soft: #262D34;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #14181C; --surface: #1C2228; --ink: #E6E9E4; --muted: #9AA3AA; --line: #3A434B; --line-strong: #4A545E;
+    --accent: #7BA4EA; --accent-ink: #0F1A2E; --accent-soft: #223452;
+    --green: #6FC49B; --green-soft: #1E3A2E; --yellow: #E4B85A; --yellow-soft: #3E3118; --red: #EE8A82; --red-soft: #452321; --grey: #9AA3AA; --grey-soft: #262D34;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.4; display: flex; flex-direction: column; }
+  h1, h2 { font-family: var(--serif); font-weight: 600; margin: 0; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .mono { font-family: var(--mono); }
+
+  header.top { padding: 14px 20px 10px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; }
+  header.top h1 { font-size: 20px; }
+  .meta { color: var(--muted); font-size: 12px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; }
+  .dot.green { background: var(--green); } .dot.yellow { background: var(--yellow); } .dot.red { background: var(--red); } .dot.grey { background: var(--grey); }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 20px; border-bottom: 1px solid var(--line); background: var(--paper); }
+  .toolbar input { flex: 1 1 200px; min-width: 0; font: inherit; font-size: 13px; padding: 6px 9px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); color: var(--ink); }
+  .btn { padding: 5px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); font-size: 12.5px; }
+  .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .sep { width: 1px; height: 22px; background: var(--line); }
+  .zoomv { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 44px; text-align: center; }
+
+  .stage { position: relative; flex: 1; min-height: 320px; overflow: hidden; cursor: grab; touch-action: none; background:
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 40px 40px, linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 40px 40px, var(--paper); background-blend-mode: normal; }
+  .stage.dragging { cursor: grabbing; }
+  .canvas { position: absolute; left: 0; top: 0; transform-origin: 0 0; width: max-content; padding: 30px 60px 80px; }
+
+  /* org chart connectors */
+  .oc, .oc ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; }
+  .oc ul { padding-top: var(--gap); position: relative; }
+  .oc ul::before { content: ''; position: absolute; top: 0; left: 50%; width: 0; height: var(--gap); border-left: 1.5px solid var(--line-strong); }
+  .oc li { position: relative; padding: var(--gap) 6px 0; display: flex; flex-direction: column; align-items: center; }
+  .oc li::before, .oc li::after { content: ''; position: absolute; top: 0; right: 50%; width: 50%; height: var(--gap); border-top: 1.5px solid var(--line-strong); }
+  .oc li::after { right: auto; left: 50%; border-left: 1.5px solid var(--line-strong); }
+  .oc li:only-child::before, .oc li:only-child::after { display: none; }
+  .oc li:only-child { padding-top: 0; }
+  .oc li:first-child::before, .oc li:last-child::after { border: 0 none; }
+  .oc li:last-child::before { border-right: 1.5px solid var(--line-strong); border-radius: 0 6px 0 0; }
+  .oc li:first-child::after { border-radius: 6px 0 0 0; }
+  .oc > li { padding-top: 0; }
+  .oc > li::before, .oc > li::after { display: none; }
+  .oc li.collapsed > ul { display: none; }
+  .oc li.dim { opacity: .35; }
+
+  /* boxes */
+  .box { position: relative; width: 168px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 8px 10px 8px 12px; text-align: left; cursor: pointer; user-select: none; box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+  .box::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; border-radius: var(--radius) 0 0 var(--radius); background: var(--grey); }
+  .box.green::before { background: var(--green); } .box.yellow::before { background: var(--yellow); } .box.red::before { background: var(--red); } .box.grey::before { background: var(--grey); }
+  .box.red { border-color: var(--red); }
+  .box.selected { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent); }
+  .box.hit { box-shadow: 0 0 0 2px var(--yellow); }
+  .box .id { font-family: var(--mono); font-size: 11.5px; font-weight: 500; white-space: nowrap; }
+  .box .title { font-size: 12px; line-height: 1.3; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .box .foot { display: flex; align-items: center; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .box .status { font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  .box.red .status { color: var(--red); font-weight: 600; }
+  .cnt { font-family: var(--mono); font-size: 10px; padding: 0 5px; border-radius: 8px; line-height: 16px; }
+  .cnt.green { background: var(--green-soft); color: var(--green); } .cnt.yellow { background: var(--yellow-soft); color: var(--yellow); } .cnt.red { background: var(--red-soft); color: var(--red); } .cnt.grey { background: var(--grey-soft); color: var(--grey); }
+  .cnt.zero { display: none; }
+  .box.root { width: 210px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .box.root::before { display: none; }
+  .box.root .title { font-family: var(--serif); font-size: 15px; -webkit-line-clamp: 1; }
+  .box.root .status { color: var(--paper); opacity: .75; }
+  .box.dom { width: 200px; }
+  .box.dom .title { font-family: var(--serif); font-weight: 600; font-size: 13.5px; }
+  .box.part { width: 160px; background: var(--paper); border-style: dashed; }
+  .box.ref { border-style: dashed; }
+  .box.ref .title { color: var(--muted); font-style: italic; }
+  .box.leaf { width: 150px; }
+  .kind { font-size: 9.5px; padding: 0 4px; border: 1px solid var(--line-strong); border-radius: 3px; color: var(--muted); }
+  .toggle { position: absolute; left: 50%; bottom: -11px; transform: translateX(-50%); width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-family: var(--mono); font-size: 10px; line-height: 1; display: grid; place-items: center; z-index: 1; padding: 0; }
+  .toggle:hover { background: var(--accent-soft); border-color: var(--accent); }
+  li.collapsed > .box .toggle { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+  /* detail panel */
+  aside.panel { position: absolute; right: 16px; top: 16px; width: min(360px, calc(100% - 32px)); max-height: calc(100% - 32px); overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; box-shadow: 0 6px 24px rgba(0,0,0,.12); cursor: auto; }
+  .panel h2 { font-size: 16px; margin-top: 2px; }
+  .panel .pid { font-family: var(--mono); color: var(--muted); font-size: 12px; }
+  .panel .statebar { display: flex; gap: 8px; align-items: center; margin: 8px 0 12px; font-size: 12px; }
+  .panel .word { font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: 11px; }
+  .panel .word.green { color: var(--green); } .panel .word.yellow { color: var(--yellow); } .panel .word.red { color: var(--red); } .panel .word.grey { color: var(--grey); }
+  .panel p { margin: 0 0 8px; font-size: 13px; }
+  .panel h4 { margin: 12px 0 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .panel ul { margin: 0; padding: 0; list-style: none; }
+  .panel li { padding: 6px 0; border-top: 1px dashed var(--line); font-size: 12.5px; }
+  .panel li:first-child { border-top: 0; }
+  .panel .acid { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; }
+  .panel .path { font-family: var(--mono); font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+  .panel .close { float: right; border: 0; background: none; font-size: 18px; line-height: 1; color: var(--muted); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 12.5px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; }
+  .empty { color: var(--muted); font-style: italic; }
+  .error { margin: 24px 20px; padding: 16px; border: 1px solid var(--red); border-radius: var(--radius); background: var(--red-soft); max-width: 70ch; }
+  .hint { position: absolute; left: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); font-size: 11.5px; color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 8px; pointer-events: none; }
+</style>
+
+<header class="top">
+  <div>
+    <div class="eyebrow">zuri-next specification</div>
+    <h1>Spec Org Chart</h1>
+    <div class="meta" id="meta">Loading spec-tree.json</div>
+  </div>
+  <div class="legend" id="legend"></div>
+  <button class="btn" id="theme" aria-label="Theme">◐ auto</button>
+</header>
+<div class="toolbar" id="toolbar" hidden>
+  <input id="q" type="search" placeholder="Find by ID or title, then Enter (FR-042-003, inbox)" aria-label="Find">
+  <span class="sep"></span>
+  <button class="btn" data-level="1">Domains</button>
+  <button class="btn" data-level="2">Features</button>
+  <button class="btn" data-level="3">Requirements</button>
+  <span class="sep"></span>
+  <button class="btn" id="z-out" aria-label="Zoom out">−</button>
+  <span class="zoomv" id="zoomv">100%</span>
+  <button class="btn" id="z-in" aria-label="Zoom in">+</button>
+  <button class="btn" id="fit">Fit</button>
+  <button class="btn" id="reset">100%</button>
+</div>
+<div id="error" class="error" hidden></div>
+<div class="stage" id="stage">
+  <div class="canvas" id="canvas"><ul class="oc" id="oc"></ul></div>
+  <aside class="panel" id="panel" hidden></aside>
+  <div class="hint">Drag to pan · Ctrl + wheel to zoom · click a box for details · click ● to fold</div>
+</div>
+
+<script>
+(function () {
+  const $ = (s, el) => (el || document).querySelector(s);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const STATES = ['green', 'yellow', 'red', 'grey'];
+  let data, index = {};
+  const view = { x: 0, y: 0, s: 1 };
+  const stage = $('#stage'), canvas = $('#canvas');
+
+  const counts = (c) => STATES.map((s) => `<span class="cnt ${s} ${c[s] ? '' : 'zero'}" title="${c[s]} ${s}">${c[s]}</span>`).join('');
+  const sum = (c) => STATES.reduce((a, s) => a + c[s], 0);
+  const box = (o, cls, extra = '', childCount = 0) => `<button class="box ${cls} ${o.state}" data-id="${esc(o.id)}" type="button"><span class="id">${esc(o.id)}</span><div class="title">${esc(o.title)}</div><div class="foot">${extra}</div>${childCount ? `<span class="toggle" data-toggle="1" title="fold / unfold">${childCount}</span>` : ''}</button>`;
+
+  function reqLi(r) { index[r.id] = r; return `<li data-kind="req" data-id="${esc(r.id)}">${box(r, 'leaf', `<span class="kind">${r.kind}</span><span class="status">${esc(r.reason)}</span>`)}</li>`; }
+  function featLi(f, part) {
+    index[f.id] = f;
+    let children, c;
+    if (part) { const rs = f.requirements.filter((r) => r.part === part); c = { green: 0, yellow: 0, red: 0, grey: 0 }; rs.forEach((r) => c[r.state]++); children = rs.map(reqLi).join(''); }
+    else if (f.participants.length) {
+      c = f.counts;
+      children = f.participants.map((p) => { const rs = f.requirements.filter((r) => r.part === p.part); const pc = { green: 0, yellow: 0, red: 0, grey: 0 }; rs.forEach((r) => pc[r.state]++); index[p.part] = { id: p.part, title: p.role, state: f.state, reason: p.domain, part: true, feature: f.id, domain: p.domain, role: p.role, counts: pc, path: f.path };
+        return `<li data-kind="part" data-id="${esc(p.part)}">${box(index[p.part], 'part', `<span class="status">${esc(p.domain)}</span>${counts(pc)}`, rs.length)}<ul>${rs.map(reqLi).join('')}</ul></li>`; }).join('')
+        + f.requirements.filter((r) => !r.part).map(reqLi).join('');
+    } else { c = f.counts; children = f.requirements.map(reqLi).join(''); }
+    const n = part ? sum(c) : (f.participants.length ? f.participants.length + f.requirements.filter((r) => !r.part).length : f.requirements.length);
+    const o = part ? { ...f, title: `${f.title} · via ${part}`, id: f.id } : f;
+    return `<li class="collapsed" data-kind="feat" data-id="${esc(f.id)}${part ? '@' + esc(part) : ''}">${box(o, part ? 'ref' : '', `<span class="status">${esc(f.reason)}</span>${counts(c)}`, n)}<ul>${children}</ul></li>`;
+  }
+  function domLi(d) {
+    index[d.id] = d;
+    const feats = d.features.map((f) => featLi(f)).join('');
+    const refs = d.participates.map((p) => { const f = data.domains.flatMap((x) => x.features).find((x) => x.id === p.feature); return f ? featLi(f, p.part) : ''; }).join('');
+    return `<li class="collapsed" data-kind="dom" data-id="${esc(d.id)}">${box(d, 'dom', `<span class="status">${esc(d.status || 'unknown')} · ${d.features.length} feat</span>${counts(d.counts)}`, d.features.length + d.participates.length)}<ul>${feats}${refs}</ul></li>`;
+  }
+
+  function render() {
+    const root = { id: 'zuri-next', title: 'Specification', state: 'grey', counts: data.totals.requirements };
+    index['zuri-next'] = { ...root, reason: `${data.totals.domains} domains · ${data.totals.features} features · ${sum(root.counts)} requirements`, path: 'docs/README.md' };
+    $('#oc').innerHTML = `<li data-kind="root" data-id="zuri-next">${box(root, 'root', `<span class="status">${data.totals.domains} domains · ${data.totals.features} features</span>`, 0)}<ul>${data.domains.map(domLi).join('')}</ul></li>`;
+    $('#meta').textContent = `Generated ${data.generated} by tools/spec-tree.mjs · zuri-next › domain › feature › part › FR / NFR`;
+    $('#legend').innerHTML = STATES.map((s) => `<span><span class="dot ${s}"></span>${esc(data.legend[s])}</span>`).join('');
+    $('#toolbar').hidden = false;
+  }
+
+  function apply() { canvas.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.s})`; $('#zoomv').textContent = Math.round(view.s * 100) + '%'; }
+  function fit() {
+    const w = canvas.scrollWidth, h = canvas.scrollHeight, W = stage.clientWidth, H = stage.clientHeight;
+    view.s = Math.min(1.25, Math.max(0.45, Math.min(W / w, H / h) * 0.98));
+    view.x = Math.max(12, (W - w * view.s) / 2); view.y = 8; apply();
+  }
+  function zoomAt(f, cx, cy) { const ns = Math.min(3, Math.max(0.08, view.s * f)); view.x = cx - (cx - view.x) * (ns / view.s); view.y = cy - (cy - view.y) * (ns / view.s); view.s = ns; apply(); }
+  function centerOn(el) {
+    const r = el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    view.x += (s.left + s.width / 2) - (r.left + r.width / 2); view.y += (s.top + s.height / 3) - (r.top + r.height / 2); apply();
+  }
+  function setLevel(n) {
+    for (const li of document.querySelectorAll('#oc li')) { const k = li.dataset.kind; li.classList.toggle('collapsed', (k === 'dom' && n < 2) || ((k === 'feat' || k === 'part') && n < 3)); }
+    document.querySelectorAll('.btn[data-level]').forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.level === n)));
+    requestAnimationFrame(fit);
+  }
+  function expandTo(li) { let p = li.parentElement.closest('li'); while (p) { p.classList.remove('collapsed'); p = p.parentElement.closest('li'); } }
+
+  function showPanel(id) {
+    const o = index[id]; const p = $('#panel'); if (!o) return;
+    document.querySelectorAll('.box.selected').forEach((n) => n.classList.remove('selected'));
+    document.querySelectorAll(`.box[data-id="${CSS.escape(id)}"]`).forEach((n) => n.classList.add('selected'));
+    let body;
+    if (o.acs) body = `<p>${esc(o.statement || '')}</p><dl class="kv"><dt>Delivery</dt><dd>${esc(o.delivery)}</dd>${o.part ? `<dt>Part</dt><dd class="mono">${esc(o.part)} · ${esc(o.owner || '')}</dd>` : ''}<dt>Test cases</dt><dd class="mono">${o.tcs.length ? o.tcs.map(esc).join(', ') : '<span class="empty">none</span>'}</dd></dl><h4>Acceptance criteria · ${o.acs.length}</h4><ul>${o.acs.map((a) => `<li><span class="acid">${esc(a.id)}</span>${esc(a.text)}</li>`).join('') || '<li class="empty">none</li>'}</ul>`;
+    else if (o.requirements) body = `<dl class="kv"><dt>Type</dt><dd>${esc(o.type)}</dd><dt>Owner</dt><dd class="mono">${esc(o.owner)}</dd><dt>Runtime</dt><dd class="mono">${esc(o.runtime || '')}</dd><dt>Spec status</dt><dd>${esc(o.status)}</dd><dt>Delivery</dt><dd>${esc(o.delivery)}</dd></dl>${o.participants.length ? `<h4>Participants</h4><ul>${o.participants.map((x) => `<li><span class="acid">${esc(x.part)}</span>${esc(x.domain)} · ${esc(x.role)}</li>`).join('')}</ul>` : ''}<h4>Requirements · ${o.requirements.length}</h4><div class="statebar">${counts(o.counts)}</div>`;
+    else if (o.part === true) body = `<dl class="kv"><dt>Feature</dt><dd class="mono">${esc(o.feature)}</dd><dt>Domain</dt><dd class="mono">${esc(o.domain)}</dd><dt>Role</dt><dd>${esc(o.role)}</dd></dl><h4>Requirements</h4><div class="statebar">${counts(o.counts)}</div>`;
+    else if (o.features) body = `<dl class="kv"><dt>README status</dt><dd>${esc(o.status || 'unknown')}</dd><dt>Owned features</dt><dd>${o.features.length}</dd><dt>Participates in</dt><dd>${o.participates.length}</dd></dl><h4>Requirements</h4><div class="statebar">${counts(o.counts)}</div>`;
+    else body = `<div class="statebar">${counts(o.counts)}</div>`;
+    p.hidden = false;
+    p.innerHTML = `<button class="close" id="close" aria-label="Close">×</button><div class="pid">${esc(o.id)}${o.kind ? ' · ' + o.kind : ''}</div><h2>${esc(o.title)}</h2><div class="statebar"><span class="dot ${o.state}"></span><span class="word ${o.state}">${esc(o.reason || o.status || o.state)}</span></div>${body}<h4>File</h4><div class="path">${esc(o.path || '')}</div>`;
+    $('#close').addEventListener('click', () => { p.hidden = true; document.querySelectorAll('.box.selected').forEach((n) => n.classList.remove('selected')); });
+  }
+
+  function find(q) {
+    q = q.trim().toLowerCase(); if (!q) return;
+    document.querySelectorAll('.box.hit').forEach((b) => b.classList.remove('hit'));
+    const boxes = [...document.querySelectorAll('#oc .box')];
+    const hit = boxes.find((b) => b.dataset.id.toLowerCase() === q) || boxes.find((b) => b.dataset.id.toLowerCase().includes(q) || b.querySelector('.title').textContent.toLowerCase().includes(q));
+    if (!hit) { $('#q').setCustomValidity('No match'); $('#q').reportValidity(); setTimeout(() => $('#q').setCustomValidity(''), 1200); return; }
+    hit.classList.add('hit'); expandTo(hit.parentElement);
+    requestAnimationFrame(() => { centerOn(hit); showPanel(hit.dataset.id); });
+  }
+
+  function wire() {
+    // click: toggle or select
+    $('#oc').addEventListener('click', (e) => {
+      const t = e.target.closest('[data-toggle]');
+      if (t) { e.stopPropagation(); const li = t.closest('li'); li.classList.toggle('collapsed'); return; }
+      const b = e.target.closest('.box'); if (!b) return;
+      showPanel(b.dataset.id);
+    });
+    // pan
+    let drag = null;
+    stage.addEventListener('pointerdown', (e) => { if (e.target.closest('.panel') || e.button !== 0) return; drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false }; stage.setPointerCapture(e.pointerId); });
+    stage.addEventListener('pointermove', (e) => { if (!drag) return; const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; stage.classList.add('dragging'); } view.x = drag.vx + dx; view.y = drag.vy + dy; apply(); });
+    const end = (e) => { if (drag?.moved) { const stop = (ev) => { ev.stopPropagation(); ev.preventDefault(); }; stage.addEventListener('click', stop, { capture: true, once: true }); } drag = null; stage.classList.remove('dragging'); };
+    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
+    // zoom
+    stage.addEventListener('wheel', (e) => { if (!(e.ctrlKey || e.metaKey)) { view.x -= e.deltaX; view.y -= e.deltaY; apply(); e.preventDefault(); return; } e.preventDefault(); const r = stage.getBoundingClientRect(); zoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); }, { passive: false });
+    $('#z-in').addEventListener('click', () => zoomAt(1.25, stage.clientWidth / 2, stage.clientHeight / 2));
+    $('#z-out').addEventListener('click', () => zoomAt(1 / 1.25, stage.clientWidth / 2, stage.clientHeight / 2));
+    $('#fit').addEventListener('click', fit);
+    $('#reset').addEventListener('click', () => { view.s = 1; view.x = 20; view.y = 20; apply(); });
+    for (const b of document.querySelectorAll('.btn[data-level]')) b.addEventListener('click', () => setLevel(+b.dataset.level));
+    $('#q').addEventListener('keydown', (e) => { if (e.key === 'Enter') find($('#q').value); });
+    window.addEventListener('resize', () => requestAnimationFrame(apply));
+    if (/^#[A-Za-z]+-[0-9A-Za-z-]+$/.test(location.hash)) setTimeout(() => find(location.hash.slice(1)), 50);
+  }
+
+  async function boot() {
+    try { const r = await fetch('spec-tree.json', { cache: 'no-store' }); if (!r.ok) throw new Error(r.status + ' ' + r.statusText); data = await r.json(); }
+    catch (err) { $('#meta').textContent = 'Chart not loaded'; const e = $('#error'); e.hidden = false; e.innerHTML = `<b>Could not read <code>spec-tree.json</code></b> (${esc(err.message)}). Run <code>node tools/spec-tree.mjs</code>, then serve this folder over HTTP (<code>npx serve docs/governance/plans</code>) or open the published artifact.`; return; }
+    render(); wire(); setLevel(1);
+  }
+  boot();
+})();
+</script>

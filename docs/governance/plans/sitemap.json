@@ -1,0 +1,3734 @@
+{
+ "generated": "2026-09-27",
+ "source": "registry/sitemap.yaml + backticked console paths in docs/",
+ "surfaces": [
+  {
+   "id": "web-console",
+   "label": "Web console",
+   "role": "back office — detail, complex edits, reconciliation, audit, configuration",
+   "users": "owners, staff, operator",
+   "evidence": [
+    "PRD-001",
+    "FEAT-002",
+    "FEAT-034",
+    "FEAT-035"
+   ],
+   "entries": []
+  },
+  {
+   "id": "line",
+   "label": "LINE",
+   "role": "primary surface — AI-native intake and interaction through the Business's LINE Official Accounts",
+   "users": "customers, staff",
+   "evidence": [
+    "PRD-001",
+    "FEAT-093"
+   ],
+   "entries": [
+    {
+     "label": "Customer conversation (grounded answers, one reply owner per event)",
+     "evidence": [
+      "FEAT-093",
+      "FEAT-096",
+      "FEAT-063"
+     ],
+     "features": [
+      {
+       "id": "FEAT-093",
+       "title": "Server-owned LINE conversation transport",
+       "state": "yellow",
+       "owner": "DOM-LOA"
+      },
+      {
+       "id": "FEAT-096",
+       "title": "LINE grounding and knowledge candidates",
+       "state": "grey",
+       "owner": "DOM-KNW"
+      },
+      {
+       "id": "FEAT-063",
+       "title": "Evidence-grounded answering and supply-chain tools",
+       "state": "grey",
+       "owner": "DOM-AGT"
+      }
+     ]
+    },
+    {
+     "label": "Phase 1 activation path (PENDING → real customer answer)",
+     "evidence": [
+      "FEAT-065"
+     ],
+     "features": [
+      {
+       "id": "FEAT-065",
+       "title": "Phase 1 activation path — golden evaluation, canary readiness, activation receipt",
+       "state": "grey",
+       "owner": "DOM-AGT"
+      }
+     ]
+    },
+    {
+     "label": "Rich menus and LIFF apps published by the Studio",
+     "evidence": [
+      "FEAT-049"
+     ],
+     "features": [
+      {
+       "id": "FEAT-049",
+       "title": "Rich menus and LIFF app registry",
+       "state": "yellow",
+       "owner": "DOM-LOA"
+      }
+     ]
+    },
+    {
+     "label": "Staff command `#sku` — preview before write, verified sender only",
+     "evidence": [
+      "FR-081-003"
+     ],
+     "features": [
+      {
+       "id": "FEAT-081",
+       "title": "Catalogue intake — resolve before it creates",
+       "state": "green",
+       "owner": "DOM-INV"
+      }
+     ]
+    },
+    {
+     "label": "Staff asset intake handoff (photo + payment proof)",
+     "evidence": [
+      "FEAT-087",
+      "FR-086-002"
+     ],
+     "features": [
+      {
+       "id": "FEAT-087",
+       "title": "Evidence intake execution — cloud storage, extraction, review, workbook/Sheet, LINE handoff",
+       "state": "green",
+       "owner": "DOM-AST"
+      },
+      {
+       "id": "FEAT-086",
+       "title": "Asset foundation — intake, registration, custody, allocation, depreciation preview",
+       "state": "green",
+       "owner": "DOM-AST"
+      }
+     ]
+    },
+    {
+     "label": "Consent attestation on first contact",
+     "evidence": [
+      "FEAT-043"
+     ],
+     "features": [
+      {
+       "id": "FEAT-043",
+       "title": "PDPA consent attestation",
+       "state": "yellow",
+       "owner": "DOM-CRM"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "enterprise-api",
+   "label": "Enterprise API",
+   "role": "upsert and resolve by external ids through the intake pipeline (Tenant-bound API keys, OpenAPI)",
+   "users": "integrators",
+   "evidence": [
+    "PRD-001",
+    "FEAT-008"
+   ],
+   "entries": [
+    {
+     "label": "Intake envelope upsert / resolve",
+     "evidence": [
+      "FEAT-008",
+      "FEAT-007"
+     ],
+     "features": [
+      {
+       "id": "FEAT-008",
+       "title": "Enterprise API",
+       "state": "yellow",
+       "owner": "DOM-PRJ"
+      },
+      {
+       "id": "FEAT-007",
+       "title": "Plan intake pipeline",
+       "state": "yellow",
+       "owner": "DOM-PRJ"
+      }
+     ]
+    },
+    {
+     "label": "Usage report endpoint (deployment bearer)",
+     "evidence": [
+      "FR-037-003"
+     ],
+     "features": [
+      {
+       "id": "FEAT-037",
+       "title": "Programme Delivery Telemetry",
+       "state": "green",
+       "owner": "DOM-PLT"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "plugin-mcp",
+   "label": "Plugin / MCP",
+   "role": "agent clients acting for a signed-in person (PKCE public client; capabilities from the person's authority)",
+   "users": "agent tools",
+   "evidence": [
+    "PRD-001",
+    "FEAT-028"
+   ],
+   "entries": [
+    {
+     "label": "Plugin authorization and capability discovery",
+     "evidence": [
+      "FEAT-028"
+     ],
+     "features": [
+      {
+       "id": "FEAT-028",
+       "title": "Plugin Authentication & Capability Discovery",
+       "state": "green",
+       "owner": "DOM-IAM"
+      }
+     ]
+    },
+    {
+     "label": "Read tools (Gate E) and write tools (Gate F) over domain services",
+     "evidence": [
+      "FEAT-061",
+      "ADR-100"
+     ],
+     "features": [
+      {
+       "id": "FEAT-061",
+       "title": "Gate E/F core — read context, write/action gate, end-to-end turn, tool authorization",
+       "state": "grey",
+       "owner": "DOM-AGT"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "shell": [
+  {
+   "label": "Domain bar and sidebar (groups SCM, CRM; module tabs in canvas)",
+   "evidence": [
+    "FEAT-035",
+    "FR-035-001",
+    "FR-035-002"
+   ]
+  },
+  {
+   "label": "Base Context Bar (Group › Organization › Business) and breadcrumb",
+   "evidence": [
+    "FR-002-002",
+    "FR-002-004"
+   ]
+  },
+  {
+   "label": "Command palette (Ctrl+K) over every reachable route",
+   "evidence": [
+    "FR-034-002"
+   ]
+  },
+  {
+   "label": "Business shell guard and shell mode",
+   "evidence": [
+    "FR-002-005",
+    "FR-002-001"
+   ]
+  }
+ ],
+ "console": {
+  "slots": [
+   {
+    "key": "__entry",
+    "label": "Entry",
+    "domain": "DOM-IAM",
+    "group": null,
+    "note": null,
+    "evidence": [
+     "FEAT-002",
+     "FEAT-023",
+     "FEAT-025"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/",
+      "label": "Landing",
+      "note": "Full-viewport branded landing with exactly one action, to /login; renders outside the shell.",
+      "planned": false,
+      "evidence": [
+       "FR-002-006",
+       "FR-023-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-072",
+        "title": "Ingestion stage catalog, snapshot contract & sensitivity lattice",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       },
+       {
+        "id": "FEAT-080",
+        "title": "SKU governance — nature, variant identity, identifiers, lifecycle, hygiene",
+        "state": "green",
+        "owner": "DOM-INV"
+       },
+       {
+        "id": "FEAT-031",
+        "title": "Org Employment & Legal Entity",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-070",
+        "title": "Tier 1 structural stage calculators",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       },
+       {
+        "id": "FEAT-060",
+        "title": "Pipeline execution ledger, replay and worker bridge",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       },
+       {
+        "id": "FEAT-075",
+        "title": "SmartGift catalog convergence",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       },
+       {
+        "id": "FEAT-096",
+        "title": "LINE grounding and knowledge candidates",
+        "state": "grey",
+        "owner": "DOM-KNW"
+       },
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-029",
+        "title": "Production IAM Boundary",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-030",
+        "title": "Access Grant Lifecycle",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-032",
+        "title": "Access Invite, SoD & Operator Lifecycle",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-033",
+        "title": "Audit Access Evidence",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-040",
+        "title": "Mission Control DAG Orchestration Observability",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-065",
+        "title": "Phase 1 activation path — golden evaluation, canary readiness, activation receipt",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-071",
+        "title": "Stage composition & quarantine",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       },
+       {
+        "id": "FEAT-079",
+        "title": "SmartGift SCM — located ledger, WIP, landed cost, ATP, stocktake",
+        "state": "green",
+        "owner": "DOM-INV"
+       },
+       {
+        "id": "FEAT-086",
+        "title": "Asset foundation — intake, registration, custody, allocation, depreciation preview",
+        "state": "green",
+        "owner": "DOM-AST"
+       },
+       {
+        "id": "FEAT-007",
+        "title": "Plan intake pipeline",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-023",
+        "title": "Entry & Viewer Gate",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-061",
+        "title": "Gate E/F core — read context, write/action gate, end-to-end turn, tool authorization",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-063",
+        "title": "Evidence-grounded answering and supply-chain tools",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-069",
+        "title": "Device and handoff operations (retired Edge Device surfaces)",
+        "state": "red",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-076",
+        "title": "Data pipeline map",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       },
+       {
+        "id": "FEAT-014",
+        "title": "Project feature authority",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-039",
+        "title": "Observability: Errors & Usage Events",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-042",
+        "title": "Conversation sessions",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-048",
+        "title": "LINE OA accounts",
+        "state": "yellow",
+        "owner": "DOM-LOA"
+       },
+       {
+        "id": "FEAT-050",
+        "title": "Server-executed answers on Business API keys",
+        "state": "yellow",
+        "owner": "DOM-LOA"
+       },
+       {
+        "id": "FEAT-062",
+        "title": "Runtime wiring and webhook ingress",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-067",
+        "title": "Authorized agent context and vault resolution",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-068",
+        "title": "Execution trace and replay",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-077",
+        "title": "Inventory core ledger",
+        "state": "green",
+        "owner": "DOM-INV"
+       },
+       {
+        "id": "FEAT-082",
+        "title": "Procurement core — suppliers, purchase orders, goods receipts",
+        "state": "grey",
+        "owner": "DOM-PRC"
+       },
+       {
+        "id": "FEAT-083",
+        "title": "Orders and payments",
+        "state": "green",
+        "owner": "DOM-COM"
+       },
+       {
+        "id": "FEAT-087",
+        "title": "Evidence intake execution — cloud storage, extraction, review, workbook/Sheet, LINE handoff",
+        "state": "green",
+        "owner": "DOM-AST"
+       },
+       {
+        "id": "FEAT-088",
+        "title": "Market translation core",
+        "state": "green",
+        "owner": "DOM-MKI"
+       },
+       {
+        "id": "FEAT-091",
+        "title": "Phase 1 LINE runtime connections",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       },
+       {
+        "id": "FEAT-003",
+        "title": "Project execution structure & write authorization",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-009",
+        "title": "ExecutionPlanBundle import",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-013",
+        "title": "Project execution domains view",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-017",
+        "title": "Managed file workspace & File Manager",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-024",
+        "title": "Authorization — Membership, Roles & Domain Visibility",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-035",
+        "title": "Console Navigation: Domain Grouping & Module Tabs",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-037",
+        "title": "Programme Delivery Telemetry",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-038",
+        "title": "Agent Usage Detail",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-041",
+        "title": "Customer and conversation record (LINE ingest seam)",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-043",
+        "title": "PDPA consent attestation",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-045",
+        "title": "Sales tasks (งานขาย)",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-049",
+        "title": "Rich menus and LIFF app registry",
+        "state": "yellow",
+        "owner": "DOM-LOA"
+       },
+       {
+        "id": "FEAT-064",
+        "title": "LINE delivery and scope binding",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-066",
+        "title": "Verified channel onboarding",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       },
+       {
+        "id": "FEAT-074",
+        "title": "Business knowledge & graph read contracts",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       },
+       {
+        "id": "FEAT-078",
+        "title": "Product nature and stock policy",
+        "state": "green",
+        "owner": "DOM-INV"
+       },
+       {
+        "id": "FEAT-084",
+        "title": "POS billing and checkout",
+        "state": "green",
+        "owner": "DOM-COM"
+       },
+       {
+        "id": "FEAT-085",
+        "title": "Pricing rules and formula console",
+        "state": "green",
+        "owner": "DOM-COM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002",
+       "FEAT-003",
+       "FEAT-007",
+       "FEAT-009",
+       "FEAT-013",
+       "FEAT-014",
+       "FEAT-017",
+       "FEAT-023",
+       "FEAT-024",
+       "FEAT-029",
+       "FEAT-030",
+       "FEAT-031",
+       "FEAT-032",
+       "FEAT-033",
+       "FEAT-035",
+       "FEAT-037",
+       "FEAT-038",
+       "FEAT-039",
+       "FEAT-040",
+       "FEAT-041",
+       "FEAT-042",
+       "FEAT-043",
+       "FEAT-045",
+       "FEAT-048",
+       "FEAT-049",
+       "FEAT-050",
+       "FEAT-060",
+       "FEAT-061",
+       "FEAT-062",
+       "FEAT-063",
+       "FEAT-064",
+       "FEAT-065",
+       "FEAT-066",
+       "FEAT-067",
+       "FEAT-068",
+       "FEAT-069",
+       "FEAT-070",
+       "FEAT-071",
+       "FEAT-072",
+       "FEAT-074",
+       "FEAT-075",
+       "FEAT-076",
+       "FEAT-077",
+       "FEAT-078",
+       "FEAT-079",
+       "FEAT-080",
+       "FEAT-082",
+       "FEAT-083",
+       "FEAT-084",
+       "FEAT-085",
+       "FEAT-086",
+       "FEAT-087",
+       "FEAT-088",
+       "FEAT-091",
+       "FEAT-096",
+       "DOM-AGT",
+       "DOM-AST",
+       "DOM-COM",
+       "DOM-CRM",
+       "DOM-IAM",
+       "DOM-INT",
+       "DOM-INV",
+       "DOM-KNW",
+       "DOM-LOA",
+       "DOM-MKI",
+       "DOM-MKT",
+       "DOM-PLT",
+       "DOM-PRC"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-AGT",
+      "counts": {
+       "green": 22,
+       "yellow": 22,
+       "red": 1,
+       "grey": 10
+      }
+     },
+     {
+      "path": "/login",
+      "label": "Login",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-023-002",
+       "FEAT-023"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-023",
+        "title": "Entry & Viewer Gate",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-022",
+        "title": "Product readiness dashboard",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-025",
+        "title": "Onboarding & Account Creation",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-036",
+        "title": "Platform Programme Roadmap & Domain Map",
+        "state": "green",
+        "owner": "DOM-PLT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002",
+       "FEAT-022",
+       "FEAT-023",
+       "FEAT-025",
+       "FEAT-036",
+       "DOM-PLT"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 3,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/signup",
+      "label": "Sign up",
+      "note": "Self-serve signup is the one door into the product.",
+      "planned": false,
+      "evidence": [
+       "FR-025-003"
+      ],
+      "features": [
+       {
+        "id": "FEAT-025",
+        "title": "Onboarding & Account Creation",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-025"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": null,
+      "label": "Password reset (owner-assisted)",
+      "note": "No public forgot-password route; an owner resets on the person's behalf.",
+      "planned": false,
+      "evidence": [
+       "FR-026-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-026",
+        "title": "Credential & Operator Bootstrap",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/profile",
+      "label": "My Profile",
+      "note": "Profile-first onboarding; a Profile-only member waits in the Waiting Room.",
+      "planned": false,
+      "evidence": [
+       "FR-024-001",
+       "FR-025-001",
+       "FR-025-005"
+      ],
+      "features": [
+       {
+        "id": "FEAT-024",
+        "title": "Authorization — Membership, Roles & Domain Visibility",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-025",
+        "title": "Onboarding & Account Creation",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-024"
+      ],
+      "views": [
+       {
+        "label": "Waiting Room",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-025-001"
+        ],
+        "features": [
+         {
+          "id": "FEAT-025",
+          "title": "Onboarding & Account Creation",
+          "state": "green",
+          "owner": "DOM-IAM"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 2,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/businesses",
+      "label": "Business chooser",
+      "note": "Lists only Businesses the viewer may see; the shell mounts after one is selected.",
+      "planned": false,
+      "evidence": [
+       "FR-023-002",
+       "AC-002-002-02"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-023",
+        "title": "Entry & Viewer Gate",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002",
+       "FEAT-023",
+       "DOM-IAM",
+       "DOM-PRJ"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 1,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 25,
+     "yellow": 23,
+     "red": 1,
+     "grey": 10
+    }
+   },
+   {
+    "key": "projects",
+    "label": "Projects & Work",
+    "domain": "DOM-PRJ",
+    "group": null,
+    "note": "Six logical modules; only the selected module's views show in content navigation.",
+    "evidence": [
+     "FEAT-002",
+     "FR-002-007"
+    ],
+    "modules": [
+     {
+      "label": "Project Management",
+      "views": [],
+      "entered_at": null,
+      "evidence": [
+       "FR-002-007",
+       "FEAT-015",
+       "FEAT-003"
+      ]
+     },
+     {
+      "label": "Work Management",
+      "views": [
+       {
+        "label": "Execution Roadmap",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Structure Plan",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Board",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Work Items",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Schedule",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Milestones",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Dependency Map",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       }
+      ],
+      "entered_at": "Structure Plan",
+      "evidence": [
+       "FR-002-007",
+       "FEAT-006",
+       "FEAT-010"
+      ]
+     },
+     {
+      "label": "Delivery Design",
+      "views": [
+       {
+        "label": "Pipeline builder canvas",
+        "planned": true,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       }
+      ],
+      "entered_at": null,
+      "evidence": [
+       "FR-002-007",
+       "FEAT-016"
+      ]
+     },
+     {
+      "label": "Resource Coordination",
+      "views": [
+       {
+        "label": "Team",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Files",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Repositories",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       }
+      ],
+      "entered_at": null,
+      "evidence": [
+       "FR-002-007",
+       "FEAT-004",
+       "FEAT-017"
+      ]
+     },
+     {
+      "label": "Delivery Governance",
+      "views": [
+       {
+        "label": "Approvals",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Execution trace",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       }
+      ],
+      "entered_at": null,
+      "evidence": [
+       "FR-002-007",
+       "FEAT-010",
+       "FEAT-011"
+      ]
+     },
+     {
+      "label": "Agent Delivery",
+      "views": [
+       {
+        "label": "Agent / meeting intake",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       },
+       {
+        "label": "Approval gateway",
+        "planned": false,
+        "path": null,
+        "evidence": [],
+        "features": [],
+        "derived": false
+       }
+      ],
+      "entered_at": null,
+      "evidence": [
+       "FR-002-007",
+       "FEAT-010",
+       "FEAT-011"
+      ]
+     }
+    ],
+    "pages": [
+     {
+      "path": "/overview",
+      "label": "Business Home (Overview)",
+      "note": "Execution KPIs, Project health, strategy and shortcuts for the selected Business; the shell's home.",
+      "planned": false,
+      "evidence": [
+       "FR-018-001",
+       "FR-018-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-018",
+        "title": "Business Home dashboard",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-015",
+        "title": "Projects dashboard, priority, PIC & teams",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-023",
+        "title": "Entry & Viewer Gate",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002",
+       "FEAT-015",
+       "FEAT-018",
+       "FEAT-023",
+       "DOM-PRJ"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 1,
+       "yellow": 3,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/roadmap",
+      "label": "Business roadmap, goals and key results",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-019-002",
+       "FEAT-019"
+      ],
+      "features": [
+       {
+        "id": "FEAT-036",
+        "title": "Platform Programme Roadmap & Domain Map",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-040",
+        "title": "Mission Control DAG Orchestration Observability",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-019",
+        "title": "Business strategy, goals & key results",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-036",
+       "FEAT-040",
+       "DOM-PLT"
+      ],
+      "views": [
+       {
+        "label": "Balanced scorecard KPIs and 4DX (declared)",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FEAT-020"
+        ],
+        "features": [
+         {
+          "id": "FEAT-020",
+          "title": "Balanced scorecard KPIs & 4DX weekly execution",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-PLT",
+      "counts": {
+       "green": 2,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/projects",
+      "label": "Projects dashboard",
+      "note": "Priority, PIC and teams; Project list read contract.",
+      "planned": false,
+      "evidence": [
+       "FR-015-001",
+       "FR-003-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-015",
+        "title": "Projects dashboard, priority, PIC & teams",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-003",
+        "title": "Project execution structure & write authorization",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002",
+       "FEAT-015",
+       "DOM-PRJ"
+      ],
+      "views": [
+       {
+        "label": "Project — Structure Plan (per-Workstream hierarchy)",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-003-005"
+        ],
+        "features": [
+         {
+          "id": "FEAT-003",
+          "title": "Project execution structure & write authorization",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Board",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-006-004"
+        ],
+        "features": [
+         {
+          "id": "FEAT-006",
+          "title": "Project work views",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Execution views (/projects/{id}/execution/{mode})",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-006-001"
+        ],
+        "features": [
+         {
+          "id": "FEAT-006",
+          "title": "Project work views",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Dependency Map",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-006-003"
+        ],
+        "features": [
+         {
+          "id": "FEAT-006",
+          "title": "Project work views",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Domains view",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-013-001"
+        ],
+        "features": [
+         {
+          "id": "FEAT-013",
+          "title": "Project execution domains view",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Team",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-004-003"
+        ],
+        "features": [
+         {
+          "id": "FEAT-004",
+          "title": "Project repositories & project team",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Inventory snapshot",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FEAT-012"
+        ],
+        "features": [
+         {
+          "id": "FEAT-012",
+          "title": "Project inventory snapshot",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Features",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FEAT-014"
+        ],
+        "features": [
+         {
+          "id": "FEAT-014",
+          "title": "Project feature authority",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Project — Import plan (persistent action, dry run and preview)",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-007-002",
+         "FEAT-009"
+        ],
+        "features": [
+         {
+          "id": "FEAT-007",
+          "title": "Plan intake pipeline",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         },
+         {
+          "id": "FEAT-009",
+          "title": "ExecutionPlanBundle import",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 10,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/work",
+      "label": "Work Items (All Work)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-003-006"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-003",
+        "title": "Project execution structure & write authorization",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002"
+      ],
+      "views": [
+       {
+        "label": "Standalone task inbox",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-007-006"
+        ],
+        "features": [
+         {
+          "id": "FEAT-007",
+          "title": "Plan intake pipeline",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 3,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/execution",
+      "label": "Execution views by mode",
+      "note": "Sprint board, Migration monitor, Sales pipeline, Campaign control, Launch timeline, Operations board, Expansion portfolio at /execution/{mode}.",
+      "planned": false,
+      "evidence": [
+       "FR-006-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-006",
+        "title": "Project work views",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002"
+      ],
+      "views": [
+       {
+        "label": "Execution Roadmap",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-010-001"
+        ],
+        "features": [
+         {
+          "id": "FEAT-010",
+          "title": "Execution roadmap, agent/meeting intake, stable identities & trace",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 3,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/timeline",
+      "label": "Schedule (timeline)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-002-007"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-006",
+        "title": "Project work views",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002",
+       "FEAT-006"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/dependencies",
+      "label": "Dependency Map",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-006-003"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-006",
+        "title": "Project work views",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002",
+       "FEAT-006"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/milestones",
+      "label": "Milestones",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-002-007"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/files",
+      "label": "File Manager",
+      "note": "Four client-side views over the same asset set.",
+      "planned": false,
+      "evidence": [
+       "FR-017-009"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-017",
+        "title": "Managed file workspace & File Manager",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002"
+      ],
+      "views": [
+       {
+        "label": "Grid",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-017-009"
+        ],
+        "features": [
+         {
+          "id": "FEAT-017",
+          "title": "Managed file workspace & File Manager",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Timeline",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-017-009"
+        ],
+        "features": [
+         {
+          "id": "FEAT-017",
+          "title": "Managed file workspace & File Manager",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "By project",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-017-009"
+        ],
+        "features": [
+         {
+          "id": "FEAT-017",
+          "title": "Managed file workspace & File Manager",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Preview",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-017-009"
+        ],
+        "features": [
+         {
+          "id": "FEAT-017",
+          "title": "Managed file workspace & File Manager",
+          "state": "yellow",
+          "owner": "DOM-PRJ"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/repositories",
+      "label": "Repositories",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-004"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-004",
+        "title": "Project repositories & project team",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/workspace",
+      "label": "Workspace (Space) administration",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-001",
+       "FR-001-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-002",
+        "title": "Business shell, entry & navigation",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       },
+       {
+        "id": "FEAT-001",
+        "title": "Scope hierarchy & scope administration",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-002"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 3,
+     "yellow": 16,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "customer",
+    "label": "Customer",
+    "domain": "DOM-CRM",
+    "group": "CRM",
+    "note": null,
+    "evidence": [
+     "FEAT-092",
+     "FR-092-007"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/customer",
+      "label": "Customer dashboard",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-092-007"
+      ],
+      "features": [
+       {
+        "id": "FEAT-092",
+        "title": "CRM conversation inbox",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-092"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-CRM",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/customer/conversations",
+      "label": "Inbox",
+      "note": "Session dividers, previews and unread counts, search, staff replies, conversation analyses behind consent.",
+      "planned": false,
+      "evidence": [
+       "FR-092-001",
+       "FR-042-006",
+       "FR-095-007",
+       "FR-095-008",
+       "FR-047-001",
+       "FR-046-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-092",
+        "title": "CRM conversation inbox",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-042",
+        "title": "Conversation sessions",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-095",
+        "title": "Chat record, memory tiers and retention",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-047",
+        "title": "Chat evidence (staff replies, cold archive, legal hold)",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-046",
+        "title": "Conversation intelligence",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-092"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-CRM",
+      "counts": {
+       "green": 0,
+       "yellow": 5,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/customer/sales-tasks",
+      "label": "Sales tasks (งานขาย)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-045",
+       "FR-045-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-045",
+        "title": "Sales tasks (งานขาย)",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-045"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-CRM",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/customer/line-crm",
+      "label": "LINE CRM (customer record)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-041",
+       "FEAT-043"
+      ],
+      "features": [
+       {
+        "id": "FEAT-041",
+        "title": "Customer and conversation record (LINE ingest seam)",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       },
+       {
+        "id": "FEAT-043",
+        "title": "PDPA consent attestation",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       }
+      ],
+      "cited_by": [
+       "DOM-CRM"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-CRM",
+      "counts": {
+       "green": 0,
+       "yellow": 2,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 0,
+     "yellow": 8,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "market",
+    "label": "Market Intelligence",
+    "domain": "DOM-MKI",
+    "group": "CRM",
+    "note": null,
+    "evidence": [
+     "PRD-001",
+     "FEAT-088"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/market",
+      "label": "Market observations",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-088"
+      ],
+      "features": [
+       {
+        "id": "FEAT-088",
+        "title": "Market translation core",
+        "state": "green",
+        "owner": "DOM-MKI"
+       }
+      ],
+      "cited_by": [
+       "FEAT-088",
+       "DOM-MKI"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-MKI",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 1,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "growth",
+    "label": "Growth (Marketing)",
+    "domain": "DOM-MKT",
+    "group": null,
+    "note": null,
+    "evidence": [
+     "PRD-001",
+     "FEAT-089"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": null,
+      "label": "Strategy plans, reviews and decisions",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-089-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-089",
+        "title": "Marketing planning and accountable execution",
+        "state": "green",
+        "owner": "DOM-MKT"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-MKT",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/growth/operations",
+      "label": "Marketing operations",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-089"
+      ],
+      "features": [
+       {
+        "id": "FEAT-089",
+        "title": "Marketing planning and accountable execution",
+        "state": "green",
+        "owner": "DOM-MKT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-089"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-MKT",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/growth/insights",
+      "label": "Marketing Insights (read-only)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-090-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-090",
+        "title": "Marketing Insights",
+        "state": "green",
+        "owner": "DOM-MKT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-090"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-MKT",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 2,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "inventory",
+    "label": "Inventory & Catalogue",
+    "domain": "DOM-INV",
+    "group": "SCM",
+    "note": "In-canvas tabs alongside the catalogue / ledger page.",
+    "evidence": [
+     "FR-079-008",
+     "FR-035-001"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/inventory",
+      "label": "Catalogue and stock ledger",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-079-008",
+       "FEAT-077",
+       "FEAT-080"
+      ],
+      "features": [
+       {
+        "id": "FEAT-079",
+        "title": "SmartGift SCM — located ledger, WIP, landed cost, ATP, stocktake",
+        "state": "green",
+        "owner": "DOM-INV"
+       },
+       {
+        "id": "FEAT-077",
+        "title": "Inventory core ledger",
+        "state": "green",
+        "owner": "DOM-INV"
+       },
+       {
+        "id": "FEAT-080",
+        "title": "SKU governance — nature, variant identity, identifiers, lifecycle, hygiene",
+        "state": "green",
+        "owner": "DOM-INV"
+       }
+      ],
+      "cited_by": [
+       "FEAT-079"
+      ],
+      "views": [
+       {
+        "label": "Catalogue hygiene report",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-080-006"
+        ],
+        "features": [
+         {
+          "id": "FEAT-080",
+          "title": "SKU governance — nature, variant identity, identifiers, lifecycle, hygiene",
+          "state": "green",
+          "owner": "DOM-INV"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Catalogue intake (resolve before create)",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-081-001"
+        ],
+        "features": [
+         {
+          "id": "FEAT-081",
+          "title": "Catalogue intake — resolve before it creates",
+          "state": "green",
+          "owner": "DOM-INV"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-INV",
+      "counts": {
+       "green": 4,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/inventory/locations",
+      "label": "Locations",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-079-008"
+      ],
+      "features": [
+       {
+        "id": "FEAT-079",
+        "title": "SmartGift SCM — located ledger, WIP, landed cost, ATP, stocktake",
+        "state": "green",
+        "owner": "DOM-INV"
+       }
+      ],
+      "cited_by": [
+       "FEAT-079"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-INV",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/inventory/work-orders",
+      "label": "Work orders (customization, kitting)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-079-008"
+      ],
+      "features": [
+       {
+        "id": "FEAT-079",
+        "title": "SmartGift SCM — located ledger, WIP, landed cost, ATP, stocktake",
+        "state": "green",
+        "owner": "DOM-INV"
+       }
+      ],
+      "cited_by": [
+       "FEAT-079"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-INV",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/inventory/reservations",
+      "label": "Reservations (ATP)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-079-008"
+      ],
+      "features": [
+       {
+        "id": "FEAT-079",
+        "title": "SmartGift SCM — located ledger, WIP, landed cost, ATP, stocktake",
+        "state": "green",
+        "owner": "DOM-INV"
+       }
+      ],
+      "cited_by": [
+       "FEAT-079"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-INV",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 4,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "warehouse",
+    "label": "Warehouse (reserved)",
+    "domain": "DOM-INV",
+    "group": "SCM",
+    "note": "Reserved, disabled \"soon\" child of the SCM group until it is built.",
+    "evidence": [
+     "FR-035-001"
+    ],
+    "modules": [],
+    "pages": [],
+    "authored": true,
+    "counts": {
+     "green": 0,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "procurement",
+    "label": "Procurement",
+    "domain": "DOM-PRC",
+    "group": "SCM",
+    "note": null,
+    "evidence": [
+     "PRD-001",
+     "FEAT-082"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/procurement",
+      "label": "Suppliers",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-082-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-082",
+        "title": "Procurement core — suppliers, purchase orders, goods receipts",
+        "state": "grey",
+        "owner": "DOM-PRC"
+       }
+      ],
+      "cited_by": [
+       "FEAT-082",
+       "DOM-PRC"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRC",
+      "counts": {
+       "green": 0,
+       "yellow": 0,
+       "red": 0,
+       "grey": 1
+      }
+     },
+     {
+      "path": "/procurement/purchase-orders",
+      "label": "Purchase orders",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-082-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-082",
+        "title": "Procurement core — suppliers, purchase orders, goods receipts",
+        "state": "grey",
+        "owner": "DOM-PRC"
+       }
+      ],
+      "cited_by": [
+       "FEAT-082",
+       "DOM-PRC"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRC",
+      "counts": {
+       "green": 0,
+       "yellow": 0,
+       "red": 0,
+       "grey": 1
+      }
+     },
+     {
+      "path": "/procurement/receipts",
+      "label": "Goods receipts",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-082"
+      ],
+      "features": [
+       {
+        "id": "FEAT-082",
+        "title": "Procurement core — suppliers, purchase orders, goods receipts",
+        "state": "grey",
+        "owner": "DOM-PRC"
+       }
+      ],
+      "cited_by": [
+       "FEAT-082",
+       "DOM-PRC"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRC",
+      "counts": {
+       "green": 0,
+       "yellow": 0,
+       "red": 0,
+       "grey": 1
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 0,
+     "yellow": 0,
+     "red": 0,
+     "grey": 1
+    }
+   },
+   {
+    "key": "commerce",
+    "label": "Order Management",
+    "domain": "DOM-COM",
+    "group": "SCM",
+    "note": null,
+    "evidence": [
+     "PRD-001",
+     "FEAT-083"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/commerce/orders",
+      "label": "Sales orders and payments",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-083-001",
+       "FEAT-083"
+      ],
+      "features": [
+       {
+        "id": "FEAT-083",
+        "title": "Orders and payments",
+        "state": "green",
+        "owner": "DOM-COM"
+       }
+      ],
+      "cited_by": [
+       "DOM-COM"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-COM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": null,
+      "label": "POS checkout",
+      "note": "Atomic walk-in checkout with document preview and issuance.",
+      "planned": false,
+      "evidence": [
+       "FR-084-001",
+       "FR-084-004",
+       "FR-084-005"
+      ],
+      "features": [
+       {
+        "id": "FEAT-084",
+        "title": "POS billing and checkout",
+        "state": "green",
+        "owner": "DOM-COM"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-COM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/commerce/pricing-rules",
+      "label": "Pricing rules and formula console",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-085",
+       "FR-085-001",
+       "FR-085-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-085",
+        "title": "Pricing rules and formula console",
+        "state": "green",
+        "owner": "DOM-COM"
+       }
+      ],
+      "cited_by": [
+       "DOM-COM"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-COM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/commerce",
+      "label": "Commerce",
+      "note": null,
+      "planned": false,
+      "evidence": [],
+      "features": [],
+      "cited_by": [
+       "DOM-COM"
+      ],
+      "views": [],
+      "derived": true,
+      "domain": "DOM-COM",
+      "counts": {
+       "green": 0,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 3,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "assets",
+    "label": "Assets",
+    "domain": "DOM-AST",
+    "group": null,
+    "note": null,
+    "evidence": [
+     "FR-086-001"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/assets",
+      "label": "Asset register",
+      "note": "Registration, custody, allocation, depreciation preview.",
+      "planned": false,
+      "evidence": [
+       "FEAT-086"
+      ],
+      "features": [
+       {
+        "id": "FEAT-086",
+        "title": "Asset foundation — intake, registration, custody, allocation, depreciation preview",
+        "state": "green",
+        "owner": "DOM-AST"
+       }
+      ],
+      "cited_by": [
+       "FEAT-086"
+      ],
+      "views": [
+       {
+        "label": "Evidence intake and review queue",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-087-002"
+        ],
+        "features": [
+         {
+          "id": "FEAT-087",
+          "title": "Evidence intake execution — cloud storage, extraction, review, workbook/Sheet, LINE handoff",
+          "state": "green",
+          "owner": "DOM-AST"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Workbook / Google Sheets import and export",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-087-003"
+        ],
+        "features": [
+         {
+          "id": "FEAT-087",
+          "title": "Evidence intake execution — cloud storage, extraction, review, workbook/Sheet, LINE handoff",
+          "state": "green",
+          "owner": "DOM-AST"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-AST",
+      "counts": {
+       "green": 2,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 2,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "knowledge",
+    "label": "Knowledge (GKS)",
+    "domain": "DOM-KNW",
+    "group": null,
+    "note": null,
+    "evidence": [
+     "FR-076-003"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/knowledge",
+      "label": "Knowledge home",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-076-003"
+      ],
+      "features": [
+       {
+        "id": "FEAT-076",
+        "title": "Data pipeline map",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       }
+      ],
+      "cited_by": [
+       "FEAT-076",
+       "DOM-KNW"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-KNW",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/knowledge/console",
+      "label": "Knowledge base console",
+      "note": "Admitted sources, runs with per-stage evidence, corpus generations, cited chunk drill-down.",
+      "planned": false,
+      "evidence": [
+       "FR-073-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-073",
+        "title": "Knowledge admission, corpus publication & console",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       }
+      ],
+      "cited_by": [
+       "FEAT-073"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-KNW",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/knowledge/documents",
+      "label": "Documents",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-073"
+      ],
+      "features": [
+       {
+        "id": "FEAT-073",
+        "title": "Knowledge admission, corpus publication & console",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       }
+      ],
+      "cited_by": [
+       "FEAT-073"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-KNW",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/knowledge/data-pipeline",
+      "label": "Data Pipeline Map",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-076-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-076",
+        "title": "Data pipeline map",
+        "state": "yellow",
+        "owner": "DOM-KNW"
+       }
+      ],
+      "cited_by": [
+       "FEAT-076",
+       "DOM-KNW"
+      ],
+      "views": [
+       {
+        "label": "Live pipeline health overlay",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-076-004"
+        ],
+        "features": [
+         {
+          "id": "FEAT-076",
+          "title": "Data pipeline map",
+          "state": "yellow",
+          "owner": "DOM-KNW"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-KNW",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": null,
+      "label": "LINE knowledge candidates and gap report",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-096-002",
+       "FR-096-003"
+      ],
+      "features": [
+       {
+        "id": "FEAT-096",
+        "title": "LINE grounding and knowledge candidates",
+        "state": "grey",
+        "owner": "DOM-KNW"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-KNW",
+      "counts": {
+       "green": 0,
+       "yellow": 0,
+       "red": 0,
+       "grey": 1
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 0,
+     "yellow": 2,
+     "red": 0,
+     "grey": 1
+    }
+   },
+   {
+    "key": "line-oa",
+    "label": "LINE OA Studio",
+    "domain": "DOM-LOA",
+    "group": null,
+    "note": null,
+    "evidence": [
+     "PRD-001",
+     "FEAT-048"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/line-oa",
+      "label": "Accounts",
+      "note": "Several LINE Official Accounts per Business; transport health.",
+      "planned": false,
+      "evidence": [
+       "FEAT-048",
+       "FEAT-052"
+      ],
+      "features": [
+       {
+        "id": "FEAT-048",
+        "title": "LINE OA accounts",
+        "state": "yellow",
+        "owner": "DOM-LOA"
+       },
+       {
+        "id": "FEAT-052",
+        "title": "Transport health and deployment liveness",
+        "state": "yellow",
+        "owner": "DOM-LOA"
+       }
+      ],
+      "cited_by": [
+       "FEAT-048"
+      ],
+      "views": [
+       {
+        "label": "Connect LINE OA yourself (Thai wizard, step-up)",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-094-008"
+        ],
+        "features": [
+         {
+          "id": "FEAT-094",
+          "title": "Connect LINE OA yourself",
+          "state": "yellow",
+          "owner": "DOM-LOA"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Model-key readiness",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-050-003"
+        ],
+        "features": [
+         {
+          "id": "FEAT-050",
+          "title": "Server-executed answers on Business API keys",
+          "state": "yellow",
+          "owner": "DOM-LOA"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Conversation timing",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FEAT-051"
+        ],
+        "features": [
+         {
+          "id": "FEAT-051",
+          "title": "Account conversation timing",
+          "state": "yellow",
+          "owner": "DOM-LOA"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Answer grounding mode and description admission",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FEAT-096"
+        ],
+        "features": [
+         {
+          "id": "FEAT-096",
+          "title": "LINE grounding and knowledge candidates",
+          "state": "grey",
+          "owner": "DOM-KNW"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-LOA",
+      "counts": {
+       "green": 0,
+       "yellow": 5,
+       "red": 0,
+       "grey": 1
+      }
+     },
+     {
+      "path": "/line-oa/rich-menus",
+      "label": "Rich menus and LIFF apps",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-049-001",
+       "FEAT-049"
+      ],
+      "features": [
+       {
+        "id": "FEAT-049",
+        "title": "Rich menus and LIFF app registry",
+        "state": "yellow",
+        "owner": "DOM-LOA"
+       }
+      ],
+      "cited_by": [
+       "FEAT-049"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-LOA",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 0,
+     "yellow": 6,
+     "red": 0,
+     "grey": 1
+    }
+   },
+   {
+    "key": "people",
+    "label": "People Directory",
+    "domain": "DOM-IAM",
+    "group": null,
+    "note": "A peer ERP domain over Person / Membership / Employment, not a Projects sub-screen.",
+    "evidence": [
+     "FR-031-003"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": null,
+      "label": "People roster",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-031-003",
+       "FEAT-031"
+      ],
+      "features": [
+       {
+        "id": "FEAT-031",
+        "title": "Org Employment & Legal Entity",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": null,
+      "label": "Access — memberships, roles, domain visibility, invites",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-024",
+       "FR-030-001",
+       "FR-032-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-024",
+        "title": "Authorization — Membership, Roles & Domain Visibility",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-030",
+        "title": "Access Grant Lifecycle",
+        "state": "green",
+        "owner": "DOM-IAM"
+       },
+       {
+        "id": "FEAT-032",
+        "title": "Access Invite, SoD & Operator Lifecycle",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 3,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 4,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "platform",
+    "label": "Platform",
+    "domain": "DOM-INT",
+    "group": null,
+    "note": "Integrations, users and the SoT pipeline; each page keeps its owning domain.",
+    "evidence": [
+     "PRD-001"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/platform/integrations",
+      "label": "Integrations (connector catalog, connections, health)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-057",
+       "FR-057-001",
+       "FEAT-058",
+       "FEAT-054"
+      ],
+      "features": [
+       {
+        "id": "FEAT-057",
+        "title": "Connector catalog and GitHub repository projection",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       },
+       {
+        "id": "FEAT-059",
+        "title": "FlowAccount read-only pull pipeline",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       },
+       {
+        "id": "FEAT-091",
+        "title": "Phase 1 LINE runtime connections",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       },
+       {
+        "id": "FEAT-058",
+        "title": "Notion connection",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       },
+       {
+        "id": "FEAT-054",
+        "title": "Model provider credentials (API keys, Private Runtime Platform)",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-057",
+       "FEAT-059",
+       "FEAT-091",
+       "DOM-INT"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-INT",
+      "counts": {
+       "green": 0,
+       "yellow": 5,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/platform/users",
+      "label": "Users",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-024"
+      ],
+      "features": [
+       {
+        "id": "FEAT-024",
+        "title": "Authorization — Membership, Roles & Domain Visibility",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-024"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/platform/sot-pipeline",
+      "label": "SoT pipeline board",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-055",
+       "FR-055-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-055",
+        "title": "SoT pipeline console",
+        "state": "yellow",
+        "owner": "DOM-INT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-055",
+       "DOM-INT"
+      ],
+      "views": [
+       {
+        "label": "Inbox (pending decisions)",
+        "path": "/platform/sot-pipeline/inbox",
+        "planned": false,
+        "evidence": [
+         "FR-055-004"
+        ],
+        "features": [
+         {
+          "id": "FEAT-055",
+          "title": "SoT pipeline console",
+          "state": "yellow",
+          "owner": "DOM-INT"
+         }
+        ],
+        "derived": false,
+        "cited_by": [
+         "FEAT-055"
+        ]
+       },
+       {
+        "label": "Graph",
+        "path": "/platform/sot-pipeline/graph",
+        "planned": false,
+        "evidence": [
+         "FR-055-006"
+        ],
+        "features": [
+         {
+          "id": "FEAT-055",
+          "title": "SoT pipeline console",
+          "state": "yellow",
+          "owner": "DOM-INT"
+         }
+        ],
+        "derived": false,
+        "cited_by": [
+         "FEAT-055"
+        ]
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-INT",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/platform/customer-import-reviews",
+      "label": "Customer import review queue",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-044-005"
+      ],
+      "features": [
+       {
+        "id": "FEAT-044",
+        "title": "Customer data backfill and import review",
+        "state": "yellow",
+        "owner": "DOM-CRM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-044"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-CRM",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/platform/product-readiness",
+      "label": "Product readiness dashboard",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-022",
+       "FR-022-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-022",
+        "title": "Product readiness dashboard",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [
+       "FEAT-022"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 1,
+     "yellow": 8,
+     "red": 0,
+     "grey": 0
+    }
+   },
+   {
+    "key": "control",
+    "label": "Control (installation operator only)",
+    "domain": "DOM-PLT",
+    "group": null,
+    "note": "Mounted outside the Business shell; admitted only by isOperator.",
+    "evidence": [
+     "FR-036-001"
+    ],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/control/roadmap",
+      "label": "Platform Programme Roadmap",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-036-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-036",
+        "title": "Platform Programme Roadmap & Domain Map",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-037",
+        "title": "Programme Delivery Telemetry",
+        "state": "green",
+        "owner": "DOM-PLT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-036",
+       "FEAT-037",
+       "DOM-PLT"
+      ],
+      "views": [
+       {
+        "label": "Domain map (?view=domains)",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-036-002"
+        ],
+        "features": [
+         {
+          "id": "FEAT-036",
+          "title": "Platform Programme Roadmap & Domain Map",
+          "state": "green",
+          "owner": "DOM-PLT"
+         }
+        ],
+        "derived": false
+       },
+       {
+        "label": "Member view (time-boxed, redacted)",
+        "path": null,
+        "planned": false,
+        "evidence": [
+         "FR-036-003"
+        ],
+        "features": [
+         {
+          "id": "FEAT-036",
+          "title": "Platform Programme Roadmap & Domain Map",
+          "state": "green",
+          "owner": "DOM-PLT"
+         }
+        ],
+        "derived": false
+       }
+      ],
+      "derived": false,
+      "domain": "DOM-PLT",
+      "counts": {
+       "green": 2,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/control/usage",
+      "label": "Agent usage detail",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-038",
+       "FR-038-002",
+       "FEAT-037"
+      ],
+      "features": [
+       {
+        "id": "FEAT-039",
+        "title": "Observability: Errors & Usage Events",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-038",
+        "title": "Agent Usage Detail",
+        "state": "green",
+        "owner": "DOM-PLT"
+       },
+       {
+        "id": "FEAT-037",
+        "title": "Programme Delivery Telemetry",
+        "state": "green",
+        "owner": "DOM-PLT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-039"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PLT",
+      "counts": {
+       "green": 3,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/control/errors",
+      "label": "Errors",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-039-001"
+      ],
+      "features": [
+       {
+        "id": "FEAT-039",
+        "title": "Observability: Errors & Usage Events",
+        "state": "green",
+        "owner": "DOM-PLT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-039"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PLT",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/control/inference",
+      "label": "Inference pool operations (declared)",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-097"
+      ],
+      "features": [
+       {
+        "id": "FEAT-097",
+        "title": "Server-owned self-hosted inference pool",
+        "state": "grey",
+        "owner": "DOM-AGT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-097",
+       "DOM-PLT"
+      ],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-AGT",
+      "counts": {
+       "green": 0,
+       "yellow": 0,
+       "red": 0,
+       "grey": 1
+      }
+     },
+     {
+      "path": null,
+      "label": "Mission Control evidence view",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FEAT-040",
+       "FR-040-005"
+      ],
+      "features": [
+       {
+        "id": "FEAT-040",
+        "title": "Mission Control DAG Orchestration Observability",
+        "state": "green",
+        "owner": "DOM-PLT"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PLT",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": null,
+      "label": "Snapshot backup preview and restore",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-021-004",
+       "FR-021-003"
+      ],
+      "features": [
+       {
+        "id": "FEAT-021",
+        "title": "Audit trail & snapshot backup/restore",
+        "state": "yellow",
+        "owner": "DOM-PRJ"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-PRJ",
+      "counts": {
+       "green": 0,
+       "yellow": 1,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": null,
+      "label": "Operator grants",
+      "note": null,
+      "planned": false,
+      "evidence": [
+       "FR-026-002"
+      ],
+      "features": [
+       {
+        "id": "FEAT-026",
+        "title": "Credential & Operator Bootstrap",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [],
+      "views": [],
+      "derived": false,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/control",
+      "label": "Control",
+      "note": null,
+      "planned": false,
+      "evidence": [],
+      "features": [
+       {
+        "id": "FEAT-039",
+        "title": "Observability: Errors & Usage Events",
+        "state": "green",
+        "owner": "DOM-PLT"
+       }
+      ],
+      "cited_by": [
+       "FEAT-039"
+      ],
+      "views": [],
+      "derived": true,
+      "domain": "DOM-PLT",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": true,
+    "counts": {
+     "green": 6,
+     "yellow": 1,
+     "red": 0,
+     "grey": 1
+    }
+   },
+   {
+    "key": "__unassigned",
+    "label": "Unassigned paths (no slot in registry/sitemap.yaml)",
+    "domain": null,
+    "group": null,
+    "note": null,
+    "evidence": [],
+    "modules": [],
+    "pages": [
+     {
+      "path": "/calculate",
+      "label": "Calculate",
+      "note": null,
+      "planned": false,
+      "evidence": [],
+      "features": [
+       {
+        "id": "FEAT-085",
+        "title": "Pricing rules and formula console",
+        "state": "green",
+        "owner": "DOM-COM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-085"
+      ],
+      "views": [],
+      "derived": true,
+      "domain": "DOM-COM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     },
+     {
+      "path": "/capabilities",
+      "label": "Capabilities",
+      "note": null,
+      "planned": false,
+      "evidence": [],
+      "features": [
+       {
+        "id": "FEAT-028",
+        "title": "Plugin Authentication & Capability Discovery",
+        "state": "green",
+        "owner": "DOM-IAM"
+       }
+      ],
+      "cited_by": [
+       "FEAT-028"
+      ],
+      "views": [],
+      "derived": true,
+      "domain": "DOM-IAM",
+      "counts": {
+       "green": 1,
+       "yellow": 0,
+       "red": 0,
+       "grey": 0
+      }
+     }
+    ],
+    "authored": false,
+    "counts": {
+     "green": 2,
+     "yellow": 0,
+     "red": 0,
+     "grey": 0
+    }
+   }
+  ]
+ },
+ "totals": {
+  "slots": 14,
+  "pages": 61,
+  "views": 45,
+  "paths": 54,
+  "derived_pages": 4,
+  "unassigned": [
+   "/calculate",
+   "/capabilities"
+  ]
+ }
+}

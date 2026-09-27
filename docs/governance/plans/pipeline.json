@@ -1,0 +1,871 @@
+{
+ "generated": "2026-09-27",
+ "source": "registry/pipeline.yaml",
+ "meta": {
+  "title": "GenesisRAG17 knowledge pipeline",
+  "event_bus": "No event bus. Runtime domain events and an outbox are declared as the target taxonomy but not implemented (ARCH-001 §15). Every asynchronous hop is a durable database-backed ledger or queue that a worker ticks or claims (LineConversationJob, KnowledgeIngestion, PipelineRun/PipelineStep, GenesisRag17Batch), a relay through MSP, or evidence reported/pulled over authenticated HTTP. The three EVT contracts are deployment-authenticated worker ticks (EVT-002 LINE conversation worker, EVT-003 rich-menu worker, EVT-001 nightly retention sweep), not pub/sub topics.",
+  "evidence": [
+   "ADR-090",
+   "ARCH-001",
+   "FR-072-002",
+   "FR-073-001",
+   "EVT-001",
+   "EVT-002",
+   "EVT-003"
+  ]
+ },
+ "lanes": [
+  {
+   "id": "surfaces",
+   "label": "Surfaces & ingest points"
+  },
+  {
+   "id": "admission",
+   "label": "Admission & raw capture (Tier 1)"
+  },
+  {
+   "id": "tier1",
+   "label": "Stages 1–8 · Tier 1 (Zuri)"
+  },
+  {
+   "id": "ledger",
+   "label": "Ledgers & stores (Tier 1)"
+  },
+  {
+   "id": "relay",
+   "label": "Relay (Tier 2 · MSP)"
+  },
+  {
+   "id": "tier34",
+   "label": "Stages 9–17 · Tier 3 GKS / Tier 4 worker"
+  },
+  {
+   "id": "published",
+   "label": "Published corpus & consumers"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "s-console",
+   "lane": "surfaces",
+   "kind": "surface",
+   "tier": "t1",
+   "label": "Knowledge console / Files browser",
+   "detail": "Owner admits an immutable Text/Markdown body or an existing readable FileAsset (UI, API or MCP — one admission service).",
+   "evidence": [
+    "FR-073-001",
+    "FR-073-002",
+    "FEAT-017"
+   ]
+  },
+  {
+   "id": "s-smartgift",
+   "lane": "surfaces",
+   "kind": "surface",
+   "tier": "t1",
+   "label": "SmartGift catalog file",
+   "detail": "Structured-record source (SMARTGIFT_CATALOG_V1) split into one record per catalog entry before Stage 1; CRM-shaped records denied twice.",
+   "evidence": [
+    "FR-075-001",
+    "FEAT-075"
+   ]
+  },
+  {
+   "id": "s-line",
+   "lane": "surfaces",
+   "kind": "surface",
+   "tier": "t1",
+   "label": "LINE conversation (consent-granted)",
+   "detail": "What a Business learns from LINE feeds back only as a reviewed, locator-only Q/A candidate — never a transcript.",
+   "evidence": [
+    "FR-096-002",
+    "FEAT-096"
+   ]
+  },
+  {
+   "id": "s-studio",
+   "lane": "surfaces",
+   "kind": "surface",
+   "tier": "t1",
+   "label": "LINE OA Studio published copy",
+   "detail": "A published rich menu, LIFF app or bot profile's human-readable copy becomes a withdrawable TEXT source.",
+   "evidence": [
+    "FR-096-004"
+   ]
+  },
+  {
+   "id": "s-external",
+   "lane": "surfaces",
+   "kind": "surface",
+   "tier": "ext",
+   "label": "External providers (webhook · pull · file · manual)",
+   "detail": "Every acquisition channel converges on one raw ingestion envelope; LINE webhook events, marketplace listings and retail prices arrive this way.",
+   "evidence": [
+    "FR-053-001",
+    "FEAT-053"
+   ]
+  },
+  {
+   "id": "s-docintake",
+   "lane": "surfaces",
+   "kind": "surface",
+   "tier": "t1",
+   "label": "Curated document intake (business knowledge)",
+   "detail": "Second pipeline definition on the same ledger (DPL-SUPABASE-BUSINESS-KNOWLEDGE-V1): document → approval gate → business_knowledge rows.",
+   "evidence": [
+    "FEAT-074",
+    "FEAT-056",
+    "FEAT-060"
+   ]
+  },
+  {
+   "id": "e-admission",
+   "lane": "admission",
+   "kind": "entry",
+   "tier": "t1",
+   "label": "Source admission service",
+   "detail": "One UI/API/MCP entry; idempotent on request key; same source version with changed content conflicts instead of overwriting.",
+   "evidence": [
+    "FR-073-001",
+    "API-183",
+    "API-184",
+    "API-182"
+   ]
+  },
+  {
+   "id": "e-candidate-review",
+   "lane": "admission",
+   "kind": "process",
+   "tier": "t1",
+   "label": "KnowledgeCandidate review",
+   "detail": "OWNER or LINE OA publisher approves a drafted Q/A; approved candidate is admitted as one immutable TEXT source.",
+   "evidence": [
+    "FR-096-002"
+   ]
+  },
+  {
+   "id": "e-raw-envelope",
+   "lane": "admission",
+   "kind": "entry",
+   "tier": "t1",
+   "label": "Raw ingestion envelope → RawExternalRecord",
+   "detail": "tenantId, connectionId, provider, lane, entityType, externalId, sourceType (PULL/WEBHOOK/FILE/MANUAL), payload verbatim as evidence.",
+   "evidence": [
+    "FR-053-001",
+    "FEAT-053"
+   ]
+  },
+  {
+   "id": "e-gap-report",
+   "lane": "admission",
+   "kind": "store",
+   "tier": "t1",
+   "label": "Knowledge gap report",
+   "detail": "Unanswered LINE questions (NO_EVIDENCE) aggregated per Business; never enters the corpus.",
+   "evidence": [
+    "FR-096-003"
+   ]
+  },
+  {
+   "id": "st1",
+   "lane": "tier1",
+   "kind": "store",
+   "tier": "t1",
+   "label": "Stage 1 · Raw capture → KnowledgeRawArtifact",
+   "detail": "Byte-identical record of the source, linked to the integration domain's RawExternalRecord; bytes in the object store.",
+   "evidence": [
+    "FR-072-001",
+    "FEAT-072"
+   ]
+  },
+  {
+   "id": "st2",
+   "lane": "tier1",
+   "kind": "process",
+   "tier": "t1",
+   "label": "Stage 2 · Parsing → KnowledgeParsedArtifact",
+   "detail": "Pure calculator; structure, text_blocks, tables, warnings, extractor version. Structured sources use the genesisrag17-parser-2 profile.",
+   "evidence": [
+    "FEAT-070",
+    "FR-075-002"
+   ]
+  },
+  {
+   "id": "st3",
+   "lane": "tier1",
+   "kind": "process",
+   "tier": "t1",
+   "label": "Stage 3 · Provenance validation",
+   "detail": "Validates and walks the ten-field provenance record (traceToSource); never mints provenance.",
+   "evidence": [
+    "FEAT-070"
+   ]
+  },
+  {
+   "id": "st4",
+   "lane": "tier1",
+   "kind": "process",
+   "tier": "t1",
+   "label": "Stage 4 · Normalization",
+   "detail": "Canonical forms alongside raw values.",
+   "evidence": [
+    "FEAT-070"
+   ]
+  },
+  {
+   "id": "st5",
+   "lane": "tier1",
+   "kind": "process",
+   "tier": "t1",
+   "label": "Stage 5 · Classification (sensitivity lattice)",
+   "detail": "PUBLIC / INTERNAL / CONFIDENTIAL / RESTRICTED plus processing policy (cloud_processing_allowed, embedding_allowed…). Decides per object where later stages may run; restricted content stays local.",
+   "evidence": [
+    "FEAT-072",
+    "FR-072-003"
+   ]
+  },
+  {
+   "id": "st6",
+   "lane": "tier1",
+   "kind": "process",
+   "tier": "t1",
+   "label": "Stage 6 · Deduplication",
+   "detail": "Duplicate / revision / independent against held artifacts, within one tenant only (never cross-tenant).",
+   "evidence": [
+    "FEAT-070",
+    "SEC-020"
+   ]
+  },
+  {
+   "id": "st7",
+   "lane": "tier1",
+   "kind": "store",
+   "tier": "t1",
+   "label": "Stage 7 · Chunking → KnowledgeChunk",
+   "detail": "Retrieval-sized chunks with parent-child lineage, heading_path, token_count, scope, provenance.",
+   "evidence": [
+    "FEAT-070",
+    "FEAT-072"
+   ]
+  },
+  {
+   "id": "st8",
+   "lane": "tier1",
+   "kind": "store",
+   "tier": "t1",
+   "label": "Stage 8 · Entity-candidate extraction → SourceMention",
+   "detail": "Mention plus type guess only; canonical identity is GKS Stage 9's authority. One GenesisRag17Batch per attempt.",
+   "evidence": [
+    "FEAT-070",
+    "FEAT-072"
+   ]
+  },
+  {
+   "id": "quarantine",
+   "lane": "tier1",
+   "kind": "process",
+   "tier": "t1",
+   "label": "Quarantine (BR-067 envelope)",
+   "detail": "A per-stage failure is classified retryable / non-retryable / review-required with the complete failure envelope.",
+   "evidence": [
+    "FEAT-071",
+    "BR-067"
+   ]
+  },
+  {
+   "id": "q-ingestion",
+   "lane": "ledger",
+   "kind": "transport",
+   "tier": "db",
+   "label": "KnowledgeIngestion (durable queued job)",
+   "detail": "One durable queued ingestion per authorized source version; idempotent on request key.",
+   "evidence": [
+    "FR-073-001",
+    "FEAT-073"
+   ]
+  },
+  {
+   "id": "ledger",
+   "lane": "ledger",
+   "kind": "store",
+   "tier": "db",
+   "label": "PipelineRun / PipelineStep ledger",
+   "detail": "Append-only run/stage/record/gate evidence for every pipeline definition (DPL-KNOWLEDGE-INGEST-V1 with 17 DPS-KI-* stages). Owned by DOM-INT, read by consoles.",
+   "evidence": [
+    "FR-060-001",
+    "FR-072-001",
+    "FEAT-060"
+   ]
+  },
+  {
+   "id": "objstore",
+   "lane": "ledger",
+   "kind": "store",
+   "tier": "t4",
+   "label": "Object store (SRV-006)",
+   "detail": "Admitted source bytes and catalogue objects through a provider-neutral storage port.",
+   "evidence": [
+    "SRV-006"
+   ]
+  },
+  {
+   "id": "intent",
+   "lane": "ledger",
+   "kind": "store",
+   "tier": "db",
+   "label": "GenesisRag17 intent · batch · evidence cursor · receipt",
+   "detail": "Durable source-worker intent, one batch per attempt, the pulled Tier 3/4 evidence cursor and the imported publication receipt. Execution records, never canonical facts.",
+   "evidence": [
+    "FEAT-072"
+   ]
+  },
+  {
+   "id": "bk-table",
+   "lane": "ledger",
+   "kind": "store",
+   "tier": "db",
+   "label": "business_knowledge (curated, RLS)",
+   "detail": "Raw-SQL Postgres table behind forced row-level security; allow-listed public/curated product projection; no live operational facts.",
+   "evidence": [
+    "FEAT-074",
+    "BR-039",
+    "ADR-086"
+   ]
+  },
+  {
+   "id": "mcp-bridge",
+   "lane": "ledger",
+   "kind": "transport",
+   "tier": "t1",
+   "label": "Worker bridge (data_pipeline.* MCP tools)",
+   "detail": "run_create · document_stage · event_record · monitor_read · replay_request, EVIDENCE_ONLY; no service-role key.",
+   "evidence": [
+    "FR-060-005"
+   ]
+  },
+  {
+   "id": "msp",
+   "lane": "relay",
+   "kind": "transport",
+   "tier": "t2",
+   "label": "MSP relay (Tier 2)",
+   "detail": "The sole gateway from Tier 1 to Tiers 3–4; stdio child process or relay; session lifecycle, episodic memory, vault gates, tool ceilings.",
+   "evidence": [
+    "ADR-090",
+    "SRV-004"
+   ]
+  },
+  {
+   "id": "reporter",
+   "lane": "relay",
+   "kind": "transport",
+   "tier": "t1",
+   "label": "External-tier evidence · report + pull",
+   "detail": "GKS/GenesisBlockDB report Stage 9–17 evidence with the Tenant's data-plane key; because GKS never calls outward, Zuri also pulls evidence by cursor.",
+   "evidence": [
+    "FR-072-002",
+    "FR-027-001"
+   ]
+  },
+  {
+   "id": "st9",
+   "lane": "tier34",
+   "kind": "process",
+   "tier": "t3",
+   "label": "Stage 9 · Entity resolution (GKS)",
+   "detail": "Canonical entity identity — the authority Stage 8 never claims.",
+   "evidence": [
+    "ADR-090",
+    "FEAT-070"
+   ]
+  },
+  {
+   "id": "st10",
+   "lane": "tier34",
+   "kind": "process",
+   "tier": "t3",
+   "label": "Stage 10 · Fact / relation extraction (GKS)",
+   "detail": null,
+   "evidence": [
+    "ADR-090",
+    "FEAT-070"
+   ]
+  },
+  {
+   "id": "st11",
+   "lane": "tier34",
+   "kind": "process",
+   "tier": "t3",
+   "label": "Stage 11 · Ontology mapping (GKS)",
+   "detail": "ontology_v2 predicate vocabulary for catalog facts (HAS_COMPONENT, PRICED_AT, IN_CATEGORY).",
+   "evidence": [
+    "ADR-090",
+    "FR-075-002"
+   ]
+  },
+  {
+   "id": "st12",
+   "lane": "tier34",
+   "kind": "process",
+   "tier": "t3",
+   "label": "Stage 12 · Temporal mapping (GKS)",
+   "detail": null,
+   "evidence": [
+    "ADR-090",
+    "FEAT-070"
+   ]
+  },
+  {
+   "id": "st13",
+   "lane": "tier34",
+   "kind": "store",
+   "tier": "t4",
+   "label": "Stage 13 · Graph construction → GenesisBlock native store",
+   "detail": "GKS decides; the GenesisBlock worker performs the physical graph writes. SRV-004 is the only process holding the native store.",
+   "evidence": [
+    "ADR-090",
+    "SRV-004"
+   ]
+  },
+  {
+   "id": "st14",
+   "lane": "tier34",
+   "kind": "process",
+   "tier": "t3",
+   "label": "Stage 14 · GKS knowledge decision",
+   "detail": "The specification names Stages 9–14 as GKS authority but does not name Stage 14 individually.",
+   "evidence": [
+    "ADR-090",
+    "SRV-005"
+   ]
+  },
+  {
+   "id": "st15",
+   "lane": "tier34",
+   "kind": "process",
+   "tier": "t4",
+   "label": "Stage 15 · Embedding (worker)",
+   "detail": "Only where the object's processing policy allows embedding.",
+   "evidence": [
+    "ADR-090",
+    "FEAT-072"
+   ]
+  },
+  {
+   "id": "st16",
+   "lane": "tier34",
+   "kind": "store",
+   "tier": "t4",
+   "label": "Stage 16 · Indexing (worker)",
+   "detail": null,
+   "evidence": [
+    "ADR-090",
+    "SRV-004"
+   ]
+  },
+  {
+   "id": "st17",
+   "lane": "tier34",
+   "kind": "process",
+   "tier": "t3",
+   "label": "Stage 17 · Publication gate (GKS)",
+   "detail": "PASS / PASS_WITH_WARNINGS publish; QUARANTINE / FAIL do not. Every result is a PipelineGateDecision on the ledger.",
+   "evidence": [
+    "FR-072-004",
+    "ADR-090"
+   ]
+  },
+  {
+   "id": "snapshot",
+   "lane": "published",
+   "kind": "store",
+   "tier": "t4",
+   "label": "Published knowledge snapshot (per source)",
+   "detail": "Atomic, identified publication (knowledge_snapshot_id, ontology_version, pipeline_version); a half-built index is never exposed.",
+   "evidence": [
+    "FR-072-004"
+   ]
+  },
+  {
+   "id": "generation",
+   "lane": "published",
+   "kind": "store",
+   "tier": "db",
+   "label": "KnowledgeCorpusGeneration manifest",
+   "detail": "Tier 1 immutable, append-only manifest joining exactly-verified Stage 17 receipts per Business (+ optional Project) corpus.",
+   "evidence": [
+    "FR-073-001"
+   ]
+  },
+  {
+   "id": "query",
+   "lane": "published",
+   "kind": "process",
+   "tier": "t1",
+   "label": "Corpus query + citation resolution",
+   "detail": "Pins one manifest, asks MSP for each active source's exact snapshot, fuses per-snapshot ranks (reciprocal-rank fusion), resolves citations against current ACL.",
+   "evidence": [
+    "FR-073-001",
+    "API-190",
+    "API-176",
+    "API-175"
+   ]
+  },
+  {
+   "id": "r-agent",
+   "lane": "published",
+   "kind": "recipient",
+   "tier": "t1",
+   "label": "LINE answer (Agent context composer)",
+   "detail": "Grounding mode per account (BUSINESS_KNOWLEDGE default · GKS_CORPUS · GKS_THEN_BUSINESS_KNOWLEDGE); every hop traced; no model call when no evidence.",
+   "evidence": [
+    "FR-096-001",
+    "FEAT-061",
+    "FEAT-063"
+   ]
+  },
+  {
+   "id": "r-console",
+   "lane": "published",
+   "kind": "recipient",
+   "tier": "t1",
+   "label": "Knowledge console readers",
+   "detail": "Source library, run evidence per stage, corpus generations, generation-bound cited search.",
+   "evidence": [
+    "FR-073-002"
+   ]
+  },
+  {
+   "id": "r-edge",
+   "lane": "published",
+   "kind": "recipient",
+   "tier": "ext",
+   "label": "Edge desktop (SmartGift)",
+   "detail": "Reads the published generation through MSP (off / shadow / primary), never a private store.",
+   "evidence": [
+    "FEAT-075",
+    "SRV-008"
+   ]
+  },
+  {
+   "id": "r-map",
+   "lane": "published",
+   "kind": "recipient",
+   "tier": "t1",
+   "label": "Data Pipeline Map + live health overlay",
+   "detail": "Meta view over the ledgers; executes nothing.",
+   "evidence": [
+    "FR-076-002",
+    "FR-076-004"
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "s-console",
+   "to": "e-admission",
+   "kind": "call",
+   "label": "admit source"
+  },
+  {
+   "from": "s-smartgift",
+   "to": "e-admission",
+   "kind": "call",
+   "label": "structured-record adapter (before Stage 1)"
+  },
+  {
+   "from": "s-line",
+   "to": "e-candidate-review",
+   "kind": "call",
+   "label": "draft Q/A candidate"
+  },
+  {
+   "from": "e-candidate-review",
+   "to": "e-admission",
+   "kind": "call",
+   "label": "approved → TEXT source"
+  },
+  {
+   "from": "s-line",
+   "to": "e-gap-report",
+   "kind": "call",
+   "label": "NO_EVIDENCE questions"
+  },
+  {
+   "from": "s-studio",
+   "to": "e-admission",
+   "kind": "call",
+   "label": "published copy as TEXT source"
+  },
+  {
+   "from": "s-external",
+   "to": "e-raw-envelope",
+   "kind": "call",
+   "label": "one envelope, one raw writer"
+  },
+  {
+   "from": "s-docintake",
+   "to": "ledger",
+   "kind": "call",
+   "label": "DPL-SUPABASE-BUSINESS-KNOWLEDGE-V1 run"
+  },
+  {
+   "from": "ledger",
+   "to": "bk-table",
+   "kind": "publish",
+   "label": "approval gate → business_knowledge rows (FEAT-056)"
+  },
+  {
+   "from": "e-admission",
+   "to": "q-ingestion",
+   "kind": "queue",
+   "label": "durable queued ingestion (idempotent)"
+  },
+  {
+   "from": "e-admission",
+   "to": "objstore",
+   "kind": "call",
+   "label": "store admitted bytes"
+  },
+  {
+   "from": "q-ingestion",
+   "to": "st1",
+   "kind": "queue",
+   "label": "GenesisRAG17 executor claims the job"
+  },
+  {
+   "from": "e-raw-envelope",
+   "to": "st1",
+   "kind": "call",
+   "label": "RawArtifact links RawExternalRecord"
+  },
+  {
+   "from": "st1",
+   "to": "st2",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st2",
+   "to": "st3",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st3",
+   "to": "st4",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st4",
+   "to": "st5",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st5",
+   "to": "st6",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st6",
+   "to": "st7",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st7",
+   "to": "st8",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st2",
+   "to": "quarantine",
+   "kind": "call",
+   "label": "any stage failure"
+  },
+  {
+   "from": "quarantine",
+   "to": "ledger",
+   "kind": "call",
+   "label": "quarantined stage evidence"
+  },
+  {
+   "from": "st1",
+   "to": "ledger",
+   "kind": "call",
+   "label": "per-stage evidence + NFR-019 metrics (all of 1–8)"
+  },
+  {
+   "from": "st8",
+   "to": "intent",
+   "kind": "call",
+   "label": "batch + mentions recorded"
+  },
+  {
+   "from": "mcp-bridge",
+   "to": "ledger",
+   "kind": "mcp",
+   "label": "external worker submits evidence"
+  },
+  {
+   "from": "st8",
+   "to": "msp",
+   "kind": "relay",
+   "label": "batch handed to Tier 2"
+  },
+  {
+   "from": "msp",
+   "to": "st9",
+   "kind": "relay",
+   "label": "GKS claims batch"
+  },
+  {
+   "from": "st9",
+   "to": "st10",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st10",
+   "to": "st11",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st11",
+   "to": "st12",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st12",
+   "to": "st14",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st14",
+   "to": "st13",
+   "kind": "call",
+   "label": "graph writes performed by worker"
+  },
+  {
+   "from": "st13",
+   "to": "st15",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st15",
+   "to": "st16",
+   "kind": "call",
+   "label": null
+  },
+  {
+   "from": "st16",
+   "to": "st17",
+   "kind": "call",
+   "label": "gate"
+  },
+  {
+   "from": "st17",
+   "to": "reporter",
+   "kind": "report",
+   "label": "Stage 9–17 evidence (data-plane key)"
+  },
+  {
+   "from": "reporter",
+   "to": "ledger",
+   "kind": "report",
+   "label": "report + pulled cursor"
+  },
+  {
+   "from": "reporter",
+   "to": "intent",
+   "kind": "pull",
+   "label": "evidence cursor · publication receipt"
+  },
+  {
+   "from": "st17",
+   "to": "snapshot",
+   "kind": "publish",
+   "label": "PASS → atomic publication (worker)"
+  },
+  {
+   "from": "snapshot",
+   "to": "generation",
+   "kind": "publish",
+   "label": "verified receipt merged into manifest"
+  },
+  {
+   "from": "generation",
+   "to": "query",
+   "kind": "read",
+   "label": "pin manifest"
+  },
+  {
+   "from": "msp",
+   "to": "query",
+   "kind": "relay",
+   "label": "per-snapshot results"
+  },
+  {
+   "from": "snapshot",
+   "to": "msp",
+   "kind": "read",
+   "label": "scoped query on worker loopback"
+  },
+  {
+   "from": "query",
+   "to": "r-agent",
+   "kind": "read",
+   "label": "corpus mode"
+  },
+  {
+   "from": "bk-table",
+   "to": "r-agent",
+   "kind": "read",
+   "label": "business-knowledge mode / fallback"
+  },
+  {
+   "from": "query",
+   "to": "r-console",
+   "kind": "read",
+   "label": null
+  },
+  {
+   "from": "ledger",
+   "to": "r-console",
+   "kind": "read",
+   "label": "run evidence"
+  },
+  {
+   "from": "msp",
+   "to": "r-edge",
+   "kind": "relay",
+   "label": "published generation"
+  },
+  {
+   "from": "ledger",
+   "to": "r-map",
+   "kind": "read",
+   "label": "per-edge counts, last run"
+  },
+  {
+   "from": "q-ingestion",
+   "to": "r-map",
+   "kind": "read",
+   "label": null
+  }
+ ],
+ "totals": {
+  "nodes": 43,
+  "edges": 50,
+  "surfaces": 6,
+  "stores": 12
+ }
+}

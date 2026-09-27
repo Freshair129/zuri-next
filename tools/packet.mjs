@@ -91,7 +91,7 @@ function buildPacket(frId, layer, o = {}) {
     tests: tcs,
     allowed_paths: allowed,
     code,
-    output_contract: 'Respond with files only. Each file is one fenced block whose info string is `path=<relative path inside an allowed path>`; the block body is the complete file content. No prose outside the blocks. If something needed is missing from the packet, respond with a single block `path=DESIGN_GAP.md` explaining what the SDD must add.',
+    output_contract: 'Respond with files only. Each file is one fenced block whose info string is `path=<relative path inside an allowed path>` (the word path= goes inside the opening fence, not on a separate line); the block body is the complete file content, and every @trace line is a code comment. No prose outside the blocks. If something needed is missing from the packet, respond with a single block `path=DESIGN_GAP.md` explaining what the SDD must add.',
     verify: o.verify || (layer === 'test' ? [] : [`node --test apps/server/tests/${slug}/`]),
   };
   const promptText = JSON.stringify({ ...packet, code: packet.code.map((c) => c.content).join('\n') });

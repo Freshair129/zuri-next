@@ -66,7 +66,10 @@ Portfolio (UI: Group, เครือ) ─ Tenant (UI: Organization; isolation b
 
 ## 4. Domain map
 
-Codes from `registry/domains.yaml`. ERP grouping in the domain bar: **SCM** groups
+Codes from `registry/domains.yaml`, which also carries each domain's subdomain type
+(core / supporting / generic) and role (foundation / business / platform) and, in
+`registry/relations.yaml`, the context map between domains (ADR-107); each domain's
+README shows its own entry. ERP grouping in the domain bar: **SCM** groups
 Inventory, Warehouse (reserved), Procurement and Order Management (Commerce); **CRM**
 groups Customer and Market Intelligence. A group is navigation only and is never
 granted; each module keeps its own route key and grant.

@@ -19,7 +19,7 @@ Defines **which artifacts exist**, **how they nest**, **who owns them**, and
 |---|---|---|---|---|
 | BRD — Business Requirements | `BRD-` | Why the business needs the product; outcomes, stakeholders, constraints | Product | Once per product |
 | PRD — Product Requirements | `PRD-` | What the product does; surfaces, scope chain, product-wide rules | Product / Domain | Product-level once; domain-level optional |
-| Domain | `DOM-` | What a bounded area of the business owns (data, rules, language) | Domain | Yes, one per domain |
+| Domain | `DOM-` | What a bounded area of the business owns (data, rules, language); carries a subdomain type (core / supporting / generic) and a role (foundation / business / platform) in `registry/domains.yaml` (ADR-107) | Domain | Yes, one per domain |
 | Capability | `CAP-` | A grouping of features under one business capability (epic) | Domain | Optional |
 | Feature | `FEAT-` | A product capability with its own value and release lifecycle | Domain / Cross | Yes, for any user-visible behavior |
 | Feature Part | `FEAT-…-Pnn` | A slice of one feature, owned by one domain, with no value of its own | Feature | Required when a feature spans >1 domain |

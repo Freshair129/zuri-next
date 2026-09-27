@@ -1,75 +1,115 @@
 # Domain registry (STD-003 R5). Code is the <D> in every ID (STD-002 R1).
 # legacy_modules = zuri-ai apps/server/src/modules/* folders whose behavior the domain inherits.
 # legacy_charter = zuri-ai docs/domains/<slug>/CHARTER.md the domain was derived from.
+#
+# Strategic classification (ADR-107) — this file is the only place it is declared;
+# domain READMEs and views render it, never restate it.
+#   subdomain: core | supporting | generic       DDD strategic design (where to invest)
+#     core        differentiates the product; built and evolved in-house with the most care
+#     supporting  needed and business-specific, but not a differentiator
+#     generic     a solved problem; could be bought or replaced, kept thin
+#   role: foundation | business | platform       position in the system map (who depends on whom)
+#     foundation  every other context depends on it (scope chain, identity); it depends on none
+#     business    owns business truth for one capability the Business runs
+#     platform    provides capabilities to other contexts; owns no business truth of its own
+# The context map between domains is registry/relations.yaml.
 domains:
   - code: PRJ
     slug: project-manager
     name: Projects & Work
+    subdomain: supporting
+    role: foundation
     legacy_modules: [project-manager, business]
     legacy_charter: project-manager
   - code: IAM
     slug: identity
     name: Identity & Access
+    subdomain: generic
+    role: foundation
     legacy_modules: [identity, people]
     legacy_charter: identity
   - code: PLT
     slug: platform-control
     name: Platform Control
+    subdomain: generic
+    role: platform
     legacy_modules: [platform-control]
     legacy_charter: platform-control
   - code: CRM
     slug: crm
     name: Customer & Conversation
+    subdomain: core
+    role: business
     legacy_modules: [crm, line-crm]
     legacy_charter: crm
   - code: LOA
     slug: line-oa-studio
     name: LINE OA Studio
+    subdomain: core
+    role: business
     legacy_modules: [line-oa-studio]
     legacy_charter: line-oa-studio
   - code: INT
     slug: integration
     name: Integrations
+    subdomain: generic
+    role: platform
     legacy_modules: [integration]
     legacy_charter: integration
   - code: AGT
     slug: agent
     name: Agent Runtime
+    subdomain: core
+    role: platform
     legacy_modules: [agent]
     legacy_charter: agent
   - code: KNW
     slug: knowledge
     name: Knowledge
+    subdomain: core
+    role: platform
     legacy_modules: [knowledge]
     legacy_charter: knowledge
   - code: INV
     slug: inventory
     name: Inventory & Catalogue
+    subdomain: generic
+    role: business
     legacy_modules: [inventory]
     legacy_charter: inventory
   - code: PRC
     slug: procurement
     name: Procurement
+    subdomain: generic
+    role: business
     legacy_modules: [procurement]
     legacy_charter: procurement
   - code: COM
     slug: commerce
     name: Commerce (Orders, Payments, Pricing)
+    subdomain: generic
+    role: business
     legacy_modules: [commerce]
     legacy_charter: commerce
   - code: AST
     slug: asset-management
     name: Asset Management
+    subdomain: supporting
+    role: business
     legacy_modules: [asset-management]
     legacy_charter: asset-management
   - code: MKI
     slug: market-intelligence
     name: Market Intelligence
+    subdomain: supporting
+    role: business
     legacy_modules: [market-intelligence]
     legacy_charter: market-intelligence
   - code: MKT
     slug: marketing
     name: Marketing
+    subdomain: supporting
+    role: business
     legacy_modules: [marketing]
     legacy_charter: marketing
 reserved:

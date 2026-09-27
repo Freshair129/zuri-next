@@ -143,4 +143,23 @@ docs/FEATURES.md FEAT-055, 045, 046; apps/server/src/modules/integration/**, app
 - [SRV-001](../../services/SRV-001-web/SERVICE.md)
 - [SRV-006](../../services/SRV-006-knowledge-storage/SERVICE.md)
 
+### Classification (ADR-107)
+
+Subdomain: **generic** · Role: **platform** — declared in `registry/domains.yaml`.
+
+### Context map (10)
+
+| Direction | Context | Pattern | Evidence | Note |
+|---|---|---|---|---|
+| downstream of | DOM-IAM | open-host-service | BR-002, ADR-100, ARCH-001 | The one policy-enforcement point; every web, API, agent and tool path resolves its viewer here. |
+| downstream of | DOM-PRJ | open-host-service | BR-001, BR-002, BR-003, ARCH-001 | Scope chain (Portfolio → Tenant → Business → Workspace → Project) and the audited-write seam every record hangs from. |
+| upstream of | DOM-LOA | customer-supplier | FEAT-093, FEAT-094 | Credential vault, channel validation and the LINE messaging port. |
+| upstream of | DOM-AGT | customer-supplier | FEAT-091, FEAT-097 | Model provider connections, allow-lists and inference node registration. |
+| upstream of | DOM-MKI | customer-supplier | ARCH-001 | Raw external evidence is acquired by Integration and translated by Market Intelligence. |
+| upstream of | DOM-PLT | conformist | ARCH-001 | Operator-only projections read every domain as is and own nothing. |
+| downstream of | ext:line-platform | anticorruption-layer | ARCH-001, FEAT-093 |  |
+| downstream of | ext:model-providers | anticorruption-layer | ARCH-001, FEAT-091 |  |
+| downstream of | ext:notion | anticorruption-layer | ARCH-001 |  |
+| downstream of | ext:flowaccount | anticorruption-layer | ARCH-001 |  |
+
 <!-- END GENERATED -->

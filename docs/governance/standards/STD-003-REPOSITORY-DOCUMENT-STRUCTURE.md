@@ -2,7 +2,7 @@
 id: STD-003
 title: Repository & Document Structure Standard
 status: proposed
-version: 0.2.0
+version: 0.3.0
 owner: governance
 relations:
   depends_on: [STD-001, STD-002]
@@ -135,11 +135,21 @@ the folder only mirrors it.
 
 ```
 registry/
-├── domains.yaml          domain code ⇄ slug ⇄ legacy module names
+├── domains.yaml          domain code ⇄ slug ⇄ legacy module names · subdomain (core | supporting | generic)
+│                         and role (foundation | business | platform) per ADR-107
 ├── services.yaml         SRV id ⇄ deploy unit ⇄ code root
-├── relations.yaml        relations no file can hold (external systems)
+├── relations.yaml        relations no file can hold: external systems (by name only) and the
+│                         context map between domains (upstream → downstream, DDD pattern, evidence)
+├── sitemap.yaml          the authored half of the navigation map: surfaces, domain-bar slots, modules,
+│                         each with evidence ids; page paths are derived from the documents by tools/sitemap.mjs
+├── pipeline.yaml         the knowledge-pipeline data-flow map (GenesisRAG17): nodes by lane, kind and tier,
+│                         typed edges, each with evidence ids; validated by tools/pipeline-map.mjs
 └── crosswalk/<D>.csv     legacy id → new id, disposition, note
 ```
+
+The registry is the only place a domain's classification and the context map are
+written (ADR-107 D4). Domain READMEs show them inside the generated block;
+`validate-docs` checks the values and resolves every evidence id.
 
 ## R6 — Placement rules
 

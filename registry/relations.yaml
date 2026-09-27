@@ -1,0 +1,153 @@
+# Relations no single document can hold (STD-003 R5, ADR-107).
+#
+# external:    systems outside Zuri that a domain talks to. Named only — never a hostname,
+#              key or account (CLAUDE.md hard rule). Referenced below as ext:<id>.
+# context_map: the bounded-context map between domains (DDD strategic design). One entry per
+#              upstream → downstream relationship. `pattern` is one of the eight DDD context-map
+#              patterns; `evidence` names the artifacts that show the relationship exists and is
+#              checked by validate-docs (every id must resolve). `downstream: [all]` means every
+#              other domain; `upstream: [all]` means the downstream reads every other domain.
+#
+#   partnership           two contexts evolve together; neither is upstream
+#   shared-kernel         a shared model both contexts own and change together (avoid; none today)
+#   customer-supplier     downstream needs the upstream and can negotiate the contract
+#   conformist            downstream adopts the upstream model as is, no negotiation
+#   anticorruption-layer  downstream translates the upstream model at its boundary
+#   open-host-service     upstream publishes one protocol every downstream uses
+#   published-language    upstream publishes a shared, versioned data language
+#   separate-ways         no integration by decision
+external:
+  - id: line-platform
+    name: LINE Platform (Messaging API, OAuth, rich menu, LIFF)
+  - id: model-providers
+    name: Model providers (OpenRouter, OpenAI, Anthropic, Gemini, Groq, private runtime, local eval)
+  - id: msp
+    name: MSP — Tier 2 memory/session authority (separate repository)
+  - id: gks
+    name: GKS — Tier 3 knowledge authority (separate repository)
+  - id: genesis-block-db
+    name: GenesisBlockDB — Tier 4 retrieval substrate
+  - id: notion
+    name: Notion (OAuth, webhooks)
+  - id: github
+    name: GitHub (repository projection)
+  - id: flowaccount
+    name: FlowAccount (candidate pull source)
+
+context_map:
+  # Foundation contexts: one protocol for everyone.
+  - upstream: DOM-IAM
+    downstream: [all]
+    pattern: open-host-service
+    evidence: [BR-002, ADR-100, ARCH-001]
+    note: The one policy-enforcement point; every web, API, agent and tool path resolves its viewer here.
+  - upstream: DOM-PRJ
+    downstream: [all]
+    pattern: open-host-service
+    evidence: [BR-001, BR-002, BR-003, ARCH-001]
+    note: Scope chain (Portfolio → Tenant → Business → Workspace → Project) and the audited-write seam every record hangs from.
+
+  # The LINE conversation loop (the product's core).
+  - upstream: DOM-LOA
+    downstream: [DOM-CRM]
+    pattern: partnership
+    evidence: [FEAT-092, FEAT-093, FEAT-095]
+    note: Transport and record evolve together; every LINE turn is written to the CRM record before any agent work.
+  - upstream: DOM-LOA
+    downstream: [DOM-AGT]
+    pattern: partnership
+    evidence: [FEAT-093, FEAT-096, FEAT-097]
+    note: Admission, job ledger and server answer execution are one path.
+  - upstream: DOM-CRM
+    downstream: [DOM-AGT]
+    pattern: customer-supplier
+    evidence: [FEAT-095, ADR-100]
+    note: The agent reads the conversation record and memory tiers through the read-only context contract.
+  - upstream: DOM-KNW
+    downstream: [DOM-AGT]
+    pattern: customer-supplier
+    evidence: [FEAT-096, ADR-090]
+    note: Only a published corpus generation is read for LINE answers.
+  - upstream: DOM-KNW
+    downstream: [DOM-LOA]
+    pattern: customer-supplier
+    evidence: [FEAT-096]
+    note: LINE answer grounding mode and description admission.
+
+  # Platform contexts supplying the business contexts.
+  - upstream: DOM-INT
+    downstream: [DOM-LOA]
+    pattern: customer-supplier
+    evidence: [FEAT-093, FEAT-094]
+    note: Credential vault, channel validation and the LINE messaging port.
+  - upstream: DOM-INT
+    downstream: [DOM-AGT]
+    pattern: customer-supplier
+    evidence: [FEAT-091, FEAT-097]
+    note: Model provider connections, allow-lists and inference node registration.
+  - upstream: DOM-INT
+    downstream: [DOM-MKI]
+    pattern: customer-supplier
+    evidence: [ARCH-001]
+    note: Raw external evidence is acquired by Integration and translated by Market Intelligence.
+  - upstream: [all]
+    downstream: DOM-PLT
+    pattern: conformist
+    evidence: [ARCH-001]
+    note: Operator-only projections read every domain as is and own nothing.
+
+  # Business contexts among themselves.
+  - upstream: DOM-INV
+    downstream: [DOM-PRC, DOM-COM]
+    pattern: customer-supplier
+    evidence: [ARCH-001]
+    note: Buy side and sell side meet only in the stock ledger; receipts and fulfilment post through the Inventory contract.
+  - upstream: DOM-MKI
+    downstream: [DOM-PRC, DOM-COM, DOM-MKT]
+    pattern: published-language
+    evidence: [ARCH-001]
+    note: Provider-neutral market observations with lineage and confidence, for another domain or a human to act on.
+  - upstream: DOM-PRJ
+    downstream: [DOM-MKT]
+    pattern: published-language
+    evidence: [BR-006]
+    note: Marketing hands work into Projects through the PlanEnvelope intake unit.
+  - upstream: DOM-PRJ
+    downstream: [DOM-AST]
+    pattern: conformist
+    evidence: [ARCH-001]
+    note: Asset custody and allocation reference Projects as defined by DOM-PRJ.
+
+  # Boundaries to external systems (the domain named is the anticorruption layer).
+  - upstream: ext:line-platform
+    downstream: [DOM-INT]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001, FEAT-093]
+  - upstream: ext:model-providers
+    downstream: [DOM-INT]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001, FEAT-091]
+  - upstream: ext:notion
+    downstream: [DOM-INT]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001]
+  - upstream: ext:msp
+    downstream: [DOM-AGT]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001, ADR-090]
+  - upstream: ext:gks
+    downstream: [DOM-KNW]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001, ADR-090]
+  - upstream: ext:genesis-block-db
+    downstream: [DOM-KNW]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001, ADR-090]
+  - upstream: ext:github
+    downstream: [DOM-PRJ]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001]
+  - upstream: ext:flowaccount
+    downstream: [DOM-INT]
+    pattern: anticorruption-layer
+    evidence: [ARCH-001]

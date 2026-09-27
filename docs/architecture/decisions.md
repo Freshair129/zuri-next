@@ -357,3 +357,80 @@ that bypasses domain ownership and authorization.
 - Tool JSON schemas are generated from the service's own contracts.
 **Consequences:** tool coverage grows only as domain services grow.
 Legacy: SDD-091
+
+### ADR-107 — Domains carry a DDD strategic classification and a declared context map
+Relations: relates_to: ADR-106, ADR-090, ADR-100
+**Status:** approved (owner, 2026-09-28)
+**Context:** Fourteen domains are registered as equals. Nothing in the specification
+says which of them differentiate the product, which every other domain depends on,
+or how two domains are allowed to relate. Readers asked "which domain is the core,
+which are shared, which are first-class" and the documents could not answer; views
+laid the domains out by feature count, which is not an architectural statement.
+Investment, review depth and integration rules all need that answer.
+**Decision:**
+- **D1 — Subdomain type (DDD strategic design).** Every domain declares
+  `subdomain: core | supporting | generic` in `registry/domains.yaml`:
+  *core* differentiates the product and is built in-house with the most care;
+  *supporting* is business-specific but not a differentiator; *generic* is a solved
+  problem kept thin and replaceable.
+- **D2 — Role in the system map.** Every domain declares `role: foundation | business
+  | platform`: *foundation* is depended on by every other context and depends on
+  none; *business* owns business truth for one capability the Business runs;
+  *platform* supplies capabilities to other contexts and owns no business truth.
+  The two axes are independent: a platform context can be core (DOM-AGT), a
+  foundation context can be generic (DOM-IAM).
+- **D3 — Context map.** Relationships between domains are declared in
+  `registry/relations.yaml` as `upstream → downstream` entries using the eight DDD
+  context-map patterns (partnership, shared-kernel, customer-supplier, conformist,
+  anticorruption-layer, open-host-service, published-language, separate-ways). Each
+  entry names its `evidence` (FEAT, BR, ADR, ARCH ids), which the validator resolves.
+  External systems are listed there by name only and referenced as `ext:<id>`; the
+  domain facing an external system is its anticorruption layer.
+- **D4 — One declaration, many views.** The registry is the only place the
+  classification and the map are written. Domain READMEs show them inside the
+  generated block; ARCH-001, PRD-001 and the graph views render them; none restates
+  them by hand.
+- **D5 — Rules the classification carries.** A *foundation* domain never appears as
+  `downstream` of a non-foundation domain and never participates in a feature it
+  does not own. A *platform* domain never owns Customer, Conversation, order, stock or
+  asset truth. A *core* subdomain is reviewed by its owner before every status change
+  (PLAN-001 P5). `shared-kernel` is allowed only by a later ADR.
+- **D6 — The classification today.**
+
+  | Domain | Subdomain | Role | Why |
+  |---|---|---|---|
+  | DOM-CRM | core | business | the conversation record every LINE turn is written into |
+  | DOM-LOA | core | business | operating LINE Official Accounts is the product's primary surface |
+  | DOM-AGT | core | platform | the AI operator over governed knowledge and business facts |
+  | DOM-KNW | core | platform | the Tier-1 knowledge ingestion the answers are grounded in |
+  | DOM-PRJ | supporting | foundation | the scope chain and work model everything hangs from; bespoke, not a differentiator |
+  | DOM-AST | supporting | business | evidence-backed asset intake with human review |
+  | DOM-MKI | supporting | business | translation of external evidence into market observations |
+  | DOM-MKT | supporting | business | strategy plans and channel coordination |
+  | DOM-IAM | generic | foundation | identity, sessions and grants: standard, but every path passes through it |
+  | DOM-INT | generic | platform | provider ports and credential custody |
+  | DOM-PLT | generic | platform | operator projections and console shell |
+  | DOM-INV | generic | business | catalogue and stock ledger |
+  | DOM-PRC | generic | business | suppliers, purchase orders, receipts |
+  | DOM-COM | generic | business | orders, payments, pricing |
+
+**Alternatives rejected:**
+- Classifying by feature count or by folder: an observation, not a decision, and it
+  changes with every merge.
+- A single "tier" field mixing importance and dependency direction: readers could not
+  tell "core" (invest) from "foundation" (depended on), which is the confusion that
+  prompted this record.
+- Writing the classification into each domain README: fourteen copies of one fact
+  (STD-003 principle); the README shows it through the generated block instead.
+- Deriving the context map from cross-domain feature participation alone: it finds
+  partnerships but not the direction or the pattern, and misses relationships that
+  go through a contract rather than a shared feature.
+**Consequences:**
+- `validate-docs` refuses a domain without both fields, an unknown pattern, a
+  `downstream` that is not a registered domain, or evidence that does not resolve.
+- `generate-views` writes "Classification" and "Context map" into every domain
+  README's generated block; `spec-tree.mjs` carries both into the graph views, which
+  arrange domains by role (foundation at the centre, platform next, business outside).
+- STD-003 R5 describes the two registry files; STD-001 R1 notes that a Domain
+  carries the classification.
+- Changing a domain's subdomain or role is an ADR that supersedes this table.

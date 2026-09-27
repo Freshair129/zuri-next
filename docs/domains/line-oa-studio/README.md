@@ -160,4 +160,20 @@ See `contracts.md` for full definitions. Summary: `API-123`,
 - [SRV-002](../../services/SRV-002-line-worker/SERVICE.md)
 - [SRV-003](../../services/SRV-003-conversation-runtime/SERVICE.md)
 
+### Classification (ADR-107)
+
+Subdomain: **core** · Role: **business** — declared in `registry/domains.yaml`.
+
+### Context map (7)
+
+| Direction | Context | Pattern | Evidence | Note |
+|---|---|---|---|---|
+| downstream of | DOM-IAM | open-host-service | BR-002, ADR-100, ARCH-001 | The one policy-enforcement point; every web, API, agent and tool path resolves its viewer here. |
+| downstream of | DOM-PRJ | open-host-service | BR-001, BR-002, BR-003, ARCH-001 | Scope chain (Portfolio → Tenant → Business → Workspace → Project) and the audited-write seam every record hangs from. |
+| upstream of | DOM-CRM | partnership | FEAT-092, FEAT-093, FEAT-095 | Transport and record evolve together; every LINE turn is written to the CRM record before any agent work. |
+| upstream of | DOM-AGT | partnership | FEAT-093, FEAT-096, FEAT-097 | Admission, job ledger and server answer execution are one path. |
+| downstream of | DOM-KNW | customer-supplier | FEAT-096 | LINE answer grounding mode and description admission. |
+| downstream of | DOM-INT | customer-supplier | FEAT-093, FEAT-094 | Credential vault, channel validation and the LINE messaging port. |
+| upstream of | DOM-PLT | conformist | ARCH-001 | Operator-only projections read every domain as is and own nothing. |
+
 <!-- END GENERATED -->

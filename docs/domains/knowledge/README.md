@@ -213,4 +213,20 @@ _None._
 - [SRV-005](../../services/SRV-005-gks/SERVICE.md)
 - [SRV-006](../../services/SRV-006-knowledge-storage/SERVICE.md)
 
+### Classification (ADR-107)
+
+Subdomain: **core** · Role: **platform** — declared in `registry/domains.yaml`.
+
+### Context map (7)
+
+| Direction | Context | Pattern | Evidence | Note |
+|---|---|---|---|---|
+| downstream of | DOM-IAM | open-host-service | BR-002, ADR-100, ARCH-001 | The one policy-enforcement point; every web, API, agent and tool path resolves its viewer here. |
+| downstream of | DOM-PRJ | open-host-service | BR-001, BR-002, BR-003, ARCH-001 | Scope chain (Portfolio → Tenant → Business → Workspace → Project) and the audited-write seam every record hangs from. |
+| upstream of | DOM-AGT | customer-supplier | FEAT-096, ADR-090 | Only a published corpus generation is read for LINE answers. |
+| upstream of | DOM-LOA | customer-supplier | FEAT-096 | LINE answer grounding mode and description admission. |
+| upstream of | DOM-PLT | conformist | ARCH-001 | Operator-only projections read every domain as is and own nothing. |
+| downstream of | ext:gks | anticorruption-layer | ARCH-001, ADR-090 |  |
+| downstream of | ext:genesis-block-db | anticorruption-layer | ARCH-001, ADR-090 |  |
+
 <!-- END GENERATED -->

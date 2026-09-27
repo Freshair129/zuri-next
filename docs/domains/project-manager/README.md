@@ -233,4 +233,19 @@ others), approval request/admission (`requestApproval`, `admitApprovedStep`), an
 - [SRV-001](../../services/SRV-001-web/SERVICE.md)
 - [SRV-006](../../services/SRV-006-knowledge-storage/SERVICE.md)
 
+### Classification (ADR-107)
+
+Subdomain: **supporting** · Role: **foundation** — declared in `registry/domains.yaml`.
+
+### Context map (6)
+
+| Direction | Context | Pattern | Evidence | Note |
+|---|---|---|---|---|
+| downstream of | DOM-IAM | open-host-service | BR-002, ADR-100, ARCH-001 | The one policy-enforcement point; every web, API, agent and tool path resolves its viewer here. |
+| upstream of | all | open-host-service | BR-001, BR-002, BR-003, ARCH-001 | Scope chain (Portfolio → Tenant → Business → Workspace → Project) and the audited-write seam every record hangs from. |
+| upstream of | DOM-PLT | conformist | ARCH-001 | Operator-only projections read every domain as is and own nothing. |
+| upstream of | DOM-MKT | published-language | BR-006 | Marketing hands work into Projects through the PlanEnvelope intake unit. |
+| upstream of | DOM-AST | conformist | ARCH-001 | Asset custody and allocation reference Projects as defined by DOM-PRJ. |
+| downstream of | ext:github | anticorruption-layer | ARCH-001 |  |
+
 <!-- END GENERATED -->

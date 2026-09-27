@@ -164,6 +164,41 @@ for (const [fid, fd] of feats) {
   }
 }
 
+// registry: strategic classification and context map (ADR-107)
+{
+  const dy = fs.readFileSync(path.join(REPO, 'registry/domains.yaml'), 'utf8');
+  const SUB = new Set(['core', 'supporting', 'generic']), ROLE = new Set(['foundation', 'business', 'platform']);
+  const domIds = new Set();
+  for (const blk of dy.split(/\n\s*-\s+code:/).slice(1)) {
+    const code = blk.split('\n')[0].trim(); domIds.add('DOM-' + code);
+    const sub = (blk.match(/^\s*subdomain:\s*(\S+)/m) || [])[1], role = (blk.match(/^\s*role:\s*(\S+)/m) || [])[1];
+    if (!SUB.has(sub)) err('registry/domains.yaml', 1, `DOM-${code}: subdomain must be one of ${[...SUB].join('|')} (got "${sub || ''}")`);
+    if (!ROLE.has(role)) err('registry/domains.yaml', 1, `DOM-${code}: role must be one of ${[...ROLE].join('|')} (got "${role || ''}")`);
+  }
+  const relFile = path.join(REPO, 'registry/relations.yaml');
+  if (!fs.existsSync(relFile)) err('registry/relations.yaml', 1, 'missing (STD-003 R5)');
+  else {
+    const txt = fs.readFileSync(relFile, 'utf8'); const lines = txt.split('\n');
+    const lineOf = (needle, from = 0) => { const i = lines.findIndex((l, k) => k >= from && l.includes(needle)); return i < 0 ? 1 : i + 1; };
+    const ext = new Set([...txt.split(/^context_map:/m)[0].matchAll(/^\s*-\s+id:\s*([a-z0-9-]+)/gm)].map((m) => m[1]));
+    const PAT = new Set(['partnership', 'shared-kernel', 'customer-supplier', 'conformist', 'anticorruption-layer', 'open-host-service', 'published-language', 'separate-ways']);
+    const list = (s) => (s || '').trim().replace(/^\[|\]$/g, '').split(',').map((x) => x.trim()).filter(Boolean);
+    const okCtx = (x) => x === 'all' || domIds.has(x) || (x.startsWith('ext:') && ext.has(x.slice(4)));
+    const body = txt.split(/^context_map:\s*$/m)[1] || '';
+    let cursor = lineOf('context_map:');
+    for (const blk of body.split(/\n\s*-\s+upstream:/).slice(1)) {
+      const ln = lineOf('- upstream:' + blk.split('\n')[0], cursor); cursor = ln;
+      const g = (k) => (blk.match(new RegExp(`^\\s*${k}:\\s*(.+)$`, 'm')) || [, ''])[1].trim();
+      const up = list(blk.split('\n')[0]), down = list(g('downstream')), pat = g('pattern'), ev = list(g('evidence'));
+      for (const x of [...up, ...down]) if (!okCtx(x)) err('registry/relations.yaml', ln, `unknown context "${x}" (a DOM id, ext:<id> from external:, or all)`);
+      if (!PAT.has(pat)) err('registry/relations.yaml', ln, `unknown context-map pattern "${pat}"`);
+      if (pat === 'shared-kernel') err('registry/relations.yaml', ln, 'shared-kernel needs an ADR that allows it (ADR-107 D5)');
+      if (!ev.length) err('registry/relations.yaml', ln, 'context-map entry without evidence');
+      for (const e of ev) refs.push({ id: e, file: 'registry/relations.yaml', line: ln });
+    }
+  }
+}
+
 // crosswalk
 const cwDir = path.join(REPO, 'registry/crosswalk');
 const cw = new Map();

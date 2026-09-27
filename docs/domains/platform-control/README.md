@@ -154,4 +154,16 @@ Full method/path/auth/error detail: [contracts.md](contracts.md).
 
 - [SRV-001](../../services/SRV-001-web/SERVICE.md)
 
+### Classification (ADR-107)
+
+Subdomain: **generic** · Role: **platform** — declared in `registry/domains.yaml`.
+
+### Context map (3)
+
+| Direction | Context | Pattern | Evidence | Note |
+|---|---|---|---|---|
+| downstream of | DOM-IAM | open-host-service | BR-002, ADR-100, ARCH-001 | The one policy-enforcement point; every web, API, agent and tool path resolves its viewer here. |
+| downstream of | DOM-PRJ | open-host-service | BR-001, BR-002, BR-003, ARCH-001 | Scope chain (Portfolio → Tenant → Business → Workspace → Project) and the audited-write seam every record hangs from. |
+| downstream of | all | conformist | ARCH-001 | Operator-only projections read every domain as is and own nothing. |
+
 <!-- END GENERATED -->

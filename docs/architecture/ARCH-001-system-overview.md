@@ -264,6 +264,29 @@ are advisory.
   and an outbox are not implemented. Extraction happens only on an operational trigger
   (load, cadence, security, availability, ownership), one domain at a time.
 
+## 16. Strategic classification and context map
+
+Every domain carries a subdomain type and a role (ADR-107), declared once in
+`registry/domains.yaml`; the relationships between domains are the context map in
+`registry/relations.yaml`. Both are rendered into each domain README's generated
+block and into the graph views under `docs/governance/plans/`.
+
+```text
+ role        foundation            platform                        business
+ ──────────  ────────────────────  ──────────────────────────────  ─────────────────────────────────
+ core                              DOM-AGT · DOM-KNW               DOM-CRM · DOM-LOA
+ supporting  DOM-PRJ                                               DOM-AST · DOM-MKI · DOM-MKT
+ generic     DOM-IAM               DOM-INT · DOM-PLT               DOM-INV · DOM-PRC · DOM-COM
+```
+
+Reading the map: the two foundation contexts publish one protocol for everyone
+(open-host-service: the viewer gate and the scope chain / audit seam); the LINE
+conversation loop (LOA ⇄ CRM, LOA ⇄ AGT) is a partnership; platform contexts are
+suppliers to it (INT → LOA / AGT, KNW → AGT / LOA); buy and sell sides meet only in
+Inventory (INV → PRC / COM); every external system enters through one domain that
+acts as its anticorruption layer (INT for LINE, model providers and Notion; AGT for
+MSP; KNW for GKS and GenesisBlockDB; PRJ for GitHub).
+
 ## Legacy sources
 
 docs/ARCHITECTURE.md, ARCHITECTURE-NOTES.md, ARCHITECTURE-TARGET-MODULAR-MONOLITH.md,

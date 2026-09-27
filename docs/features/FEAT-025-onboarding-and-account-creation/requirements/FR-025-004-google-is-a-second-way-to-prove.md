@@ -1,7 +1,7 @@
 ---
 id: FR-025-004
 title: "Google is a second way to prove the same account"
-delivery: live
+delivery: declared
 legacy: [FR-121]
 relations:
   specified_by: [SDD-025]

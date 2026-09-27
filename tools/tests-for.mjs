@@ -102,7 +102,7 @@ if (json) {
   if (local.length) console.log(`\nRun here:\n  npx vitest run ${local.join(' ')}`);
   if (legacy.length) {
     const byApp = {};
-    for (const f of legacy) { const m = f.match(/^(apps\/[^/]+)\/(.+)$/); const k = m ? m[1] : '.'; (byApp[k] ||= []).push(m ? m[2] : f); }
+    for (const f of legacy) { const m = f.match(/^(apps\/[^/]+)\/(.+)$/); const k = m ? m[1] : 'apps/server' /* zuri-ai: bare paths are Server-relative */; (byApp[k] ||= []).push(m ? m[2] : f); }
     console.log('\nNot in this repository (bound to the zuri-ai tree). Run in a zuri-ai checkout:');
     for (const [app, list] of Object.entries(byApp)) console.log(`  npm --prefix ${app} exec -- vitest run ${list.join(' ')}`);
   }

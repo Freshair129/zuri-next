@@ -20,11 +20,7 @@ title: "SmartGift SCM — located ledger, WIP, landed cost, ATP, stocktake — d
   `StockReservation`, `InventoryStocktake`, `InventoryLedgerFence`; `StockMovement`'s
   `sourceLocationId`/`targetLocationId`/`costSatang` columns (extending
   FEAT-077's ledger, not a separate ownership).
-- **Contracts exposed:** `API-205`, `API-205`,
-  `API-205`, `API-201`,
-  `API-204`, `API-202`, `API-211`,
-  `API-210`, `API-210`, `API-212`,
-  `API-212`.
+- **Contracts exposed:** `API-205`, `API-201`, `API-204`, `API-202`, `API-211`, `API-210`, `API-212`.
 - **Contracts consumed:** `API-194` (this feature's own components
   are callers of FEAT-077's exported ledger contract, same domain).
 - **Main sequence** (produce → customize → kit → promise → count):

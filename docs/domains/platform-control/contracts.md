@@ -67,6 +67,15 @@ Legacy: FR-142
 
 Legacy: FR-221 (crosswalked as `retired` — see `registry/crosswalk/PLT.csv`)
 
+### API-266 (declared, not implemented)
+Owner: DOM-PLT
+Route (candidate): a bounded, operator-only read endpoint behind `/control/inference`
+(none exists in code as of this reading)
+Purpose: read-only projection of inference pool capacity, routing and health for the
+installation operator; persists nothing.
+Implements: FR-097-004
+Legacy: none — declared in ADR-099 and its change request only
+
 ## Not owned by this domain, consumed read-only
 
 - `program-domain-map.js`'s Domain map tab reads `DOM-PRJ`'s

@@ -17,9 +17,7 @@ title: "Catalogue intake — resolve before it creates — design"
     envelope/planner).
 - **Data owned:** `InventoryCatalogIntake` (preview + plan + result; no catalogue
   data of its own — created SKUs are written by FEAT-077/004's writers).
-- **Contracts exposed:** `API-197`,
-  `API-197`, `API-198`,
-  `API-198`.
+- **Contracts exposed:** `API-197`, `API-198`.
 - **Contracts consumed:** FEAT-077's catalogue writers (accept a transaction
   client, `inTx`), FEAT-080's identifier/variant/lifecycle guards (the planner
   re-checks them against the batch).

@@ -49,11 +49,11 @@ title: "LINE grounding and knowledge candidates — design"
   `LINE_STUDIO_DESCRIPTION` kinds.
 
 **Contracts exposed:**
-- `API-KNW-candidates` — `GET/POST /api/knowledge/candidates`,
+- `API-262` — `GET/POST /api/knowledge/candidates`,
   `GET/PATCH /api/knowledge/candidates/{id}`, `POST /api/knowledge/candidates/{id}/decision`.
-- `API-KNW-gap-report` — `GET /api/knowledge/gap-report`.
-- `API-PRJ-business-knowledge-candidates-toggle` (DOM-PRJ, dependency) —
-  `POST /api/businesses/{id}/knowledge-candidates-toggle`.
+- `API-263` — `GET /api/knowledge/gap-report`.
+- `API-264` (DOM-PRJ, dependency) —
+  `PATCH /api/businesses/{id}/knowledge-candidates-toggle`.
 
 **Contracts consumed:**
 - The existing `knowledge.query` port (P01's `answerBusinessQuestion` already depends on it; P01

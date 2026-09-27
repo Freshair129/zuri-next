@@ -18,8 +18,7 @@ title: "SKU governance — nature, variant identity, identifiers, lifecycle, hyg
 - **Data owned:** `ProductMaster.nature`/`defaultStockPolicy`/`variantAxes`,
   `Product.variant`/`variantKey`/`status`/`mergedIntoProductId`/`reorderPoint`/
   `reorderQty`/`leadTimeDays`, `ProductIdentifier`, `ProductUnitConversion`.
-- **Contracts exposed:** `API-199`, `API-203`,
-  `API-203`, `API-196`, `API-209`.
+- **Contracts exposed:** `API-199`, `API-203`, `API-196`, `API-209`.
 - **Contracts consumed:** none (extends FEAT-077's catalogue/ledger in-domain).
 - **Main sequence:** create master (declare nature/axes) → create SKU (inherits
   nature, keyed by variant) → attach identifiers/conversions → lifecycle actions as

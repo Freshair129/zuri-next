@@ -1,11 +1,8 @@
 # Knowledge — contracts
 
 HTTP routes exposed under `apps/server/src/app/api/knowledge/**` and
-`apps/server/src/app/api/pipelines/**` that implement an FR in this conversion's set.
-Routes serving `FR-096-002`/`FR-096-003`/`FR-096-004` (`/api/knowledge/candidates/**`,
-`/api/knowledge/gap-report`) exist in the same module tree but implement FRs **outside**
-this conversion's assigned set (owned by a separate lane per the LINE-grounding
-cross-domain feature) and are listed at the end for completeness only, not converted.
+`apps/server/src/app/api/pipelines/**`. The knowledge-candidate and gap-report routes
+(`API-262`, `API-263`) are DOM-KNW's parts of the cross-domain FEAT-096.
 `/api/pipelines/runs/**` is the integration domain's generic pipeline-run contract
 (`FR-060-001, FR-060-002, FR-060-003, FR-060-004, FR-060-005`) and is referenced under Depends-on in `DOMAIN.md`, not repeated here.
 
@@ -211,14 +208,36 @@ Knowledge dashboard (`/knowledge`, FR-076-003) are server-rendered UI surfaces w
 no API of their own beyond this one live-overlay route — "It has no API, input beyond
 filters, persistence or write" (FR-076-002).
 
-## Out of scope for this conversion (listed for completeness only)
+### API-262
+Owner: DOM-KNW
+`GET|POST /api/knowledge/candidates` · `GET|PATCH /api/knowledge/candidates/{id}` ·
+`POST /api/knowledge/candidates/{id}/decision`
+Purpose: draft, list, edit and decide (APPROVE/REJECT) LINE FAQ knowledge candidates
+for one Business before they enter the corpus.
+Auth/scope: session viewer or a Business API key (`apik_` Bearer); the `knowledge`
+domain must be visible in the Business. Drafting requires the per-Business switch
+(`API-264`) to be on; drafting, editing and deciding require the Business OWNER or the
+LINE OA publish permission. Conversation consent is checked before drafting.
+Request (POST): `{ businessId, conversationId, messageIds, ... }`; PATCH and decision
+carry the candidate `version`.
+Response: one candidate DTO (row fields plus `sourceRef`), or an array for the list.
+Errors: 401; 403 `KNOWLEDGE_CANDIDATES_DISABLED` / `KNOWLEDGE_CANDIDATE_FORBIDDEN`;
+404 `KNOWLEDGE_CANDIDATE_NOT_FOUND` or invisible Business; 409 consent missing, not
+pending, already decided, version conflict or duplicate request; 422 unknown message
+ids; 503 session store unavailable.
+Implements: FR-096-002
+Legacy: `apps/server/src/app/api/knowledge/candidates/**` (FR-236)
 
-- `POST /api/knowledge/candidates`, `GET /api/knowledge/candidates`,
-  `GET|PATCH /api/knowledge/candidates/{id}`, `POST /api/knowledge/candidates/{id}/decision`
-  — implement `FR-096-002` (knowledge candidates review), not in this conversion's
-  FR set.
-- `GET /api/knowledge/gap-report` — implements `FR-096-003` (knowledge gap report,
-  declared, not built), not in this conversion's FR set.
-
-Both are part of `FEAT-096` (see `DOMAIN.md` → Participates in) and are written by a
-different part of this effort.
+### API-263
+Owner: DOM-KNW
+`GET /api/knowledge/gap-report?businessId=`
+Purpose: per-Business report of product questions the corpus could not answer,
+locator-only (no customer text), for the Businesses the caller can see.
+Auth/scope: session viewer or a Business API key; with `businessId` the `knowledge`
+domain must be visible there, without it the report aggregates every visible Business
+that has the domain.
+Response: `{ businesses: [{ businessId, gaps: [{ productLocator, locatorAvailable,
+count, lastSeenAt }] }], truncated }`.
+Errors: 401; 404 invisible Business; 503 session store unavailable.
+Implements: FR-096-003
+Legacy: `apps/server/src/app/api/knowledge/gap-report/route.js` (FR-237)

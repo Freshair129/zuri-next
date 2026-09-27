@@ -1,7 +1,7 @@
 ---
 id: FR-063-002
 title: "LINE ladder quotation tool (declared only)"
-delivery: implemented
+delivery: declared
 legacy: [FR-132]
 relations:
   specified_by: [none]

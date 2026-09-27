@@ -8,7 +8,7 @@ status: draft
 delivery: implemented
 legacy: [FEAT-018, FR-146]
 relations:
-  depends_on: [API-147, API-IAM-session-resolve]
+  depends_on: [API-147, API-088]
   decided_by: [ADR-044]
 ---
 

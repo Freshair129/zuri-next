@@ -66,17 +66,17 @@ govern this domain and are referenced as `legacy:BR-xxx` in the relevant FR's
 Relations line rather than re-declared).
 
 ## Public contracts
-- `API-200`, `API-200`, `API-200`, `API-200`, `API-207`, `API-195`
-- `API-194` (exported ledger write contract — used cross-domain by Procurement/Commerce), `API-206`, `API-206`, `API-INV-stock-movements`, `API-206`
-- `API-208`, `API-208`
-- `API-205`, `API-205`, `API-205`
+- `API-200`, `API-207`, `API-195`
+- `API-194` (exported ledger write contract — used cross-domain by Procurement/Commerce), `API-206`
+- `API-208`
+- `API-205`
 - `API-201`, `API-204`, `API-202`
 - `API-211`
-- `API-210`, `API-210`
-- `API-212`, `API-212`
-- `API-199` (product/identifier resolution), `API-203`, `API-203`
+- `API-210`
+- `API-212`
+- `API-199` (product/identifier resolution), `API-203`
 - `API-196`, `API-209`
-- `API-197`, `API-197`, `API-198`, `API-198`
+- `API-197`, `API-198`
 
 ## Capabilities
 | ID | Title | Features |

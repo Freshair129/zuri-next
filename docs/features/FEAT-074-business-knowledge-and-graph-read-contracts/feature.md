@@ -34,7 +34,7 @@ Prisma-backed read fallback; publishing a second `knowledge_type` of curated fac
 intake and FR-056-001, FR-056-002 approval gate.
 
 **Out:** any GKS/GenesisBlockDB client, embedding call or index mutation — retired
-entirely (`ADR-064`, `ADR-064`). Building a new Prisma model for the rate
+entirely (`ADR-064`). Building a new Prisma model for the rate
 card (refused, see §9). The seventeen-stage ingestion pipeline itself (`FEAT-072`).
 LINE grounding through a corpus reader (`FR-096-001`, out of this conversion's FR
 set).

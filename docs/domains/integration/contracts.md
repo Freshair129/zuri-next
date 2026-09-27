@@ -228,3 +228,13 @@ Purpose: cursor pull of decided rows for the data plane.
 Errors: 400 malformed cursor; 403.
 Implements: FR-055-005
 Legacy: apps/server/src/app/api/platform/sot/decisions/export/route.js
+
+### API-265 (declared, not implemented)
+Owner: DOM-INT
+Routes (candidate): `/api/platform/integrations/inference-pools`,
+`/api/platform/integrations/inference-nodes`,
+`/api/platform/integrations/inference-nodes/[id]/qualify` (none exists in code as of this reading)
+Purpose: register, qualify and retire Business-scoped self-hosted inference nodes and
+pools; the Agent reads qualified node and profile data through it.
+Implements: FR-097-001
+Legacy: none — declared in ADR-099 and its change request only

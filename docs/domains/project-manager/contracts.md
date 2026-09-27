@@ -65,6 +65,17 @@ Relations: owned_by: DOM-PRJ; implements: FR-001-008
 - Errors: 400 validation; 404 unknown or unowned Business (indistinguishable, SEC-001); 409 stale `version`.
 - Legacy: apps/server/src/app/api/businesses/[id]/capabilities/route.js
 
+### API-264 — Toggle knowledge-candidate drafting for a Business
+Owner: DOM-PRJ
+Relations: owned_by: DOM-PRJ; implements: FR-096-002
+- Method/path: `PATCH /api/businesses/[id]/knowledge-candidates-toggle` (no GET; the state is read with the Business).
+- Request: strict `{ version: int>0, enabled: boolean, requestedBy, reason? }`.
+- Auth/scope: viewer role OWNER and `ownsBusiness(viewer, id)`.
+- Response: `{ id, version, knowledgeCandidatesEnabled }`.
+- Errors: 400 validation; 404 unknown or unowned Business (indistinguishable, SEC-001); 409 stale `version`.
+- Consumed by: API-262 (drafting is refused while the switch is off).
+- Legacy: apps/server/src/app/api/businesses/[id]/knowledge-candidates-toggle/route.js
+
 ## Projects & execution structure
 
 Common to this section: reads require `seesBusiness` over the target's governing Business
